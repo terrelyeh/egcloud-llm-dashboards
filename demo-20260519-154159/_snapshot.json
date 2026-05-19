@@ -1,0 +1,15 @@
+{
+  "deployed_at": "2026-05-19T07:52:05+00:00",
+  "source_canvas": "canvas-phase-b-demo-20260519-154159",
+  "redacted": false,
+  "account": {
+    "email": "ian.lai@senao.com"
+  },
+  "scope": {
+    "kind": "org",
+    "name": "Danny",
+    "ids": {
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    }
+  }
+}
