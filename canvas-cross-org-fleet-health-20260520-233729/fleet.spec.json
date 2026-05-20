@@ -1,0 +1,100 @@
+{
+  "title": "跨 Org 設備與授權體檢",
+  "subtitle": "EnGenius Cloud Staging · 7 個 org · 236 台設備 · 即時快照",
+  "locale": "zh-TW",
+  "refresh": null,
+  "live_data": {
+    "fleet": "live-data/fleet.json"
+  },
+  "compute_fns": "(() => { const cf = window.computeFns; const DAY = 86400000; const devs = (data) => (data.fleet && data.fleet.devices) || []; const orgs = (data) => (data.fleet && data.fleet.orgs) || []; const bucketOf = (d) => { if (d.license_status === 'expired') return 'expired'; if (d.license_status === 'active' && d.expired_date) { const days = Math.floor((d.expired_date - Date.now()) / DAY); if (days <= 90) return 'expiring'; return 'active'; } if (d.license_status === 'active') return 'active'; return 'other'; }; cf.fleet_rows = (data) => devs(data).map(d => { const days = d.expired_date ? Math.floor((d.expired_date - Date.now()) / DAY) : null; const bucket = bucketOf(d); let expiry_label = '—'; if (d.expired_date) { const dt = new Date(d.expired_date); const ymd = dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0'); if (bucket === 'expired') expiry_label = '已過期 · ' + ymd; else if (bucket === 'expiring') expiry_label = days + ' 天後 · ' + ymd; else expiry_label = ymd; } return { ...d, days_remaining: days, urgency_bucket: bucket, expiry_label }; }); cf.fleet_total = (data) => devs(data).length; cf.expired_total = (data) => devs(data).filter(d => d.license_status === 'expired').length; cf.expiring_total = (data) => cf.fleet_rows(data).filter(r => r.urgency_bucket === 'expiring').length; cf.fleet_summary = (data) => { const all = devs(data); const os = orgs(data); const withDev = os.filter(o => o.device_count > 0).length; const exp = cf.expired_total(data); const expiring = cf.expiring_total(data); const pct = all.length ? Math.round(exp * 100 / all.length) : 0; return `管理 ${os.length} 個 org（${withDev} 個有設備）、共 ${all.length} 台設備。其中 ${exp} 台 license 已過期（佔 ${pct}%）、另有 ${expiring} 台在 90 天內到期。過期設備會逐步失去雲端管理與進階功能，建議優先處理閘道（gateway）類。`; }; cf.kpi_orgs = (data) => orgs(data).length; cf.kpi_orgs_sub = (data) => { const w = orgs(data).filter(o => o.device_count > 0).length; return `${w} 個有設備 · ${orgs(data).length - w} 個空的`; }; cf.kpi_devices = (data) => devs(data).length; cf.kpi_devices_sub = (data) => { const a = devs(data).filter(d => d.license_status === 'active').length; return `${a} 台 license 有效`; }; cf.kpi_expired = (data) => cf.expired_total(data); cf.kpi_expired_sub = (data) => { const t = devs(data).length; const e = cf.expired_total(data); return t ? `${Math.round(e*100/t)}% of fleet` : '—'; }; cf.kpi_expiring = (data) => cf.expiring_total(data); cf.kpi_expiring_sub = (data) => '90 天內 · 含閘道'; cf.expired_per_org = (data) => orgs(data).filter(o => o.expired_count > 0).map(o => ({ label: o.org_name, value: o.expired_count, color: 'crit' })).sort((a,b) => b.value - a.value); cf.fleet_expired_total = (data) => cf.expired_total(data); cf.device_type_bars = (data) => { const m = {}; devs(data).forEach(d => { const t = (d.type || '其他'); m[t] = (m[t]||0)+1; }); const pretty = { ap:'AP', switch:'Switch', gateway:'Gateway', camera:'攝影機', pdu:'PDU', nvs:'NVS', epc:'EPC', ezmaster:'ezMaster', switch_extender:'SW Extender', bsc:'BSC' }; return Object.entries(m).map(([t,c]) => ({ label: pretty[t] || t, value: c })).sort((a,b) => b.value - a.value); }; cf.license_segments = (data) => { const rows = cf.fleet_rows(data); const exp = rows.filter(r => r.urgency_bucket === 'expired').length; const expiring = rows.filter(r => r.urgency_bucket === 'expiring').length; const act = rows.filter(r => r.urgency_bucket === 'active').length; const other = rows.filter(r => r.urgency_bucket === 'other').length; return [ { label: '有效', value: act, severity: 'success' }, { label: '90 天內到期', value: expiring, severity: 'warning' }, { label: '已過期', value: exp, severity: 'critical' }, { label: '其他', value: other, severity: 'muted' } ].filter(s => s.value > 0); }; })();",
+  "sections": [
+    {
+      "widget": "alert",
+      "id": "fleet-alert",
+      "severity": "warning",
+      "title": "跨 Org 體檢摘要",
+      "body_compute": "fleet_summary"
+    },
+    {
+      "widget": "kpi_grid",
+      "id": "kpis",
+      "items": [
+        { "label": "管理 Org 數", "value_compute": "kpi_orgs", "sub_compute": "kpi_orgs_sub" },
+        { "label": "設備總數", "value_compute": "kpi_devices", "sub_compute": "kpi_devices_sub", "clickable": { "target": "fleet-table" } },
+        { "label": "License 已過期", "severity": "critical", "value_compute": "kpi_expired", "sub_compute": "kpi_expired_sub", "clickable": { "target": "fleet-table" } },
+        { "label": "90 天內到期", "severity": "warning", "value_compute": "kpi_expiring", "sub_compute": "kpi_expiring_sub", "clickable": { "target": "fleet-table" } }
+      ]
+    },
+    {
+      "widget": "bar_list",
+      "id": "breakdown",
+      "title": "分布",
+      "meta": "各 org 過期數 · 設備類型",
+      "groups": [
+        {
+          "title": "各 Org 過期 License 排名",
+          "compute": "expired_per_org",
+          "total_compute": "fleet_expired_total",
+          "click_action": { "target": "fleet-table", "filter_field": "org_name", "scroll_to_target": true }
+        },
+        {
+          "title": "設備類型分布",
+          "compute": "device_type_bars",
+          "total_compute": "fleet_total"
+        }
+      ]
+    },
+    {
+      "widget": "donut",
+      "id": "license-mix",
+      "title": "整體 License 狀態",
+      "compute": "license_segments",
+      "center_value_compute": "fleet_total",
+      "center_label": "設備"
+    },
+    {
+      "widget": "table",
+      "id": "fleet-table",
+      "title": "設備明細 · 全 Org",
+      "compute": "fleet_rows",
+      "row_id_field": "device_id",
+      "meta_template": "${count} 台設備",
+      "sort_by": { "field": "expired_date", "dir": "asc" },
+      "search": { "fields": ["name", "mac", "model", "serial_number", "org_name"], "placeholder": "搜尋名稱 / MAC / 型號 / 序號 / org" },
+      "pagination": { "enabled": true, "page_size": 50 },
+      "filters": [
+        { "label": "全部", "filter": "all" },
+        { "label": "已過期", "filter": "urgency_bucket:expired" },
+        { "label": "90 天內到期", "filter": "urgency_bucket:expiring" },
+        { "label": "有效", "filter": "urgency_bucket:active" }
+      ],
+      "columns": [
+        { "label": "設備", "field": "name", "render": "name_with_sub", "sub_field": "mac" },
+        { "label": "Org", "field": "org_name" },
+        { "label": "型號", "field": "model", "cls": "mono" },
+        { "label": "類型", "field": "type", "render": "type_chip" },
+        { "label": "License", "field": "license_status", "render": "license_pill" },
+        { "label": "到期", "field": "expiry_label" }
+      ],
+      "expandable_rows": true,
+      "detail_fields": [
+        { "label": "Device ID", "field": "device_id" },
+        { "label": "MAC", "field": "mac" },
+        { "label": "序號", "field": "serial_number" },
+        { "label": "型號", "field": "model", "large": true },
+        { "label": "類型", "field": "type", "large": true },
+        { "label": "所屬 Org", "field": "org_name", "large": true },
+        { "label": "所屬 Network", "field": "network_name", "large": true },
+        { "label": "License 類型", "field": "license_type", "large": true },
+        { "label": "到期日", "field": "expired_date", "render": "datetime" }
+      ]
+    }
+  ],
+  "footer": {
+    "ops_used": [
+      "get_user_orgs",
+      "get_hierarchy_views (× 7 orgs)",
+      "get_inventory (× 7 orgs, paginated)"
+    ]
+  }
+}
