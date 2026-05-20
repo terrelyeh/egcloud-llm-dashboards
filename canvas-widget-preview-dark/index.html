@@ -1,0 +1,2579 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>新 Widget 預覽 · 趨勢三件組</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* === theme/tokens-dark.css === */
+:root {
+  /* Surfaces & background — deep navy with subtle gradient */
+  --bg: #0a1628;
+  --bg-gradient: radial-gradient(at 0% 0%, #0f1e3a 0%, #0a1628 50%);
+  --surface: #142540;
+  --surface-2: #1a2d4d;
+  --hdr-bg: rgba(16, 30, 55, 0.85);   /* sticky frosted header (dark) */
+
+  /* Borders */
+  --border: rgba(148, 163, 184, 0.12);
+  --border-strong: rgba(148, 163, 184, 0.25);
+
+  /* Text */
+  --text-1: #f8fafc;
+  --text-2: #cbd5e1;
+  --text-3: #64748b;
+
+  /* Brand — teal for interactive accents (cooler in dark) */
+  --brand: #00d9c5;
+  --brand-2: #14b8a6;
+
+  /* Severity — slightly brighter for dark backgrounds */
+  --critical: #f87171;
+  --critical-bg: rgba(239, 68, 68, 0.15);
+  --warning: #fbbf24;
+  --warning-bg: rgba(245, 158, 11, 0.15);
+  --success: #34d399;
+  --success-bg: rgba(16, 185, 129, 0.15);
+  --info: #60a5fa;
+  --info-bg: rgba(59, 130, 246, 0.15);
+
+  /* Effects */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.04);
+  --shadow-md: 0 6px 18px rgba(0,0,0,.5), 0 2px 4px rgba(0,0,0,.3);
+  --radius: 12px;
+  --radius-sm: 8px;
+
+  /* Typography */
+  --font-sans: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* Adjustments for dark mode specifically */
+body { color-scheme: dark; }
+
+/* Widget-specific tweaks for dark */
+.w-donut-bg { stroke: rgba(255,255,255,0.06); }
+.w-gauge-track { stroke: rgba(255,255,255,0.06); }
+.w-tl-tooltip, .w-heatmap .cell .tooltip { background: #f8fafc; color: #0a1628; }
+
+/* Severity-tinted KPI cards: lighter overlay in dark */
+.w-kpi.severity-critical {
+  background: linear-gradient(180deg, rgba(239,68,68,0.12) 0%, var(--surface) 60%);
+}
+.w-kpi.severity-warning {
+  background: linear-gradient(180deg, rgba(245,158,11,0.10) 0%, var(--surface) 60%);
+}
+
+/* Live dot in dark — softer pulse */
+.live-dot::before { box-shadow: 0 0 0 4px rgba(16,185,129,0.2); }
+
+/* === theme/base.css === */
+/* Base reset + shell layout */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image: var(--bg-gradient);
+  color: var(--text-1);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+.num { font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* Sticky header — outer container handles sticky + bg, inner constrains width */
+.db-hdr {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--hdr-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.db-hdr-inner {
+  max-width: 1320px; margin: 0 auto;
+  padding: 18px 32px;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 24px;
+}
+.db-hdr-left {
+  display: flex; align-items: center; gap: 14px;
+  min-width: 0;
+}
+.db-brand-logo {
+  width: 57px; height: 57px;
+  flex-shrink: 0;
+  display: block;
+}
+.db-hdr-titles { min-width: 0; }
+.db-hdr-titles h1 {
+  margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.015em;
+}
+.db-hdr-titles .crumb {
+  font-size: 13px; color: var(--text-3); margin-top: 3px; font-weight: 500;
+}
+/* Hide the subtitle row entirely when spec didn't provide one — avoids an
+   empty 16px-ish line under the title that makes some canvases look
+   bottom-heavy vs others. compose.py always renders the div for layout
+   stability; this CSS collapses it when empty. */
+.db-hdr-titles .crumb:empty { display: none; }
+
+/* Identity chips · soft-tinted pills in the right header column.
+   Account = who (info / blue tint), Scope = what is in view (brand / orange).
+   Background uses color-mix to blend the accent into surface — visible but
+   not loud enough to compete with severity pills inside the dashboard body. */
+.db-chips {
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;
+}
+.db-chips[hidden] { display: none; }
+.db-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px; border-radius: 999px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.01em;
+  color: var(--text-1); line-height: 1.2;
+  white-space: nowrap; max-width: 380px;
+  overflow: hidden; text-overflow: ellipsis;
+  cursor: default;
+}
+.db-chip[hidden] { display: none; }
+.db-chip .ic { font-size: 11px; line-height: 1; flex-shrink: 0; opacity: 0.85; }
+/* `.lbl` is hidden by default — account chip just shows the email inline.
+   Scope chip opts back in with a small uppercase tag (e.g., SCOPE Danny /
+   SNAPSHOT 2026-05-19) because the value alone is too ambiguous (a bare
+   "Danny" or "5 orgs" doesn't read as "this is the dashboard scope"). */
+.db-chip .lbl { display: none; }
+.db-chip-scope .lbl {
+  display: inline; font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-3); margin-right: 4px;
+}
+.db-chip-account {
+  background: color-mix(in srgb, var(--info) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--info) 22%, var(--border));
+}
+.db-chip-account .ic { color: var(--info); }
+.db-chip-scope {
+  background: color-mix(in srgb, var(--brand) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--brand) 22%, var(--border));
+}
+.db-chip-scope .ic { color: var(--brand); }
+/* legacy selectors kept for old canvases that haven't been recomposed */
+.db-hdr-left h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.015em; }
+.db-hdr-left .crumb { font-size: 13px; color: var(--text-3); margin-top: 3px; font-weight: 500; }
+/* Right column stacks two rows so the column has visual weight matching
+   the left title+subtitle: actions/status on top, identity chips below.
+   Each row right-aligns so the visual edge stays clean. */
+.db-hdr-right {
+  display: flex; flex-direction: column; align-items: flex-end;
+  gap: 10px; flex-shrink: 0;
+}
+.db-hdr-right-row {
+  display: flex; align-items: center; gap: 14px;
+}
+.live-dot {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--text-2); font-weight: 500;
+}
+.live-dot::before {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success); box-shadow: 0 0 0 4px var(--success-bg);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.updated { font-size: 13px; color: var(--text-3); font-family: var(--font-mono); }
+
+/* Auto-refresh state · small pill next to Live tag.
+   Two modes:
+     .countdown — "next: 4:32" while auto is running (text-3 / surface tint)
+     .paused    — "⚠ auto paused" after 3 consecutive errors (critical) */
+.db-auto-state {
+  font-family: var(--font-mono); font-size: 11px;
+  padding: 3px 9px; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.db-auto-state.countdown {
+  color: var(--text-3);
+  background: color-mix(in srgb, var(--text-3) 8%, var(--surface));
+}
+.db-auto-state.paused {
+  color: var(--critical);
+  background: color-mix(in srgb, var(--critical) 10%, var(--surface));
+}
+.db-auto-state .db-auto-state-close {
+  background: transparent; border: 0; padding: 0; margin-left: 4px;
+  cursor: pointer; color: inherit; font-size: 12px; opacity: 0.6;
+}
+.db-auto-state .db-auto-state-close:hover { opacity: 1; }
+
+/* Refresh status banner — sits between Deploy and Live, showing live recipe
+   state (pending ticker / success summary / error with close button). */
+.db-status {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 12px; border-radius: 999px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.01em;
+  line-height: 1; white-space: nowrap;
+  max-width: 360px; overflow: hidden; text-overflow: ellipsis;
+}
+.db-status[hidden] { display: none; }
+.db-status .ic { font-size: 13px; line-height: 1; }
+.db-status-pending { background: var(--info-bg);     color: var(--info); }
+.db-status-success { background: var(--success-bg);  color: var(--success); }
+.db-status-error   { background: var(--critical-bg); color: var(--critical); }
+.db-status-close {
+  background: transparent; border: 0; color: inherit; cursor: pointer;
+  font-size: 13px; line-height: 1; padding: 0 0 0 6px; opacity: 0.7;
+}
+.db-status-close:hover { opacity: 1; }
+
+/* Main wrap */
+.db-wrap { max-width: 1320px; margin: 0 auto; padding: 28px 32px 80px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--surface); border: 1px solid var(--border-strong);
+  color: var(--text-1); padding: 6px 12px; border-radius: var(--radius-sm);
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: all .15s ease; font-family: inherit;
+}
+.btn:hover { background: var(--surface-2); border-color: var(--brand); color: var(--brand); }
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn:disabled:hover { background: var(--surface); border-color: var(--border-strong); color: var(--text-1); }
+.btn.btn-primary {
+  background: var(--brand); color: white; border-color: var(--brand);
+}
+.btn.btn-primary:hover { background: var(--brand); color: white; border-color: var(--brand); filter: brightness(1.08); }
+.btn.btn-primary:disabled:hover { background: var(--brand); color: white; }
+.btn.spinning .ic { animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.ic { display: inline-block; line-height: 1; }
+.ic.spin { animation: spin 0.7s linear infinite; }
+/* Icon-only button (no label) — gear / cog / similar single-glyph actions */
+.btn.db-btn-icon { padding: 6px 9px; }
+.btn.db-btn-icon .ic { font-size: 14px; }
+
+/* Snapshot tag (replaces live-dot when canvas is a deployed snapshot) */
+.snapshot-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.02em;
+  padding: 4px 10px; border-radius: 999px;
+  background: var(--surface-2); color: var(--text-2);
+  border: 1px solid var(--border);
+}
+
+/* Deploy modal */
+.db-modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; padding: 24px;
+}
+.db-modal-backdrop[hidden] { display: none; }
+.db-modal {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  width: 100%; max-width: 560px; max-height: calc(100vh - 48px);
+  overflow: hidden; display: flex; flex-direction: column;
+}
+.db-modal-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px 14px; border-bottom: 1px solid var(--border);
+}
+.db-modal-hdr h2 {
+  margin: 0; font-size: 17px; font-weight: 700; letter-spacing: -0.01em;
+}
+.db-modal-close {
+  background: transparent; border: 0; font-size: 22px; line-height: 1;
+  color: var(--text-3); cursor: pointer; padding: 4px 8px; border-radius: 6px;
+}
+.db-modal-close:hover { color: var(--text-1); background: var(--surface-2); }
+.db-modal-body { padding: 18px 22px; overflow-y: auto; font-size: 14px; }
+.db-modal-foot {
+  display: flex; gap: 10px; justify-content: flex-end;
+  padding: 14px 22px 18px; border-top: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.db-modal-meta {
+  display: grid; grid-template-columns: 140px 1fr;
+  gap: 6px 12px; margin: 0 0 18px;
+  font-size: 13px;
+}
+.db-modal-meta dt { color: var(--text-3); font-weight: 600; }
+.db-modal-meta dd { margin: 0; color: var(--text-1); }
+.db-modal-pill {
+  display: inline-block; margin-left: 6px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
+  padding: 2px 8px; border-radius: 999px;
+  background: var(--info-bg); color: var(--info);
+}
+.db-modal-section h3 {
+  margin: 0 0 8px; font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-3);
+}
+
+/* Target chooser — Vercel vs GitHub Pages cards at the top of Deploy modal */
+.db-modal-targets {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  margin: 0 0 18px;
+}
+.db-modal-target-pick {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 12px 14px;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.db-modal-target-pick:hover { background: var(--surface-2); }
+.db-modal-target-pick:has(input:checked) {
+  background: color-mix(in srgb, var(--brand) 6%, var(--surface));
+  border-color: color-mix(in srgb, var(--brand) 38%, var(--border));
+}
+.db-modal-target-pick input[type="radio"] {
+  margin-top: 3px; flex-shrink: 0; accent-color: var(--brand);
+}
+/* Vercel / GitHub brand logos as inline SVG, currentColor so they go orange
+   when the card is the active target and stay text-1 otherwise. */
+.db-modal-target-logo {
+  width: 22px; height: 22px; flex-shrink: 0;
+  color: var(--text-1);
+  margin-top: 1px;
+}
+.db-modal-target-pick:has(input:checked) .db-modal-target-logo {
+  color: var(--brand);
+}
+.db-modal-target-body {
+  display: flex; flex-direction: column; gap: 3px;
+  font-size: 13px; line-height: 1.4;
+}
+.db-modal-target-body strong { color: var(--text-1); font-weight: 600; }
+.db-modal-target-sub { color: var(--text-3); font-size: 11px; }
+
+/* GH Pages live URL preview line — monospace, shows owner/repo/path */
+.db-modal-gh-preview {
+  font-family: var(--font-mono, ui-monospace, Menlo, monospace);
+  font-size: 12px;
+  margin-top: 4px;
+  color: var(--text-2);
+}
+.db-modal-gh-preview span[data-bind] {
+  color: var(--brand); font-weight: 600;
+}
+
+/* Hidden sections (toggled by target radio) */
+[data-show-target][hidden] { display: none !important; }
+
+/* Custom URL input: prefix + input + suffix on a single rounded line. The
+   input fills the middle, prefix/suffix are inline pseudo-buttons. */
+.db-modal-url { margin: 0 0 18px; }
+.db-modal-url-label {
+  display: block; font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--text-3); margin-bottom: 8px;
+}
+.db-modal-url-input {
+  display: flex; align-items: stretch;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+  font-family: var(--font-mono, ui-monospace, Menlo, monospace);
+  font-size: 13px;
+  transition: border-color .15s ease;
+}
+.db-modal-url-input:focus-within {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 16%, transparent);
+}
+.db-modal-url-input:has(.invalid) { border-color: var(--critical); }
+.db-modal-url-prefix,
+.db-modal-url-suffix {
+  padding: 8px 10px; color: var(--text-3); user-select: none;
+  background: var(--surface-2); flex-shrink: 0;
+}
+.db-modal-url-name {
+  flex: 1; min-width: 0;
+  border: 0; outline: none;
+  background: var(--surface); color: var(--text-1);
+  padding: 8px 6px;
+  font: inherit;
+}
+.db-modal-url-name.invalid { background: color-mix(in srgb, var(--critical) 6%, var(--surface)); }
+.db-modal-url-help {
+  font-size: 11px; color: var(--text-3); margin-top: 6px; line-height: 1.5;
+}
+
+/* Secret input (Settings modal) — masked password-style field with an eye
+   icon to toggle reveal. Reuses .db-modal-url-input structure so the visual
+   shape matches the deploy URL row right above it in the family. */
+.db-modal-secret { margin: 0 0 18px; }
+.db-modal-secret-label {
+  display: block; font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--text-3); margin-bottom: 8px;
+}
+.db-modal-secret-row {
+  display: flex; align-items: stretch;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+  transition: border-color .15s ease;
+}
+.db-modal-secret-row:focus-within {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 16%, transparent);
+}
+.db-modal-secret-row.invalid { border-color: var(--critical); }
+.db-modal-secret-input {
+  flex: 1; min-width: 0;
+  border: 0; outline: none;
+  background: transparent; color: var(--text-1);
+  padding: 9px 12px;
+  font: inherit; font-family: var(--font-mono, ui-monospace, Menlo, monospace);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+.db-modal-secret-toggle {
+  background: var(--surface-2); border: 0; border-left: 1px solid var(--border);
+  padding: 0 14px; cursor: pointer; color: var(--text-2);
+  font-size: 15px; line-height: 1;
+}
+.db-modal-secret-toggle:hover { color: var(--text-1); background: var(--surface); }
+.db-modal-secret-help {
+  font-size: 11px; color: var(--text-3); margin-top: 6px; line-height: 1.5;
+}
+
+/* Auto-refresh dropdown · same visual family as .db-modal-secret. */
+.db-modal-auto { margin: 0 0 18px; }
+.db-modal-auto-select {
+  width: 100%; padding: 9px 12px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; font: inherit; font-size: 13px;
+  color: var(--text-1); cursor: pointer;
+  transition: border-color .15s ease;
+}
+.db-modal-auto-select:focus {
+  outline: none; border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 16%, transparent);
+}
+
+/* "Currently using: <email>" line inside Settings modal */
+.db-modal-current {
+  margin: 0 0 14px; padding: 10px 12px;
+  background: color-mix(in srgb, var(--info) 6%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--info) 20%, var(--border));
+  border-radius: 8px;
+  font-size: 13px; line-height: 1.5;
+  display: flex; align-items: center; gap: 8px;
+}
+.db-modal-current .ic { font-size: 14px; color: var(--info); }
+.db-modal-current strong { font-weight: 600; }
+
+.db-modal-scan { font-size: 13px; line-height: 1.55; }
+.db-modal-scan p { margin: 0 0 6px; }
+.db-modal-ok { color: var(--success); font-weight: 600; }
+.db-modal-scan-list {
+  list-style: none; padding: 0; margin: 8px 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 6px 12px;
+}
+.db-modal-scan-list li {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: 6px 10px; background: var(--surface-2); border-radius: 6px;
+  font-size: 12px;
+}
+.db-modal-scan-list li strong {
+  font-variant-numeric: tabular-nums; color: var(--text-1); font-size: 14px;
+}
+.db-modal-hint {
+  font-size: 12px; color: var(--text-3); margin: 8px 0 0 !important;
+}
+.db-modal-check {
+  display: flex; gap: 10px; align-items: flex-start;
+  margin: 14px 0 0; font-size: 13px; line-height: 1.5;
+  padding: 10px 12px; border-radius: 8px; background: var(--surface-2);
+  cursor: pointer;
+}
+.db-modal-check input { margin-top: 3px; flex-shrink: 0; }
+
+/* Purpose radio — two options stacked. The selected one gets a brand tint
+   so the user clearly sees which case applies before pressing Deploy. */
+.db-modal-radio {
+  display: flex; gap: 10px; align-items: flex-start;
+  margin: 8px 0 0; padding: 12px 14px;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.db-modal-radio:hover { background: var(--surface-2); }
+.db-modal-radio:has(input:checked) {
+  background: color-mix(in srgb, var(--brand) 5%, var(--surface));
+  border-color: color-mix(in srgb, var(--brand) 35%, var(--border));
+}
+.db-modal-radio input[type="radio"] { margin-top: 3px; flex-shrink: 0; accent-color: var(--brand); }
+.db-modal-radio-body {
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: 13px; line-height: 1.5;
+}
+.db-modal-radio-body strong { color: var(--text-1); font-weight: 600; }
+.db-modal-radio-desc { color: var(--text-3); font-size: 12px; line-height: 1.55; }
+.db-modal-status {
+  margin-top: 14px; padding: 10px 12px; border-radius: 8px;
+  font-size: 13px; line-height: 1.5;
+}
+.db-modal-status[hidden] { display: none; }
+.db-modal-status-info { background: var(--info-bg); color: var(--info); }
+.db-modal-status-error { background: var(--critical-bg); color: var(--critical); }
+.db-modal-status-success { background: var(--success-bg); color: var(--success); }
+.db-modal-success { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.db-modal-success a {
+  color: inherit; font-family: var(--font-mono); font-size: 12px;
+  text-decoration: underline;
+}
+.db-modal-success .btn { padding: 4px 10px; font-size: 11px; }
+
+/* Card surface (shared) */
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px 22px; box-shadow: var(--shadow-sm);
+}
+.card-hdr {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px; margin-bottom: 16px;
+}
+.card-hdr h2 {
+  margin: 0; font-size: 18px; font-weight: 700;
+  letter-spacing: -0.01em; white-space: nowrap;
+}
+.card-hdr .meta {
+  font-size: 12px; color: var(--text-3); font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.04em; text-align: right;
+}
+
+/* Pills (severity) */
+.pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600;
+  padding: 3px 8px; border-radius: 999px;
+  line-height: 1; letter-spacing: 0.02em;
+}
+.pill-crit { background: var(--critical-bg); color: var(--critical); }
+.pill-warn { background: var(--warning-bg); color: var(--warning); }
+.pill-ok { background: var(--success-bg); color: var(--success); }
+.pill-info { background: var(--info-bg); color: var(--info); }
+.pill-muted { background: rgba(15,23,42,0.05); color: var(--text-2); }
+
+/* Chip filters */
+.chips {
+  display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;
+}
+.chip {
+  font-size: 11px; font-weight: 600; padding: 5px 11px;
+  border-radius: 999px; cursor: pointer;
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text-2); transition: all .15s ease;
+  font-family: inherit; letter-spacing: 0.02em;
+}
+.chip:hover { border-color: var(--brand); color: var(--brand); }
+.chip.active { background: var(--brand); color: white; border-color: var(--brand); }
+.chip .count { font-variant-numeric: tabular-nums; margin-left: 4px; opacity: 0.7; font-size: 10px; }
+
+/* Flash highlight (for cross-widget navigation) */
+.flash {
+  animation: flash-glow 1.2s ease-out 2;
+  --flash-color: var(--brand);
+}
+@keyframes flash-glow {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 40%, transparent); }
+  50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--brand) 10%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 0%, transparent); }
+}
+
+/* Empty state */
+.empty-state { text-align: center; padding: 36px 16px; color: var(--text-3); font-size: 14px; }
+
+/* Footer */
+.db-footnote {
+  margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--text-3);
+  display: flex; justify-content: space-between; gap: 16px;
+}
+.db-footnote .skills { font-family: var(--font-mono); }
+
+
+/* === widget line_chart === */
+
+/* line_chart — responsive SVG trend. Crisp at any width via 0–100 viewBox +
+   non-scaling-stroke for vectors, HTML overlay for text / dots / hover. */
+.w-lc-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.w-lc-readout { display: flex; gap: 18px; align-items: baseline; }
+.w-lc-readout .ro { display: flex; flex-direction: column; gap: 2px; }
+.w-lc-readout .ro-val {
+  font-size: 26px; font-weight: 700; line-height: 1;
+  font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+}
+.w-lc-readout .ro-val .unit { font-size: 13px; font-weight: 600; color: var(--text-3); margin-left: 2px; }
+.w-lc-readout .ro-lbl {
+  font-size: 11px; font-weight: 600; color: var(--text-3);
+  text-transform: uppercase; letter-spacing: 0.05em;
+  display: flex; align-items: center; gap: 5px;
+}
+.w-lc-readout .ro-lbl::before {
+  content: ''; width: 9px; height: 9px; border-radius: 2px;
+  background: var(--ro-color, var(--brand)); flex-shrink: 0;
+}
+.w-lc-delta { font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.w-lc-delta.up { color: var(--critical); }
+.w-lc-delta.down { color: var(--success); }
+.w-lc-delta.flat { color: var(--text-3); }
+
+.w-lc-plot { position: relative; height: 230px; margin: 18px 0 4px; }
+/* plot area box (shared by svg-canvas / overlay / hit) — explicit 4-side offsets
+   so the SVG can use width/height:100% reliably (SVG width:auto is unreliable). */
+.w-lc-canvas, .w-lc-overlay, .w-lc-hit { position: absolute; top: 8px; left: 46px; right: 12px; bottom: 24px; }
+.w-lc-svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.w-lc-grid-line { stroke: var(--border); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.w-lc-grid-line.base { stroke: var(--border-strong); }
+.w-lc-thresh { stroke-width: 1.5; stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; opacity: 0.8; }
+.w-lc-line { fill: none; stroke-width: 2.4; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; }
+.w-lc-line.draw { stroke-dasharray: 1200; stroke-dashoffset: 1200; animation: w-lc-draw 1.1s ease-out forwards; }
+@keyframes w-lc-draw { to { stroke-dashoffset: 0; } }
+
+/* HTML overlay layer — labels, dots, hover. Positioned in plot-area %. */
+.w-lc-ylabels, .w-lc-xlabels { position: absolute; }
+.w-lc-ylabels { top: 8px; bottom: 24px; left: 0; width: 42px; }
+.w-lc-ylabels span {
+  position: absolute; right: 6px; transform: translateY(-50%);
+  font-size: 10px; color: var(--text-3); font-variant-numeric: tabular-nums; font-weight: 500;
+}
+.w-lc-xlabels { left: 46px; right: 12px; bottom: 0; height: 20px; }
+.w-lc-xlabels span {
+  position: absolute; transform: translateX(-50%);
+  font-size: 10px; color: var(--text-3); font-family: var(--font-mono); white-space: nowrap;
+}
+.w-lc-overlay { pointer-events: none; }
+.w-lc-dot {
+  position: absolute; width: 9px; height: 9px; border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid var(--surface); box-shadow: 0 1px 3px rgba(15,23,42,0.25);
+}
+.w-lc-dot.pulse::after {
+  content: ''; position: absolute; inset: -3px; border-radius: 50%;
+  background: var(--dot-color, var(--brand)); opacity: 0.3;
+  animation: w-lc-pulse 1.8s ease-out infinite;
+}
+@keyframes w-lc-pulse { 0% { transform: scale(0.6); opacity: 0.4; } 100% { transform: scale(2.4); opacity: 0; } }
+.w-lc-guide { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--border-strong); opacity: 0; transition: opacity .1s; }
+.w-lc-hover-dot {
+  position: absolute; width: 11px; height: 11px; border-radius: 50%;
+  transform: translate(-50%, -50%); border: 2px solid var(--surface);
+  opacity: 0; box-shadow: 0 1px 4px rgba(15,23,42,0.3);
+}
+.w-lc-tip {
+  position: absolute; transform: translate(-50%, calc(-100% - 12px));
+  background: var(--text-1); color: #fff; border-radius: 7px;
+  padding: 7px 10px; font-size: 11px; white-space: nowrap;
+  opacity: 0; transition: opacity .1s; z-index: 5; box-shadow: var(--shadow-md);
+}
+.w-lc-tip .tip-t { font-family: var(--font-mono); font-size: 9.5px; opacity: 0.65; margin-bottom: 3px; }
+.w-lc-tip .tip-row { display: flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+.w-lc-tip .tip-row .sw { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+.w-lc-tip .tip-row b { font-weight: 700; margin-left: auto; padding-left: 12px; }
+.w-lc-hit { cursor: crosshair; }
+.w-lc-legend {
+  display: flex; gap: 16px; flex-wrap: wrap; padding-top: 12px; margin-top: 6px;
+  border-top: 1px solid var(--border); font-size: 12px;
+}
+.w-lc-legend .item { display: flex; align-items: center; gap: 6px; color: var(--text-2); }
+.w-lc-legend .item .sw { width: 11px; height: 3px; border-radius: 2px; flex-shrink: 0; }
+.w-lc-legend .item .sw.dash { background: none !important; border-top: 2px dashed; height: 0; }
+
+/* === widget sparkline === */
+
+/* sparkline — compact list of label · mini-trend · current value · delta.
+   For "N metrics, each with a live micro-trend" (per-device CPU, per-AP clients…). */
+.w-sl-list { display: flex; flex-direction: column; }
+.w-sl-row {
+  display: grid; grid-template-columns: minmax(110px, 1.4fr) 2fr minmax(86px, auto);
+  align-items: center; gap: 14px;
+  padding: 11px 8px; border-radius: var(--radius-sm);
+  transition: background .12s ease;
+}
+.w-sl-row + .w-sl-row { border-top: 1px solid var(--border); }
+.w-sl-row:hover { background: var(--surface-2); }
+.w-sl-label { min-width: 0; }
+.w-sl-label .nm {
+  font-size: 13.5px; font-weight: 600; color: var(--text-1);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.w-sl-label .sub {
+  font-size: 11px; color: var(--text-3); margin-top: 1px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.w-sl-spark { position: relative; height: 34px; }
+.w-sl-spark svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.w-sl-spark .ln { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; }
+.w-sl-spark .dot {
+  position: absolute; width: 7px; height: 7px; border-radius: 50%;
+  transform: translate(-50%, -50%); border: 1.5px solid var(--surface);
+}
+.w-sl-right { display: flex; align-items: baseline; justify-content: flex-end; gap: 8px; }
+.w-sl-val {
+  font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums;
+  color: var(--text-1); letter-spacing: -0.01em;
+}
+.w-sl-val .u { font-size: 11px; font-weight: 600; color: var(--text-3); margin-left: 1px; }
+.w-sl-delta {
+  font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums;
+  display: inline-flex; align-items: center; gap: 2px;
+}
+.w-sl-delta.up { color: var(--critical); }
+.w-sl-delta.down { color: var(--success); }
+.w-sl-delta.flat { color: var(--text-3); }
+/* invert semantics: some metrics are "higher = better" → set config.higher_better */
+.w-sl-delta.good { color: var(--success); }
+.w-sl-delta.bad { color: var(--critical); }
+
+/* === widget session_timeline === */
+
+/* session_timeline — Gantt-style lanes for a client's connection journey.
+   One lane per AP; bars positioned by start time, width = duration. Roaming
+   between APs reads as bars alternating across lanes. Problem sessions
+   (auth_fail / short / steering) carry a severity accent. */
+.w-st-wrap { --st-gutter: 132px; }
+.w-st-axis {
+  position: relative; height: 18px; margin-left: var(--st-gutter);
+  border-bottom: 1px solid var(--border); margin-bottom: 6px;
+}
+.w-st-axis .tick {
+  position: absolute; top: 0; transform: translateX(-50%);
+  font-size: 10px; color: var(--text-3); font-family: var(--font-mono); white-space: nowrap;
+}
+.w-st-axis .tick::after {
+  content: ''; position: absolute; left: 50%; top: 15px; height: 5px; width: 1px; background: var(--border-strong);
+}
+.w-st-lane { display: grid; grid-template-columns: var(--st-gutter) 1fr; align-items: center; min-height: 36px; }
+.w-st-lane + .w-st-lane { border-top: 1px solid var(--border); }
+.w-st-lane-lbl {
+  font-size: 12.5px; font-weight: 600; color: var(--text-2);
+  padding-right: 12px; text-align: right;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  display: flex; align-items: center; justify-content: flex-end; gap: 6px;
+}
+.w-st-lane-lbl .sw { width: 9px; height: 9px; border-radius: 3px; flex-shrink: 0; }
+.w-st-track { position: relative; height: 36px; }
+.w-st-track::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px;
+  background: var(--border); opacity: 0.6;
+}
+.w-st-bar {
+  position: absolute; top: 50%; transform: translateY(-50%); height: 16px;
+  border-radius: 5px; min-width: 4px; cursor: pointer;
+  display: flex; align-items: center; overflow: visible;
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+.w-st-bar:hover { transform: translateY(-50%) scaleY(1.18); box-shadow: var(--shadow-md); filter: brightness(1.04); z-index: 4; }
+.w-st-bar.sev-critical { box-shadow: inset 3px 0 0 var(--critical), inset 0 0 0 1px color-mix(in srgb, var(--critical) 45%, transparent); }
+.w-st-bar.sev-warning { box-shadow: inset 3px 0 0 var(--warning), inset 0 0 0 1px color-mix(in srgb, var(--warning) 45%, transparent); }
+.w-st-bar .flag {
+  position: absolute; top: -5px; right: -4px; width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid var(--surface);
+}
+.w-st-bar .flag.sev-critical { background: var(--critical); }
+.w-st-bar .flag.sev-warning { background: var(--warning); }
+.w-st-now { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--brand); border-radius: 2px; z-index: 3; }
+.w-st-now::after {
+  content: 'now'; position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+  font-size: 9px; font-weight: 700; letter-spacing: .06em; color: var(--brand);
+}
+.w-st-tip {
+  position: fixed; background: var(--text-1); color: #fff; border-radius: 7px;
+  padding: 8px 11px; font-size: 11px; pointer-events: none; opacity: 0; z-index: 50;
+  box-shadow: var(--shadow-md); max-width: 260px; transition: opacity .1s;
+}
+.w-st-tip .tt { font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.w-st-tip .tt .sw { width: 8px; height: 8px; border-radius: 2px; }
+.w-st-tip .tr { display: flex; gap: 10px; justify-content: space-between; font-variant-numeric: tabular-nums; }
+.w-st-tip .tr span:first-child { color: rgba(255,255,255,0.6); }
+.w-st-legend {
+  display: flex; gap: 16px; flex-wrap: wrap; padding-top: 12px; margin-top: 12px;
+  border-top: 1px solid var(--border); font-size: 12px;
+}
+.w-st-legend .item { display: flex; align-items: center; gap: 6px; color: var(--text-2); }
+.w-st-legend .item .sw { width: 14px; height: 8px; border-radius: 3px; flex-shrink: 0; }
+.w-st-legend .item .sw.ring { background: none; box-shadow: inset 3px 0 0 currentColor, inset 0 0 0 1px currentColor; }
+
+</style>
+</head>
+<body>
+
+<header class="db-hdr">
+  <div class="db-hdr-inner">
+    <div class="db-hdr-left">
+      <img class="db-brand-logo" src="data:image/png;base64,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" alt="EnGenius Cloud" />
+      <div class="db-hdr-titles">
+        <h1>新 Widget 預覽 · 趨勢三件組</h1>
+        <div class="crumb">EnGenius Cloud Staging · AP ECW230v3-API-test 即時 subscribe_stat 資料 · session_timeline 為範例 journey</div>
+      </div>
+    </div>
+    <div class="db-hdr-right">
+      <div class="db-hdr-right-row">
+        <button class="btn" id="db-refresh" title="重新抓取所有資料"><span class="ic">↻</span> Refresh</button>
+        <button class="btn" id="db-deploy" title="部署這張 dashboard 到 Vercel"><span class="ic">↗</span> Deploy</button>
+        <button class="btn db-btn-icon" id="db-settings" title="設定"><span class="ic">⚙</span></button>
+        <div class="db-status" id="db-status" hidden></div>
+        <div class="live-dot" id="db-live-dot">Live</div>
+        <div class="db-auto-state" id="db-auto-state" hidden></div>
+        <div class="updated" id="db-updated">—</div>
+      </div>
+      <div class="db-chips" id="db-chips" hidden>
+        <span class="db-chip db-chip-account" id="db-chip-account" hidden></span>
+        <span class="db-chip db-chip-scope" id="db-chip-scope" hidden></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="db-wrap">
+<div data-widget-id="cpu-line" data-widget="line_chart" style="margin-bottom: 20px;"></div>
+<div data-widget-id="metrics-spark" data-widget="sparkline" style="margin-bottom: 20px;"></div>
+<div data-widget-id="journey" data-widget="session_timeline" style="margin-bottom: 20px;"></div>
+
+  <div class="db-footnote">
+    <div>Generated by dashboard-builder · auto-refresh every 5s</div>
+    <div class="skills">subscribe_stat (AP troubleshoot · 真實 staging 資料)</div>
+  </div>
+
+</main>
+
+
+
+<script>
+// Dashboard runtime: polls live-data, dispatches to widgets, exposes event bus.
+// Widgets self-register via Dashboard.register('<name>', {init, render}).
+//
+// Each widget receives in init({el, config, bus, state}) and render(data, ctx).
+// `data` is a map of alias → JSON. `ctx` exposes helpers (flash, scrollTo, etc).
+
+window.Dashboard = (() => {
+  const widgets = new Map(); // name → factory
+  const mounted = [];         // [{name, el, config, state, instance}]
+  const bus = new EventTarget();
+  let currentSpec = null;     // the spec passed to Dashboard.init — used by modal i18n lookup
+  let cachedAccount = null;   // /account response, cached after first fetch
+  let cachedOrgs = null;      // /user-orgs response, cached after first fetch
+  let liveData = {};          // alias → relative path
+  let dataSnapshot = {};      // alias → parsed JSON
+  let pollHandle = null;
+  let snapshotMeta = null;    // truthy when canvas is a deployed snapshot
+
+  // Auto-refresh state — opt-in via Settings modal, persisted per-canvas in
+  // localStorage. setTimeout-based (not setInterval) so manual Refresh can
+  // cleanly reset "next at" without doubled fires. See applyAutoRefresh().
+  let autoRefreshSeconds = 0;     // 0 = off
+  let autoRefreshTimer = null;    // setTimeout handle
+  let countdownTimer = null;      // 1s setInterval for UI ticker
+  let nextRefreshAt = 0;          // ms timestamp
+  let autoRefreshFailCount = 0;
+  let autoRefreshPaused = false;
+  let runRefreshFn = null;        // bound in init() so Settings save can re-trigger
+
+  function register(name, factory) {
+    widgets.set(name, factory);
+  }
+
+  function dispatch(type, detail) {
+    bus.dispatchEvent(new CustomEvent(type, { detail }));
+  }
+
+  function on(type, handler) {
+    bus.addEventListener(type, handler);
+  }
+
+  // Helpers for widgets
+  const ctx = {
+    flash(el) {
+      if (!el) return;
+      el.classList.remove('flash');
+      void el.offsetWidth;
+      el.classList.add('flash');
+    },
+    scrollToWidget(id, opts = {}) {
+      const target = document.querySelector(`[data-widget-id="${id}"]`);
+      if (target) {
+        target.scrollIntoView({behavior:'smooth', block: opts.block || 'start'});
+        setTimeout(() => ctx.flash(target), 300);
+      }
+    },
+    fmtDate(ms) {
+      if (!ms) return 'never';
+      return new Date(ms).toISOString().split('T')[0];
+    },
+    fmtDateTime(ms) {
+      if (!ms) return 'never';
+      return new Date(ms).toISOString().replace('T',' ').slice(0,16);
+    },
+    daysSince(ms) {
+      if (!ms) return Infinity;
+      return Math.floor((Date.now() - ms) / 86400000);
+    },
+    getByPath(obj, path) {
+      if (!path) return obj;
+      // Support: foo.bar.baz, foo.bar.length, foo[0].bar, foo.bar[2]
+      // Tokenize by . and [n] (where n is integer)
+      const tokens = [];
+      path.split('.').forEach(seg => {
+        const m = seg.match(/^([^\[]*)((?:\[\d+\])*)$/);
+        if (!m) return;
+        if (m[1]) tokens.push(m[1]);
+        const idxRe = /\[(\d+)\]/g;
+        let im;
+        while ((im = idxRe.exec(m[2])) !== null) tokens.push(parseInt(im[1], 10));
+      });
+      return tokens.reduce((o, k) => {
+        if (o == null) return undefined;
+        if (k === 'length' && Array.isArray(o)) return o.length;
+        return o[k];
+      }, obj);
+    },
+  };
+
+  async function fetchAll() {
+    const out = {};
+    for (const [alias, path] of Object.entries(liveData)) {
+      try {
+        const r = await fetch(path, { cache: 'no-store' });
+        out[alias] = await r.json();
+      } catch (e) {
+        console.warn('fetch fail', path, e);
+        out[alias] = null;
+      }
+    }
+    dataSnapshot = out;
+    return out;
+  }
+
+  async function tick() {
+    await fetchAll();
+    for (const m of mounted) {
+      try {
+        m.instance.render(dataSnapshot, ctx);
+      } catch (e) {
+        console.error(`[widget ${m.name}] render error`, e);
+      }
+    }
+    // Update header timestamp (skipped in snapshot mode — handled by applySnapshotMode)
+    if (snapshotMeta) return;
+    const t = new Date();
+    const stamp = document.getElementById('db-updated');
+    if (stamp) {
+      stamp.textContent = `updated ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')}`;
+    }
+  }
+
+  // ---------- Snapshot mode ----------
+  // A canvas deployed via /deploy ships a _snapshot.json marker. When present
+  // we know we're rendering a frozen public copy (e.g. on Vercel) where the
+  // /refresh and /deploy endpoints don't exist — hide those buttons and the
+  // "Live" indicator and surface the deployed_at timestamp instead.
+  async function detectSnapshotMode() {
+    try {
+      const r = await fetch('_snapshot.json', { cache: 'no-store' });
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function applySnapshotMode(meta) {
+    const refresh = document.getElementById('db-refresh');
+    const deploy = document.getElementById('db-deploy');
+    const liveDot = document.getElementById('db-live-dot');
+    const updated = document.getElementById('db-updated');
+    if (refresh) refresh.style.display = 'none';
+    if (deploy) deploy.style.display = 'none';
+    if (liveDot) {
+      liveDot.classList.remove('live-dot');
+      liveDot.classList.add('snapshot-tag');
+      liveDot.textContent = meta.redacted ? 'Snapshot · redacted' : 'Snapshot';
+    }
+    if (updated) {
+      const t = new Date(meta.deployed_at);
+      updated.textContent = isNaN(t) ? meta.deployed_at : ctx.fmtDateTime(t.getTime());
+    }
+  }
+
+  // ---------- Identity chips · Account + Scope ----------
+  // serve.py proxies these to api-skills (cached server-side). Snapshot mode
+  // can't reach the local endpoints, so it falls back to baked-in info from
+  // _snapshot.json (TODO: bake account/scope into snapshot at deploy time).
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  async function fetchJson(path) {
+    const r = await fetch(path);
+    if (!r.ok) throw new Error(`${path} → HTTP ${r.status}`);
+    return r.json();
+  }
+
+  function fillAccountChip(account) {
+    const el = document.getElementById('db-chip-account');
+    if (!el || !account) return;
+    // Email is the canonical identifier — display names can repeat or be
+    // missing. Show email inline; full name lives in the hover tooltip for
+    // anyone who wants to confirm who that mailbox belongs to.
+    const email = account.email || '';
+    if (!email) return;
+    const name = [account.given_name, account.family_name]
+      .filter(Boolean).join(' ').trim();
+    el.innerHTML = `<span class="ic">👤</span>${escapeHtml(email)}`;
+    el.hidden = false;
+    el.title = name ? `${name} · ${email}` : email;
+  }
+
+  function fillScopeChip(refresh, orgsPayload) {
+    const el = document.getElementById('db-chip-scope');
+    if (!el) return;
+    // Snapshot canvas (deployed copy): no API access. Prefer baked-in
+    // snapshotMeta.scope (PR follow-up that persists identity into the
+    // snapshot). Fall back to the deployed_at date when older snapshots
+    // don't carry the baked scope.
+    if (snapshotMeta) {
+      const baked = snapshotMeta.scope;
+      if (baked?.name) {
+        el.innerHTML = `<span class="ic">🎯</span><span class="lbl">Scope</span>${escapeHtml(baked.name)}`;
+        el.hidden = false;
+        return;
+      }
+      const date = (snapshotMeta.deployed_at || '').slice(0, 10);
+      const tag = snapshotMeta.redacted ? `${date} · redacted` : date;
+      el.innerHTML = `<span class="ic">📷</span><span class="lbl">Snapshot</span>${escapeHtml(tag)}`;
+      el.hidden = false;
+      return;
+    }
+    if (!refresh || !refresh.scope) {
+      // No refresh declared and no snapshot — nothing to show.
+      return;
+    }
+    const orgs = orgsPayload?.org_candidates || [];
+    const findOrg = (id) => orgs.find(o => o.org_id === id);
+    let value = '';
+    let tooltip = '';
+    const ids = refresh.ids || {};
+    if (refresh.scope === 'all') {
+      const count = orgsPayload?.count ?? orgs.length;
+      value = `${count} org${count === 1 ? '' : 's'}`;
+      tooltip = orgs.map(o => o.name).filter(Boolean).join(', ');
+    } else if (refresh.scope === 'org') {
+      const o = findOrg(ids.org_id);
+      value = o?.name || ids.org_id || '?';
+      tooltip = ids.org_id || '';
+    } else if (refresh.scope === 'hv') {
+      const o = findOrg(ids.org_id);
+      value = `${o?.name || ids.org_id} › HV ${ids.hv_id?.slice(-6) || '?'}`;
+      tooltip = `org_id: ${ids.org_id || '?'}  hv_id: ${ids.hv_id || '?'}`;
+    } else if (refresh.scope === 'network') {
+      const o = findOrg(ids.org_id);
+      value = `${o?.name || ids.org_id} › Net ${ids.network_id?.slice(-6) || '?'}`;
+      tooltip = `org_id: ${ids.org_id || '?'}  network_id: ${ids.network_id || '?'}`;
+    } else {
+      value = refresh.scope;
+    }
+    el.innerHTML = `<span class="ic">🎯</span><span class="lbl">Scope</span>${escapeHtml(value)}`;
+    if (tooltip) el.title = tooltip;
+    el.hidden = false;
+  }
+
+  async function renderIdentityChips(refresh) {
+    const chipsHost = document.getElementById('db-chips');
+    if (!chipsHost) return;
+    // Always show the chip row container once we try; chips inside reveal as
+    // their data arrives, so a 502 on /user-orgs still lets account chip show.
+    chipsHost.hidden = false;
+    const tasks = [];
+    if (!snapshotMeta) {
+      tasks.push(fetchJson('/account').then(d => { cachedAccount = d; fillAccountChip(d); }).catch(e => {
+        console.warn('[chip] /account failed:', e);
+      }));
+      tasks.push(fetchJson('/user-orgs').then(d => { cachedOrgs = d; fillScopeChip(refresh, d); }).catch(e => {
+        console.warn('[chip] /user-orgs failed:', e);
+        fillScopeChip(refresh, null);  // still render scope from ids without name lookup
+      }));
+    } else {
+      // Snapshot canvas: no live endpoints. Read baked identity out of
+      // snapshotMeta — server bakes account.email + scope.{kind,name,ids}
+      // into _snapshot.json at deploy time so the deployed copy keeps the
+      // same chips a live one would show.
+      if (snapshotMeta.account) fillAccountChip(snapshotMeta.account);
+      fillScopeChip(refresh, null);  // fillScopeChip inspects snapshotMeta itself
+    }
+    await Promise.allSettled(tasks);
+    // Hide the host if both chips remained hidden (e.g., snapshot with no scope).
+    const accVisible = !document.getElementById('db-chip-account')?.hidden;
+    const scpVisible = !document.getElementById('db-chip-scope')?.hidden;
+    if (!accVisible && !scpVisible) chipsHost.hidden = true;
+  }
+
+  // ---------- Deploy modal ----------
+  function deriveCanvasDir() {
+    // Pattern: /dashboard-builder/canvases/<canvas-id>/{index.html,}
+    // Returns repo-relative dashboard-builder/canvases/<id>, or null if canvas
+    // isn't served from the expected path (legacy flat canvas / dev server).
+    const path = window.location.pathname;
+    const m = path.match(/^(.*\/canvases\/[^/]+)\/?(index\.html)?$/);
+    if (!m) return null;
+    return m[1].replace(/^\//, '');
+  }
+
+  // ---------- i18n · UI strings ----------
+  // Source of truth lives in dashboard-builder/skill/locales/*.json.
+  // compose.py loads the requested locale (with en fallback) and embeds the
+  // resolved dict as spec.i18n. Runtime + widgets read from there.
+  // Adding a new language = drop a new locales/<lang>.json + zero JS changes.
+  //
+  // EN_FALLBACK kicks in only for legacy canvases composed before i18n was
+  // wired up — those canvases lack spec.i18n. Mirrors locales/en.json so old
+  // canvases keep working until they're recomposed.
+  const EN_FALLBACK = {"deploy":{"title":"Deploy & share this dashboard","close":"Close","target":"Deploy to","target_vercel":"Vercel","target_vercel_sub":"Public URL · 3–30s · needs vercel login","target_ghpages":"GitHub Pages","target_ghpages_sub":"Public URL · 1–2 min · needs gh login + your repo","eta":"Estimated time","eta_vercel":"3–30 seconds","eta_ghpages":"1–2 minutes","url_label":"URL","url_suffix":".vercel.app","url_help":"Type here → URL updates live. Lowercase letters, digits and -, max 100 chars.","url_invalid":"Only lowercase letters, digits and -","repo_label":"GitHub repo","repo_placeholder":"owner/repo","repo_help":"Pick one of your repos (listed via gh CLI), or type owner/repo manually.","repo_invalid":"Format: owner/repo","repo_loading":"Listing repos…","repo_no_gh":"gh CLI not installed / logged in. Try `brew install gh && gh auth login`.","path_label":"Path","path_placeholder":"canvas-my-dashboard","path_help":"Subdirectory on the gh-pages branch of that repo.","path_invalid":"Only letters / digits / . _ -","scan_title":"Privacy check","scan_pending":"Checking…","scan_clean":"✓ No personal or org identifiers found — safe to share.","scan_has":"This dashboard includes identifying data:","purpose_title":"What's this deploy for?","purpose_keep_label":"Just me or my team","purpose_keep_desc":"Keep real org_id / MAC / IP / email values. The URL is public, so only share it with people who already have access to the raw data.","purpose_share_label":"Sharing with others / external demo","purpose_share_desc":"Auto-replace org_id / MAC / IP / email with demo placeholders (org A → demo-org-1; same input → same placeholder, so charts keep working).","cancel":"Cancel","deploy":"Deploy","deploying":"Deploying to Vercel… usually 3–30 seconds.","deploy_failed":"Deploy failed","deployed":"Deployed ✓","copy":"Copy URL","copied":"Copied!","network_err":"Can't reach the local server. Is `bash scripts/serve.sh` running?","not_a_canvas":"Deploy is only available for canvases served from /dashboard-builder/canvases/<id>/.","fields":{"org":"org_id","mac":"MAC","serial":"serial","ip":"IP","email":"email"}},"settings":{"title":"Settings","close":"Close","current_using":"Currently using","no_account":"No account loaded","key_label":"EnGenius API key","key_placeholder":"Paste a key to override the default…","key_help":"Default comes from .env / built-in value. A key entered here lives only in this server process — server restart reverts.","reveal":"Show","hide":"Hide","reset":"Reset to default","save":"Save & apply","saving":"Validating…","invalid":"Wrong shape (8–200 chars, letters/digits/+/=_-)","api_error":"API rejected this key","saved":"✓ Applied","reset_done":"✓ Reset to default","auto_refresh_label":"Auto-refresh","auto_off":"Off","auto_5min":"Every 5 minutes","auto_10min":"Every 10 minutes","auto_15min":"Every 15 minutes","auto_help":"Re-runs Refresh on a timer while the tab is in foreground. Pauses when the tab is hidden or after 3 consecutive errors."},"status":{"refreshing":"refreshing","refreshed":"refreshed","refresh_failed":"refresh failed","refresh_error":"refresh error","files_one":"file","files_many":"files","scope_all":"scope=all","scope_org":"scope=org","scope_hv":"scope=hv","scope_network":"scope=network","next_in":"next: {time}","auto_paused":"⚠ auto paused ({n} errors)"},"table":{"search_placeholder":"Search...","empty_state":"No rows match this filter","page_first":"« First","page_prev":"← Prev","page_next":"Next →","page_last":"Last »","page_indicator":"Page {n} of {total}","title_first":"First page","title_prev":"Previous page","title_next":"Next page","title_last":"Last page","items_count":"{n} items"}};
+
+  function t() {
+    return (currentSpec && currentSpec.i18n) || EN_FALLBACK;
+  }
+  // Interpolate {placeholder} in a string with values from `vars`.
+  function tFmt(str, vars) {
+    if (!str) return '';
+    return String(str).replace(/\{(\w+)\}/g, (_, k) => (vars && k in vars ? vars[k] : `{${k}}`));
+  }
+
+
+  // Vercel project name rules: lowercase alphanumeric + dash, ≤ 100 chars.
+  // We normalise as user types: dash-separate invalid chunks, collapse runs.
+  // Crucially the edge-dash strip ONLY runs on submit — stripping while the
+  // user is mid-edit eats the dash they just typed and prevents them from
+  // continuing (e.g. typing "abc-" → field becomes "abc" → can't add "-d").
+  const PROJECT_NAME_RE = /^[a-z0-9-]+$/;
+  function sanitizeProjectName(raw, { trimEdges = false } = {}) {
+    let s = String(raw || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9-]+/g, '-')
+      .replace(/-+/g, '-')
+      .slice(0, 100);
+    if (trimEdges) s = s.replace(/^-+|-+$/g, '');
+    return s;
+  }
+  function deriveDefaultProjectName(canvasDir) {
+    // canvasDir is dashboard-builder/canvases/<id>/. Use the trailing <id>.
+    const m = String(canvasDir || '').match(/canvases\/([^/]+)\/?$/);
+    return sanitizeProjectName(m ? m[1] : 'canvas-snapshot');
+  }
+
+  // Build the identity payload to bake into _snapshot.json so the deployed
+  // copy keeps Account + Scope chips populated even without live endpoints.
+  // Reads from the in-memory caches populated by renderIdentityChips.
+  function buildSnapshotMetaForDeploy(refresh) {
+    const out = {};
+    if (cachedAccount?.email) {
+      out.account = { email: cachedAccount.email };
+    }
+    if (refresh?.scope) {
+      const orgs = cachedOrgs?.org_candidates || [];
+      const findOrg = (id) => orgs.find(o => o.org_id === id);
+      const ids = refresh.ids || {};
+      let name = '';
+      if (refresh.scope === 'all') {
+        const count = cachedOrgs?.count ?? orgs.length;
+        name = `${count} org${count === 1 ? '' : 's'}`;
+      } else if (refresh.scope === 'org') {
+        name = findOrg(ids.org_id)?.name || ids.org_id || '?';
+      } else if (refresh.scope === 'hv') {
+        name = `${findOrg(ids.org_id)?.name || ids.org_id} › HV ${ids.hv_id?.slice(-6) || '?'}`;
+      } else if (refresh.scope === 'network') {
+        name = `${findOrg(ids.org_id)?.name || ids.org_id} › Net ${ids.network_id?.slice(-6) || '?'}`;
+      }
+      if (name) out.scope = { kind: refresh.scope, name, ids };
+    }
+    return Object.keys(out).length ? out : null;
+  }
+
+  function ensureModal(t) {
+    let host = document.getElementById('db-deploy-modal');
+    if (host) return host;
+    host = document.createElement('div');
+    host.id = 'db-deploy-modal';
+    host.className = 'db-modal-backdrop';
+    host.hidden = true;
+    host.innerHTML = `
+      <div class="db-modal" role="dialog" aria-labelledby="db-modal-title">
+        <div class="db-modal-hdr">
+          <h2 id="db-modal-title">${escapeHtml(t.title)}</h2>
+          <button class="db-modal-close" type="button" aria-label="${escapeHtml(t.close)}">×</button>
+        </div>
+        <div class="db-modal-body">
+          <div class="db-modal-targets" data-section="targets">
+            <label class="db-modal-target-pick">
+              <input type="radio" name="db-modal-target" value="vercel" checked />
+              <svg class="db-modal-target-logo" viewBox="0 0 76 65" aria-hidden="true">
+                <path fill="currentColor" d="M37.5274 0L75.0548 65H0z"/>
+              </svg>
+              <span class="db-modal-target-body">
+                <strong>${escapeHtml(t.target_vercel)}</strong>
+                <span class="db-modal-target-sub">${escapeHtml(t.target_vercel_sub)}</span>
+              </span>
+            </label>
+            <label class="db-modal-target-pick">
+              <input type="radio" name="db-modal-target" value="gh-pages" />
+              <svg class="db-modal-target-logo" viewBox="0 0 16 16" aria-hidden="true">
+                <!-- Invertocat: filled circle + cat cutout. Circle takes
+                     currentColor (brand when selected, text-1 otherwise);
+                     cat uses --surface so it always reads as contrast. -->
+                <circle cx="8" cy="8" r="8" fill="currentColor"/>
+                <path fill="var(--surface)" d="M8 1.5C4.69 1.5 2 4.19 2 7.5c0 2.66 1.72 4.91 4.1 5.7.3.06.41-.13.41-.28v-.99c-1.51.27-1.9-.37-2.02-.71-.07-.17-.36-.71-.61-.85-.21-.11-.51-.39-.01-.4.47 0 .81.43.92.61.54.91 1.4.65 1.75.5.05-.39.21-.65.39-.8-1.34-.15-2.74-.67-2.74-2.96 0-.65.23-1.2.61-1.61-.06-.15-.27-.77.06-1.59 0 0 .51-.16 1.65.61.48-.13.99-.2 1.5-.2.51 0 1.02.07 1.5.2 1.15-.78 1.65-.61 1.65-.61.33.82.12 1.44.06 1.59.38.42.61.96.61 1.61 0 2.3-1.4 2.81-2.73 2.96.22.19.4.55.4 1.11v1.65c0 .16.11.35.41.28a6.011 6.011 0 0 0 4.1-5.7c0-3.31-2.69-6-6-6z"/>
+              </svg>
+              <span class="db-modal-target-body">
+                <strong>${escapeHtml(t.target_ghpages)}</strong>
+                <span class="db-modal-target-sub">${escapeHtml(t.target_ghpages_sub)}</span>
+              </span>
+            </label>
+          </div>
+
+          <dl class="db-modal-meta">
+            <dt>${escapeHtml(t.eta)}</dt><dd id="db-modal-eta">${escapeHtml(t.eta_vercel)}</dd>
+          </dl>
+
+          <!-- Vercel-only fields -->
+          <div class="db-modal-url" data-section="url" data-show-target="vercel">
+            <label class="db-modal-url-label" for="db-modal-name">${escapeHtml(t.url_label)}</label>
+            <div class="db-modal-url-input">
+              <span class="db-modal-url-prefix">https://</span>
+              <input id="db-modal-name" type="text" class="db-modal-url-name" autocomplete="off" spellcheck="false" />
+              <span class="db-modal-url-suffix">${escapeHtml(t.url_suffix)}</span>
+            </div>
+            <div class="db-modal-url-help">${escapeHtml(t.url_help)}</div>
+          </div>
+
+          <!-- GH Pages-only fields -->
+          <div class="db-modal-ghp" data-section="ghpages" data-show-target="gh-pages" hidden>
+            <div class="db-modal-url">
+              <label class="db-modal-url-label" for="db-modal-gh-repo">${escapeHtml(t.repo_label)}</label>
+              <div class="db-modal-url-input">
+                <input id="db-modal-gh-repo" type="text" class="db-modal-url-name"
+                       list="db-modal-gh-repos" placeholder="${escapeHtml(t.repo_placeholder)}"
+                       autocomplete="off" spellcheck="false" />
+              </div>
+              <datalist id="db-modal-gh-repos"></datalist>
+              <div class="db-modal-url-help" id="db-modal-gh-repo-help">${escapeHtml(t.repo_help)}</div>
+            </div>
+            <div class="db-modal-url">
+              <label class="db-modal-url-label" for="db-modal-gh-path">${escapeHtml(t.path_label)}</label>
+              <div class="db-modal-url-input">
+                <input id="db-modal-gh-path" type="text" class="db-modal-url-name"
+                       placeholder="${escapeHtml(t.path_placeholder)}"
+                       autocomplete="off" spellcheck="false" />
+              </div>
+              <div class="db-modal-url-help">${escapeHtml(t.path_help)}</div>
+            </div>
+            <div class="db-modal-url-help db-modal-gh-preview">
+              https://<span data-bind="gh-owner">owner</span>.github.io/<span data-bind="gh-name">repo</span>/<span data-bind="gh-path">path</span>/
+            </div>
+          </div>
+
+          <div class="db-modal-section" data-section="identifiers">
+            <h3>${escapeHtml(t.scan_title)}</h3>
+            <div class="db-modal-scan">${escapeHtml(t.scan_pending)}</div>
+          </div>
+          <div class="db-modal-section" data-section="purpose" data-show="if-identifiers">
+            <h3>${escapeHtml(t.purpose_title)}</h3>
+            <label class="db-modal-radio">
+              <input type="radio" name="db-modal-purpose" value="keep" checked />
+              <span class="db-modal-radio-body">
+                <strong>${escapeHtml(t.purpose_keep_label)}</strong>
+                <span class="db-modal-radio-desc">${escapeHtml(t.purpose_keep_desc)}</span>
+              </span>
+            </label>
+            <label class="db-modal-radio">
+              <input type="radio" name="db-modal-purpose" value="share" />
+              <span class="db-modal-radio-body">
+                <strong>${escapeHtml(t.purpose_share_label)}</strong>
+                <span class="db-modal-radio-desc">${escapeHtml(t.purpose_share_desc)}</span>
+              </span>
+            </label>
+          </div>
+          <div class="db-modal-status" hidden></div>
+        </div>
+        <div class="db-modal-foot">
+          <button class="btn db-modal-cancel" type="button">${escapeHtml(t.cancel)}</button>
+          <button class="btn btn-primary db-modal-go" type="button" disabled>${escapeHtml(t.deploy)} →</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(host);
+
+    const close = () => { host.hidden = true; };
+    host.querySelector('.db-modal-close').addEventListener('click', close);
+    host.querySelector('.db-modal-cancel').addEventListener('click', close);
+    host.addEventListener('click', (e) => { if (e.target === host) close(); });
+    return host;
+  }
+
+  function setModalScan(host, payload, t) {
+    const scanEl = host.querySelector('[data-section="identifiers"] .db-modal-scan');
+    const total = payload.identifiers?.total || 0;
+    const counts = payload.identifiers?.counts || {};
+    const conditional = host.querySelectorAll('[data-show="if-identifiers"]');
+    const go = host.querySelector('.db-modal-go');
+    if (!total) {
+      // No identifiers at all → safe path: skip the purpose chooser.
+      scanEl.innerHTML = `<span class="db-modal-ok">${escapeHtml(t.scan_clean)}</span>`;
+      conditional.forEach(el => el.style.display = 'none');
+      go.disabled = false;
+      return;
+    }
+    const items = Object.entries(counts)
+      .map(([k, n]) => `<li><span>${escapeHtml(t.fields[k] || k)}</span><strong>${n}</strong></li>`)
+      .join('');
+    scanEl.innerHTML = `
+      <p>${escapeHtml(t.scan_has)}</p>
+      <ul class="db-modal-scan-list">${items}</ul>
+    `;
+    conditional.forEach(el => el.style.display = '');
+    // Reset purpose radio to default = keep (no redact). Both options always
+    // selectable; Deploy is enabled unconditionally since the radio has a
+    // default value, and either choice is a valid deploy.
+    const keepRadio = host.querySelector('input[name="db-modal-purpose"][value="keep"]');
+    if (keepRadio) keepRadio.checked = true;
+    go.disabled = false;
+  }
+
+  function setModalStatus(host, msg, kind = 'info') {
+    const el = host.querySelector('.db-modal-status');
+    el.hidden = false;
+    el.className = `db-modal-status db-modal-status-${kind}`;
+    el.innerHTML = msg;
+  }
+
+  // ---------- Settings modal · live API-key swap for demos ----------
+  function ensureSettingsModal(t) {
+    let host = document.getElementById('db-settings-modal');
+    if (host) return host;
+    host = document.createElement('div');
+    host.id = 'db-settings-modal';
+    host.className = 'db-modal-backdrop';
+    host.hidden = true;
+    host.innerHTML = `
+      <div class="db-modal" role="dialog" aria-labelledby="db-settings-title">
+        <div class="db-modal-hdr">
+          <h2 id="db-settings-title">${escapeHtml(t.title)}</h2>
+          <button class="db-modal-close" type="button" aria-label="${escapeHtml(t.close)}">×</button>
+        </div>
+        <div class="db-modal-body">
+          <div class="db-modal-current">
+            <span class="ic">👤</span>
+            <span><span style="color:var(--text-3)">${escapeHtml(t.current_using)}:</span> <strong id="db-settings-current">${escapeHtml(t.no_account)}</strong></span>
+          </div>
+          <div class="db-modal-secret">
+            <label class="db-modal-secret-label" for="db-settings-key">${escapeHtml(t.key_label)}</label>
+            <div class="db-modal-secret-row">
+              <input id="db-settings-key" type="password"
+                     class="db-modal-secret-input"
+                     placeholder="${escapeHtml(t.key_placeholder)}"
+                     autocomplete="off" spellcheck="false" />
+              <button class="db-modal-secret-toggle" type="button" data-toggle="reveal" aria-label="${escapeHtml(t.reveal)}">👁</button>
+            </div>
+            <div class="db-modal-secret-help">${escapeHtml(t.key_help)}</div>
+          </div>
+          <div class="db-modal-auto">
+            <label class="db-modal-secret-label" for="db-settings-auto">${escapeHtml(t.auto_refresh_label || 'Auto-refresh')}</label>
+            <select id="db-settings-auto" class="db-modal-auto-select">
+              <option value="0">${escapeHtml(t.auto_off || 'Off')}</option>
+              <option value="300">${escapeHtml(t.auto_5min || 'Every 5 minutes')}</option>
+              <option value="600">${escapeHtml(t.auto_10min || 'Every 10 minutes')}</option>
+              <option value="900">${escapeHtml(t.auto_15min || 'Every 15 minutes')}</option>
+            </select>
+            <div class="db-modal-secret-help">${escapeHtml(t.auto_help || '')}</div>
+          </div>
+          <div class="db-modal-status" hidden></div>
+        </div>
+        <div class="db-modal-foot">
+          <button class="btn db-settings-reset" type="button">${escapeHtml(t.reset)}</button>
+          <button class="btn btn-primary db-settings-save" type="button">${escapeHtml(t.save)}</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(host);
+
+    const close = () => { host.hidden = true; };
+    host.querySelector('.db-modal-close').addEventListener('click', close);
+    host.addEventListener('click', (e) => { if (e.target === host) close(); });
+
+    // Reveal/hide toggle
+    const input = host.querySelector('#db-settings-key');
+    const toggle = host.querySelector('[data-toggle="reveal"]');
+    toggle.addEventListener('click', () => {
+      const masked = input.type === 'password';
+      input.type = masked ? 'text' : 'password';
+      toggle.setAttribute('aria-label', masked ? t.hide : t.reveal);
+    });
+    return host;
+  }
+
+  async function openSettingsModal() {
+    const t = (currentSpec?.i18n?.settings) || EN_FALLBACK.settings;
+    const host = ensureSettingsModal(t);
+    host.hidden = false;
+    host.querySelector('.db-modal-status').hidden = true;
+    host.querySelector('#db-settings-key').value = '';
+    host.querySelector('.db-modal-secret-row').classList.remove('invalid');
+
+    // Show currently-active account (from the cached /account fetched on init)
+    const currentEl = host.querySelector('#db-settings-current');
+    currentEl.textContent = cachedAccount?.email || t.no_account;
+
+    // Sync auto-refresh dropdown with current state (localStorage or in-memory)
+    const autoSelect = host.querySelector('#db-settings-auto');
+    if (autoSelect) autoSelect.value = String(autoRefreshSeconds || 0);
+
+    // Wire Save (clone-replace to drop any prior handler from earlier open)
+    const oldSave = host.querySelector('.db-settings-save');
+    const save = oldSave.cloneNode(true);
+    oldSave.parentNode.replaceChild(save, oldSave);
+
+    const oldReset = host.querySelector('.db-settings-reset');
+    const reset = oldReset.cloneNode(true);
+    oldReset.parentNode.replaceChild(reset, oldReset);
+
+    const input = host.querySelector('#db-settings-key');
+    const row = host.querySelector('.db-modal-secret-row');
+    const status = host.querySelector('.db-modal-status');
+
+    save.addEventListener('click', async () => {
+      const key = input.value.trim();
+      // Always apply auto-refresh selection on Save (even when API key is empty,
+      // user might just be toggling the auto dropdown).
+      const autoSelectEl = host.querySelector('#db-settings-auto');
+      const autoSeconds = autoSelectEl ? parseInt(autoSelectEl.value, 10) || 0 : 0;
+      const autoChanged = autoSeconds !== autoRefreshSeconds;
+
+      // If user didn't enter a key but only changed auto, accept that.
+      if (!key) {
+        if (autoChanged) {
+          applyAutoRefresh(autoSeconds);
+          status.hidden = false;
+          status.className = 'db-modal-status db-modal-status-success';
+          status.innerHTML = `<span class="ic">✓</span> ${escapeHtml(t.saved)}`;
+          setTimeout(() => { host.hidden = true; }, 800);
+        } else {
+          // Nothing to do — close
+          host.hidden = true;
+        }
+        return;
+      }
+
+      // Client-side shape check first to avoid noisy server round-trip
+      if (!/^[A-Za-z0-9+/=_-]{8,200}$/.test(key)) {
+        row.classList.add('invalid');
+        status.hidden = false;
+        status.className = 'db-modal-status db-modal-status-error';
+        status.textContent = t.invalid;
+        return;
+      }
+      row.classList.remove('invalid');
+      save.disabled = true;
+      save.classList.add('spinning');
+      status.hidden = false;
+      status.className = 'db-modal-status db-modal-status-info';
+      status.innerHTML = `<span class="ic spin">↻</span> ${escapeHtml(t.saving)}`;
+      try {
+        const r = await fetch('/settings/api-key', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ api_key: key }),
+        });
+        const payload = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          status.className = 'db-modal-status db-modal-status-error';
+          status.textContent = `${t.api_error}: ${payload.error || r.statusText}`;
+          save.disabled = false;
+          save.classList.remove('spinning');
+          return;
+        }
+        status.className = 'db-modal-status db-modal-status-success';
+        status.innerHTML = `<span class="ic">✓</span> ${escapeHtml(t.saved)} · ${escapeHtml(payload.email || '')}`;
+        // Bust caches and reload chips so the header reflects the swap
+        cachedAccount = null;
+        cachedOrgs = null;
+        renderIdentityChips(currentSpec?.refresh).catch(() => {});
+        // Also apply auto-refresh selection if it changed
+        if (autoChanged) applyAutoRefresh(autoSeconds);
+        save.classList.remove('spinning');
+        setTimeout(() => { host.hidden = true; }, 1200);
+      } catch (e) {
+        status.className = 'db-modal-status db-modal-status-error';
+        status.textContent = `${t.api_error}: ${e.message}`;
+        save.disabled = false;
+        save.classList.remove('spinning');
+      }
+    });
+
+    reset.addEventListener('click', async () => {
+      reset.disabled = true;
+      try {
+        const r = await fetch('/settings/api-key', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reset: true }),
+        });
+        if (!r.ok) {
+          const err = await r.json().catch(() => ({}));
+          status.hidden = false;
+          status.className = 'db-modal-status db-modal-status-error';
+          status.textContent = err.error || r.statusText;
+          reset.disabled = false;
+          return;
+        }
+        status.hidden = false;
+        status.className = 'db-modal-status db-modal-status-success';
+        status.textContent = t.reset_done;
+        cachedAccount = null;
+        cachedOrgs = null;
+        renderIdentityChips(currentSpec?.refresh).catch(() => {});
+        setTimeout(() => { host.hidden = true; reset.disabled = false; }, 1200);
+      } catch (e) {
+        status.hidden = false;
+        status.className = 'db-modal-status db-modal-status-error';
+        status.textContent = e.message;
+        reset.disabled = false;
+      }
+    });
+  }
+
+  async function openDeployModal() {
+    const t = (currentSpec?.i18n?.deploy) || EN_FALLBACK.deploy;
+    const canvasDir = deriveCanvasDir();
+    if (!canvasDir) {
+      alert(t.not_a_canvas);
+      return;
+    }
+    const host = ensureModal(t);
+    host.hidden = false;
+    host.querySelector('.db-modal-status').hidden = true;
+
+    // Reset Vercel URL input each open: clear any previous edit, seed from
+    // canvas folder name. User can override before pressing Deploy.
+    const nameInput = host.querySelector('#db-modal-name');
+    nameInput.value = deriveDefaultProjectName(canvasDir);
+    nameInput.classList.remove('invalid');
+    nameInput.oninput = () => {
+      const cleaned = sanitizeProjectName(nameInput.value);
+      if (cleaned !== nameInput.value) nameInput.value = cleaned;
+      const help = nameInput.closest('.db-modal-url')?.querySelector('.db-modal-url-help');
+      if (!PROJECT_NAME_RE.test(nameInput.value) || nameInput.value.length === 0) {
+        nameInput.classList.add('invalid');
+        if (help) help.textContent = t.url_invalid;
+      } else {
+        nameInput.classList.remove('invalid');
+        if (help) help.textContent = t.url_help;
+      }
+    };
+
+    // GH Pages fields — repo dropdown + path slug + URL preview. Repo list
+    // is fetched lazily when the target radio first switches to gh-pages.
+    const repoInput = host.querySelector('#db-modal-gh-repo');
+    const pathInput = host.querySelector('#db-modal-gh-path');
+    const repoHelpEl = host.querySelector('#db-modal-gh-repo-help');
+    const ghPreview = {
+      owner: host.querySelector('[data-bind="gh-owner"]'),
+      name:  host.querySelector('[data-bind="gh-name"]'),
+      path:  host.querySelector('[data-bind="gh-path"]'),
+    };
+    const updateGhPreview = () => {
+      const repo = repoInput.value.trim();
+      const [owner, name] = repo.split('/');
+      ghPreview.owner.textContent = owner || 'owner';
+      ghPreview.name.textContent = name || 'repo';
+      ghPreview.path.textContent = (pathInput.value.trim() || 'path');
+    };
+    // Default path slug = same auto-derived value as Vercel
+    pathInput.value = deriveDefaultProjectName(canvasDir);
+    repoInput.value = '';  // user picks each time
+    repoInput.oninput = updateGhPreview;
+    pathInput.oninput = () => {
+      // Sanitize path slug like vercel but allow dot + underscore too
+      const cleaned = String(pathInput.value || '').replace(/[^A-Za-z0-9._-]+/g, '-').slice(0, 100);
+      if (cleaned !== pathInput.value) pathInput.value = cleaned;
+      updateGhPreview();
+    };
+    updateGhPreview();
+
+    // Target radio · switches visible sections + ETA + button state
+    const ghRepoListLoaded = { done: false };
+    async function loadRepoListOnce() {
+      if (ghRepoListLoaded.done) return;
+      ghRepoListLoaded.done = true;
+      repoHelpEl.textContent = t.repo_loading;
+      try {
+        const r = await fetch('/gh/repos');
+        if (!r.ok) {
+          const err = await r.json().catch(() => ({}));
+          repoHelpEl.textContent = `${t.repo_no_gh}: ${err.error || r.statusText}`;
+          return;
+        }
+        const { repos = [] } = await r.json();
+        const datalist = host.querySelector('#db-modal-gh-repos');
+        datalist.innerHTML = repos
+          .map(r => `<option value="${escapeHtml(r.nameWithOwner)}"></option>`)
+          .join('');
+        repoHelpEl.textContent = t.repo_help;
+      } catch (e) {
+        repoHelpEl.textContent = `${t.repo_no_gh}: ${e.message}`;
+      }
+    }
+    const targetRadios = host.querySelectorAll('input[name="db-modal-target"]');
+    const etaEl = host.querySelector('#db-modal-eta');
+    function applyTarget(target) {
+      host.querySelectorAll('[data-show-target]').forEach(el => {
+        el.hidden = el.dataset.showTarget !== target;
+      });
+      etaEl.textContent = target === 'gh-pages' ? t.eta_ghpages : t.eta_vercel;
+      if (target === 'gh-pages') loadRepoListOnce();
+    }
+    targetRadios.forEach(r => r.onchange = () => applyTarget(r.value));
+    applyTarget('vercel');  // default
+
+    // Clone-replace the Deploy button FIRST to drop any click handler from a
+    // previous open. Order matters: setModalScan() binds `ack.onchange` to
+    // toggle this button's `.disabled`, so the bound reference must be the
+    // node that's currently in the DOM. Cloning AFTER setModalScan strands
+    // the binding on a detached node and leaves the visible button frozen
+    // as disabled. See PR #43 follow-up.
+    const oldGo = host.querySelector('.db-modal-go');
+    const go = oldGo.cloneNode(true);
+    oldGo.parentNode.replaceChild(go, oldGo);
+
+    // Fetch identifier scan
+    try {
+      const r = await fetch('/deploy/preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ canvas_dir: canvasDir }),
+      });
+      if (!r.ok) {
+        const err = await r.json().catch(() => ({}));
+        setModalStatus(host, `${t.deploy_failed}: ${escapeHtml(err.error || r.statusText)}`, 'error');
+        return;
+      }
+      const payload = await r.json();
+      setModalScan(host, payload, t);
+    } catch (e) {
+      setModalStatus(host, t.network_err, 'error');
+      return;
+    }
+
+    go.addEventListener('click', async () => {
+      const target = host.querySelector('input[name="db-modal-target"]:checked')?.value || 'vercel';
+      const body = {
+        canvas_dir: canvasDir,
+        target,
+        mode: 'snapshot',
+        snapshot_meta: buildSnapshotMetaForDeploy(currentSpec?.refresh),
+      };
+      // Read purpose radio for redact decision. If no radio exists (no
+      // identifiers found) → no redact needed.
+      const purposeEl = host.querySelector('input[name="db-modal-purpose"]:checked');
+      body.redact = purposeEl?.value === 'share';
+
+      if (target === 'vercel') {
+        // Vercel: trim trailing dashes only at submit (mid-edit would block
+        // the user from typing "abc-def").
+        const finalName = sanitizeProjectName(nameInput.value, { trimEdges: true });
+        nameInput.value = finalName;
+        if (!PROJECT_NAME_RE.test(finalName)) {
+          nameInput.classList.add('invalid');
+          nameInput.focus();
+          return;
+        }
+        body.project_name = finalName;
+      } else {
+        // gh-pages: validate repo (owner/name) + path slug
+        const repo = repoInput.value.trim();
+        const path = pathInput.value.trim();
+        if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,99}\/[A-Za-z0-9._-]{1,100}$/.test(repo)) {
+          repoInput.classList.add('invalid');
+          repoHelpEl.textContent = t.repo_invalid;
+          repoInput.focus();
+          return;
+        }
+        if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,98}$/.test(path)) {
+          pathInput.classList.add('invalid');
+          pathInput.focus();
+          return;
+        }
+        repoInput.classList.remove('invalid');
+        pathInput.classList.remove('invalid');
+        body.github_repo = repo;
+        body.github_path = path;
+      }
+
+      go.disabled = true;
+      go.classList.add('spinning');
+      setModalStatus(host, `<span class="ic spin">↻</span> ${escapeHtml(t.deploying)}`, 'info');
+      try {
+        const r = await fetch('/deploy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const payload = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          setModalStatus(host, `${t.deploy_failed}: ${escapeHtml(payload.error || r.statusText)}`, 'error');
+          go.disabled = false;
+          go.classList.remove('spinning');
+          return;
+        }
+        setModalStatus(host, `
+          <div class="db-modal-success">
+            <strong>${escapeHtml(t.deployed)}</strong>
+            <a href="${escapeHtml(payload.url)}" target="_blank" rel="noopener">${escapeHtml(payload.url)}</a>
+            <button type="button" class="btn db-modal-copy" data-url="${escapeHtml(payload.url)}">${escapeHtml(t.copy)}</button>
+          </div>
+        `, 'success');
+        const copyBtn = host.querySelector('.db-modal-copy');
+        copyBtn?.addEventListener('click', () => {
+          navigator.clipboard.writeText(payload.url).then(() => {
+            copyBtn.textContent = t.copied;
+            setTimeout(() => copyBtn.textContent = t.copy, 1500);
+          });
+        });
+        go.classList.remove('spinning');
+        // Leave Deploy button disabled — this canvas is now deployed.
+      } catch (e) {
+        setModalStatus(host, `${t.deploy_failed}: ${escapeHtml(e.message)}`, 'error');
+        go.disabled = false;
+        go.classList.remove('spinning');
+      }
+    });
+  }
+
+  // ---------- Auto-refresh state machine ----------
+  // Reads localStorage on init, dropdown in Settings modal writes back.
+  // setTimeout-based scheduling so we can cleanly reset "next at" when manual
+  // Refresh fires mid-cycle (vs setInterval which doesn't expose elapsed time).
+  function autoRefreshStorageKey() {
+    return `db-auto-refresh-${deriveCanvasDir() || 'unknown'}`;
+  }
+  function cancelAutoRefresh() {
+    if (autoRefreshTimer) { clearTimeout(autoRefreshTimer); autoRefreshTimer = null; }
+    if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+  }
+  function hideAutoStateEl() {
+    const el = document.getElementById('db-auto-state');
+    if (el) { el.hidden = true; el.className = 'db-auto-state'; el.textContent = ''; }
+  }
+  function showCountdownPill() {
+    const el = document.getElementById('db-auto-state');
+    if (!el) return;
+    if (document.hidden) return;  // don't render countdown while tab hidden
+    const remaining = Math.max(0, nextRefreshAt - Date.now());
+    const m = Math.floor(remaining / 60000);
+    const s = Math.floor((remaining % 60000) / 1000);
+    const time = `${m}:${String(s).padStart(2, '0')}`;
+    const template = ((t().status || {}).next_in) || 'next: {time}';
+    el.hidden = false;
+    el.className = 'db-auto-state countdown';
+    el.textContent = template.replace('{time}', time);
+  }
+  function showAutoPausedPill() {
+    const el = document.getElementById('db-auto-state');
+    if (!el) return;
+    const template = ((t().status || {}).auto_paused) || '⚠ auto paused ({n} errors)';
+    el.hidden = false;
+    el.className = 'db-auto-state paused';
+    el.innerHTML =
+      `${template.replace('{n}', autoRefreshFailCount).replace(/</g,'&lt;')}` +
+      ` <button class="db-auto-state-close" type="button" aria-label="dismiss">✕</button>`;
+    el.querySelector('.db-auto-state-close')?.addEventListener('click', hideAutoStateEl);
+  }
+  function scheduleNextAutoRefresh() {
+    if (autoRefreshTimer) clearTimeout(autoRefreshTimer);
+    const delay = Math.max(0, nextRefreshAt - Date.now());
+    autoRefreshTimer = setTimeout(async () => {
+      // Skip if tab hidden — visibilitychange will reschedule on resume.
+      if (document.hidden) {
+        nextRefreshAt = Date.now() + autoRefreshSeconds * 1000;
+        scheduleNextAutoRefresh();
+        return;
+      }
+      if (!runRefreshFn) {
+        nextRefreshAt = Date.now() + autoRefreshSeconds * 1000;
+        scheduleNextAutoRefresh();
+        return;
+      }
+      try {
+        const ok = await runRefreshFn();
+        if (ok) {
+          autoRefreshFailCount = 0;
+        } else {
+          autoRefreshFailCount++;
+        }
+      } catch (e) {
+        console.warn('Auto-refresh error', e);
+        autoRefreshFailCount++;
+      }
+      if (autoRefreshFailCount >= 3) {
+        autoRefreshPaused = true;
+        cancelAutoRefresh();
+        showAutoPausedPill();
+        return;
+      }
+      nextRefreshAt = Date.now() + autoRefreshSeconds * 1000;
+      scheduleNextAutoRefresh();
+    }, delay);
+  }
+  function applyAutoRefresh(seconds) {
+    cancelAutoRefresh();
+    autoRefreshSeconds = seconds | 0;
+    autoRefreshFailCount = 0;
+    autoRefreshPaused = false;
+    try { localStorage.setItem(autoRefreshStorageKey(), String(autoRefreshSeconds)); } catch {}
+    if (!autoRefreshSeconds || snapshotMeta) {
+      hideAutoStateEl();
+      return;
+    }
+    nextRefreshAt = Date.now() + autoRefreshSeconds * 1000;
+    showCountdownPill();
+    countdownTimer = setInterval(showCountdownPill, 1000);
+    scheduleNextAutoRefresh();
+  }
+  function resetAutoRefreshTimer() {
+    // Called when manual Refresh fires — pushes next auto-refresh from now.
+    if (!autoRefreshSeconds || autoRefreshPaused) return;
+    autoRefreshFailCount = 0;
+    nextRefreshAt = Date.now() + autoRefreshSeconds * 1000;
+    showCountdownPill();
+    scheduleNextAutoRefresh();
+  }
+  function loadAutoRefreshSetting() {
+    try {
+      const v = parseInt(localStorage.getItem(autoRefreshStorageKey()) || '0', 10);
+      if ([300, 600, 900].includes(v)) return v;
+    } catch {}
+    return 0;
+  }
+
+  async function init(spec) {
+    currentSpec = spec;  // captured for i18n lookup (Deploy / Settings / status / widgets)
+    ctx.i18n = (spec && spec.i18n) || {};  // expose to widgets via ctx.i18n.<namespace>.<key>
+    // Guard: Chrome's file:// security policy blocks fetch() of live-data/*.json.
+    // Show friendly instructions instead of an empty 0-filled dashboard.
+    if (window.location.protocol === 'file:') {
+      const banner = document.createElement('div');
+      banner.style.cssText = 'position:fixed;inset:0;background:#fef3c7;color:#92400e;padding:40px;font:14px/1.6 system-ui,sans-serif;z-index:99999;overflow:auto;';
+      banner.innerHTML = '<h1 style="margin:0 0 16px 0;font-size:20px;">⚠️ Dashboard needs to be served over HTTP</h1>' +
+        '<p style="margin:0 0 12px 0;">You opened this file with <code>file://</code> protocol. Chrome blocks <code>fetch()</code> for security, so the dashboard cannot load <code>live-data/*.json</code> and all values appear as 0.</p>' +
+        '<p style="margin:0 0 8px 0;font-weight:600;">Fix · run a local HTTP server from the repo root:</p>' +
+        '<pre style="background:#fde68a;padding:12px;border-radius:6px;margin:0 0 16px 0;font:13px ui-monospace,Menlo,monospace;">bash scripts/serve.sh</pre>' +
+        '<p style="margin:0 0 8px 0;">Then open this canvas via:</p>' +
+        '<pre style="background:#fde68a;padding:12px;border-radius:6px;margin:0;font:13px ui-monospace,Menlo,monospace;">http://localhost:8765/' + window.location.pathname.split('/').slice(-2).join('/') + '</pre>';
+      document.body.prepend(banner);
+      return;
+    }
+
+    // Snapshot mode detection (fetched once, before widgets render — switches
+    // off polling and hides Refresh/Deploy if this canvas was deployed).
+    snapshotMeta = await detectSnapshotMode();
+    if (snapshotMeta) applySnapshotMode(snapshotMeta);
+
+    // Identity chips · Account (who's the API_KEY?) + Scope (what is in view).
+    // Fire-and-forget; failure leaves chips hidden. Fetches in parallel.
+    renderIdentityChips(spec.refresh).catch(e => console.warn('identity chips:', e));
+
+    liveData = spec.live_data || {};
+    // Wire each section
+    for (const section of spec.sections) {
+      // raw_html sections are static; no widget lifecycle needed.
+      if (section.raw_html !== undefined) continue;
+      const factory = widgets.get(section.widget);
+      if (!factory) {
+        console.error('Unknown widget:', section.widget);
+        continue;
+      }
+      const el = document.querySelector(`[data-widget-id="${section.id || section.widget}"]`);
+      if (!el) {
+        console.error('Mount point missing for', section.widget, section.id);
+        continue;
+      }
+      const state = {};
+      const instance = factory({ el, config: section, bus: { dispatch, on }, state, ctx });
+      mounted.push({ name: section.widget, el, config: section, state, instance });
+    }
+
+    // ---------- Refresh status banner ----------
+    // Visible signal of what /refresh actually did. Three states:
+    //   pending  — "↻ refreshing · scope=org · 12s"   (live ticker)
+    //   success  — "✓ refreshed · 4 files · 28s"      (auto-fade 10s)
+    //   error    — "✗ refresh failed: <msg>"          (sticky · close button)
+    // Replaces the old console.error + missing-ctx.toast no-op.
+    const statusEl = document.getElementById('db-status');
+    let statusTicker = null;
+    // setStatus owns transitions BETWEEN states. The pending ticker writes the
+    // DOM directly (not via setStatus) so it doesn't keep clearing itself —
+    // earlier bug: ticker called setStatus('pending', …) every 1s, which ran
+    // clearInterval(statusTicker) and killed the ticker after the first tick.
+    function setStatus(kind, html, opts = {}) {
+      if (!statusEl) return;
+      if (statusTicker) { clearInterval(statusTicker); statusTicker = null; }
+      statusEl.hidden = false;
+      statusEl.className = `db-status db-status-${kind}`;
+      statusEl.innerHTML = html;
+      if (opts.autoHideMs) {
+        setTimeout(() => {
+          if (statusEl.classList.contains(`db-status-${kind}`)) statusEl.hidden = true;
+        }, opts.autoHideMs);
+      }
+    }
+    function clearStatus() {
+      if (statusTicker) { clearInterval(statusTicker); statusTicker = null; }
+      if (statusEl) statusEl.hidden = true;
+    }
+    function startStatusTicker(scopeLabel, t0) {
+      // Direct DOM mutation each second — bypasses setStatus to avoid
+      // self-clearing the interval.
+      const ts = (t().status) || {};
+      const renderPending = () => {
+        if (!statusEl) return;
+        const elapsed = Math.floor((Date.now() - t0) / 1000);
+        statusEl.hidden = false;
+        statusEl.className = 'db-status db-status-pending';
+        statusEl.innerHTML = `<span class="ic spin">↻</span> ${ts.refreshing || 'refreshing'} · ${scopeLabel} · ${elapsed}s`;
+      };
+      renderPending();
+      statusTicker = setInterval(renderPending, 1000);
+    }
+
+    // Refresh button (skipped in snapshot mode)
+    // If spec.refresh is defined, POST /refresh first (server runs the
+    // recipe to re-fetch fresh API data into the canvas's live-data folder),
+    // then tick() re-loads those JSON files.
+    // If spec.refresh is absent, fall back to the old behavior: just re-read
+    // existing JSON files (keeps backward compat for canvases that don't
+    // declare a refresh scope).
+    const refreshConfig = spec.refresh;
+    const btn = document.getElementById('db-refresh');
+
+    // The actual refresh routine — used by both manual click and auto-refresh
+    // timer. Returns true on success (so auto-refresh fail counter can track).
+    async function runRefresh() {
+      let ok = true;
+      btn?.classList.add('spinning');
+      if (btn) btn.disabled = true;
+      const t0 = Date.now();
+      try {
+        if (refreshConfig?.scope) {
+          const baseDir = deriveCanvasDir();
+          if (!baseDir) {
+            console.warn('Cannot derive canvas output_dir from URL; skipping POST', window.location.pathname);
+          } else {
+            const ts = (t().status) || {};
+            const scopeLabel = ts[`scope_${refreshConfig.scope}`] || `scope=${refreshConfig.scope}`;
+            startStatusTicker(scopeLabel, t0);
+            const body = {
+              scope: refreshConfig.scope,
+              ids: refreshConfig.ids || {},
+              output_dir: `${baseDir}/live-data`,
+            };
+            const r = await fetch('/refresh', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(body),
+            });
+            if (!r.ok) {
+              const err = await r.json().catch(() => ({}));
+              const msg = err.error || r.statusText;
+              console.error('Refresh recipe failed:', r.status, msg);
+              setStatus('error', `<span class="ic">✗</span> ${((t().status||{}).refresh_failed) || 'refresh failed'} · ${msg.replace(/</g,'&lt;')} <button class="db-status-close" type="button" aria-label="dismiss">✕</button>`);
+              statusEl?.querySelector('.db-status-close')?.addEventListener('click', clearStatus);
+              ok = false;
+              return ok;
+            }
+            const payload = await r.json().catch(() => ({}));
+            const seconds = Math.max(1, Math.round((payload.elapsed_ms || 0) / 1000));
+            const fileCount = (payload.files_written || []).length;
+            const ts2 = (t().status) || {};
+            const fileLabel = fileCount === 1 ? (ts2.files_one || 'file') : (ts2.files_many || 'files');
+            setStatus('success',
+              `<span class="ic">✓</span> ${ts2.refreshed || 'refreshed'} · ${fileCount} ${fileLabel} · ${seconds}s`,
+              { autoHideMs: 10000 });
+          }
+        }
+        await tick();
+      } catch (e) {
+        console.error('Refresh failed (network/other):', e);
+        setStatus('error', `<span class="ic">✗</span> ${((t().status||{}).refresh_error) || 'refresh error'} · ${String(e.message || e).replace(/</g,'&lt;')} <button class="db-status-close" type="button" aria-label="dismiss">✕</button>`);
+        statusEl?.querySelector('.db-status-close')?.addEventListener('click', clearStatus);
+        ok = false;
+      } finally {
+        if (btn) btn.disabled = false;
+        setTimeout(() => btn?.classList.remove('spinning'), 400);
+      }
+      return ok;
+    }
+
+    // Expose so auto-refresh state machine + Settings modal can call it.
+    runRefreshFn = runRefresh;
+
+    if (btn && !snapshotMeta) btn.addEventListener('click', async () => {
+      await runRefresh();
+      resetAutoRefreshTimer();  // manual click pushes next auto-fire from now
+    });
+
+    // Deploy button (skipped in snapshot mode)
+    const deployBtn = document.getElementById('db-deploy');
+    if (deployBtn && !snapshotMeta) {
+      deployBtn.addEventListener('click', openDeployModal);
+    }
+
+    // Settings button (hidden in snapshot mode — deployed copy can't swap key)
+    const settingsBtn = document.getElementById('db-settings');
+    if (settingsBtn) {
+      if (snapshotMeta) {
+        settingsBtn.style.display = 'none';
+      } else {
+        settingsBtn.addEventListener('click', openSettingsModal);
+      }
+    }
+
+    // First tick + poll loop (no polling in snapshot mode — data is frozen)
+    await tick();
+    if (!snapshotMeta) pollHandle = setInterval(tick, 5000);
+
+    // Auto-refresh: read saved preference (off by default), apply if set.
+    if (!snapshotMeta) {
+      const savedAuto = loadAutoRefreshSetting();
+      if (savedAuto > 0) applyAutoRefresh(savedAuto);
+    }
+
+    // Pause / resume countdown + scheduler on tab visibility change.
+    document.addEventListener('visibilitychange', () => {
+      if (!autoRefreshSeconds || autoRefreshPaused) return;
+      if (document.visibilityState === 'visible') {
+        // Tab returned to foreground. If we missed the scheduled time, push it
+        // out by full interval (don't fire backlog of missed refreshes).
+        if (Date.now() >= nextRefreshAt) {
+          nextRefreshAt = Date.now() + autoRefreshSeconds * 1000;
+        }
+        showCountdownPill();  // resume display immediately
+      }
+    });
+  }
+
+  return { register, init, dispatch, on, ctx };
+})();
+
+</script>
+
+<script>
+/* === widget line_chart === */
+
+Dashboard.register('line_chart', ({ el, config, ctx }) => {
+  el.classList.add('card');
+  el.innerHTML = `
+    <div class="card-hdr">
+      <h2>${config.title || 'Trend'}</h2>
+      <span class="meta" data-bind="meta">—</span>
+    </div>
+    <div class="w-lc-head"><div class="w-lc-readout" data-role="readout"></div></div>
+    <div class="w-lc-plot" data-role="plot">
+      <div class="w-lc-canvas"><svg class="w-lc-svg" viewBox="0 0 100 100" preserveAspectRatio="none" data-role="svg"></svg></div>
+      <div class="w-lc-ylabels" data-role="ylabels"></div>
+      <div class="w-lc-xlabels" data-role="xlabels"></div>
+      <div class="w-lc-overlay" data-role="overlay"></div>
+      <div class="w-lc-hit" data-role="hit"></div>
+    </div>
+    <div class="w-lc-legend" data-role="legend"></div>
+  `;
+  const plot = el.querySelector('[data-role="plot"]');
+  const svg = el.querySelector('[data-role="svg"]');
+  const yEl = el.querySelector('[data-role="ylabels"]');
+  const xEl = el.querySelector('[data-role="xlabels"]');
+  const ovEl = el.querySelector('[data-role="overlay"]');
+  const hitEl = el.querySelector('[data-role="hit"]');
+  const legendEl = el.querySelector('[data-role="legend"]');
+  const metaEl = el.querySelector('[data-bind="meta"]');
+  const readoutEl = el.querySelector('[data-role="readout"]');
+
+  // Series colors map to design tokens (theme-aware, dark cascades automatically).
+  const PALETTE = ['var(--brand)', 'var(--info)', 'var(--success)', 'var(--warning)', 'var(--critical)'];
+  const SEV = { critical: 'var(--critical)', warning: 'var(--warning)', success: 'var(--success)', info: 'var(--info)' };
+
+  const num = (v) => (typeof v === 'number' ? v : parseFloat(v));
+  function toMs(x) {
+    if (typeof x === 'number') return x;
+    const t = Date.parse(x);
+    return isNaN(t) ? null : t;
+  }
+  function fmtTime(ms, span) {
+    const d = new Date(ms);
+    const p = (n) => String(n).padStart(2, '0');
+    if (span != null && span > 2 * 86400000) return `${d.getMonth() + 1}/${d.getDate()}`;
+    if (span != null && span > 3600000) return `${p(d.getHours())}:${p(d.getMinutes())}`;
+    return `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+  }
+  function niceCeil(v) {
+    if (v <= 0) return 1;
+    const mag = Math.pow(10, Math.floor(Math.log10(v)));
+    const n = v / mag;
+    const step = n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10;
+    return step * mag;
+  }
+
+  let lastModel = null;
+
+  function normalize(data) {
+    let m;
+    if (config.compute && window.computeFns[config.compute]) {
+      m = window.computeFns[config.compute](data, config);
+    } else if (config.series) {
+      m = { series: config.series };
+    } else {
+      return null;
+    }
+    if (!m || !Array.isArray(m.series) || m.series.length === 0) return null;
+    m.series = m.series.map((s, i) => {
+      const pts = (s.points || []).map(p => ({
+        x: ('x' in p) ? p.x : p.t,
+        y: num('y' in p ? p.y : p.value),
+      })).filter(p => p.x != null && !isNaN(p.y));
+      // x → ms if it parses as time, else keep index
+      const xms = pts.map(p => toMs(p.x));
+      const useMs = xms.every(v => v != null);
+      pts.forEach((p, j) => { p.xm = useMs ? xms[j] : j; });
+      return { name: s.name || `series ${i + 1}`, color: s.color || (s.severity && SEV[s.severity]) || PALETTE[i % PALETTE.length], points: pts, unit: s.unit || m.unit };
+    }).filter(s => s.points.length > 0);
+    if (m.series.length === 0) return null;
+    m.unit = m.unit || '';
+    return m;
+  }
+
+  function render(data) {
+    const m = lastModel = normalize(data) || lastModel;
+    if (!m) {
+      plot.style.display = 'none';
+      readoutEl.innerHTML = `<div class="empty-state" style="padding:18px 0">${(config.empty_text) || 'No trend data yet'}</div>`;
+      legendEl.innerHTML = ''; metaEl.textContent = '—';
+      return;
+    }
+    plot.style.display = '';
+
+    const allX = m.series.flatMap(s => s.points.map(p => p.xm));
+    const allY = m.series.flatMap(s => s.points.map(p => p.y));
+    const xMin = Math.min(...allX), xMax = Math.max(...allX);
+    const xSpan = (xMax - xMin) || 1;
+    const yMin = config.y_min != null ? config.y_min : Math.min(0, ...allY);
+    const yMaxRaw = config.y_max != null ? config.y_max : Math.max(...allY, ...(config.thresholds || []).map(t => t.value));
+    const yMax = config.y_max != null ? config.y_max : niceCeil(yMaxRaw * 1.15 || 1);
+    const ySpan = (yMax - yMin) || 1;
+    const isTime = m.series.every(s => s.points.every(p => p.xm > 1e11)); // ms timestamps
+
+    const px = (xm) => ((xm - xMin) / xSpan) * 100;
+    const py = (y) => 100 - ((y - yMin) / ySpan) * 100;
+
+    // ---- SVG: gridlines, threshold, area + line per series ----
+    let defs = '', body = '';
+    // horizontal gridlines (5 bands)
+    const STEPS = 4;
+    for (let i = 0; i <= STEPS; i++) {
+      const yy = (i / STEPS) * 100;
+      body += `<line class="w-lc-grid-line${i === STEPS ? ' base' : ''}" x1="0" y1="${yy.toFixed(2)}" x2="100" y2="${yy.toFixed(2)}"/>`;
+    }
+    (config.thresholds || []).forEach(th => {
+      if (th.value < yMin || th.value > yMax) return;
+      const yy = py(th.value);
+      body += `<line class="w-lc-thresh" x1="0" y1="${yy.toFixed(2)}" x2="100" y2="${yy.toFixed(2)}" style="stroke:${SEV[th.severity] || 'var(--warning)'}"/>`;
+    });
+    m.series.forEach((s, si) => {
+      const gid = `w-lc-grad-${si}-${Math.random().toString(36).slice(2, 7)}`;
+      const line = s.points.map((p, j) => `${j ? 'L' : 'M'}${px(p.xm).toFixed(2)},${py(p.y).toFixed(2)}`).join(' ');
+      const area = `${line} L${px(s.points[s.points.length - 1].xm).toFixed(2)},100 L${px(s.points[0].xm).toFixed(2)},100 Z`;
+      defs += `<linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${s.color}" stop-opacity="${si === 0 ? 0.28 : 0.12}"/>
+        <stop offset="100%" stop-color="${s.color}" stop-opacity="0"/></linearGradient>`;
+      body += `<path d="${area}" fill="url(#${gid})"/>`;
+      body += `<path class="w-lc-line draw" d="${line}" style="stroke:${s.color}"/>`;
+      s._gid = gid;
+    });
+    svg.innerHTML = `<defs>${defs}</defs>${body}`;
+
+    // ---- Y labels ----
+    let yh = '';
+    for (let i = 0; i <= STEPS; i++) {
+      const val = yMax - (i / STEPS) * ySpan;
+      yh += `<span style="top:${((i / STEPS) * 100).toFixed(1)}%">${(Math.round(val * 10) / 10)}</span>`;
+    }
+    yEl.innerHTML = yh;
+
+    // ---- X labels (≈5, evenly spaced by the primary series) ----
+    const base = m.series[0].points;
+    const want = Math.min(5, base.length);
+    let xh = '';
+    for (let i = 0; i < want; i++) {
+      const idx = want === 1 ? 0 : Math.round(i * (base.length - 1) / (want - 1));
+      const p = base[idx];
+      const lbl = isTime ? fmtTime(p.xm, xSpan) : p.x;
+      xh += `<span style="left:${px(p.xm).toFixed(1)}%">${lbl}</span>`;
+    }
+    xEl.innerHTML = xh;
+
+    // ---- Overlay: last-point dots (pulse on primary) ----
+    let ov = `<div class="w-lc-guide" data-role="guide"></div>`;
+    m.series.forEach((s, si) => {
+      const last = s.points[s.points.length - 1];
+      ov += `<div class="w-lc-dot${si === 0 ? ' pulse' : ''}" style="left:${px(last.xm).toFixed(2)}%;top:${py(last.y).toFixed(2)}%;background:${s.color};--dot-color:${s.color}"></div>`;
+      ov += `<div class="w-lc-hover-dot" data-hd="${si}" style="background:${s.color}"></div>`;
+    });
+    ov += `<div class="w-lc-tip" data-role="tip"></div>`;
+    ovEl.innerHTML = ov;
+    const guide = ovEl.querySelector('[data-role="guide"]');
+    const tip = ovEl.querySelector('[data-role="tip"]');
+    const hoverDots = [...ovEl.querySelectorAll('[data-hd]')];
+
+    // ---- Readout (current value per series) ----
+    readoutEl.innerHTML = m.series.map((s) => {
+      const pts = s.points, cur = pts[pts.length - 1].y;
+      const prev = pts.length > 1 ? pts[pts.length - 2].y : cur;
+      const d = cur - prev;
+      const dir = d > 0 ? 'up' : d < 0 ? 'down' : 'flat';
+      const arrow = d > 0 ? '▲' : d < 0 ? '▼' : '▬';
+      const deltaHtml = pts.length > 1
+        ? `<span class="w-lc-delta ${dir}">${arrow} ${Math.abs(Math.round(d * 10) / 10)}</span>` : '';
+      return `<div class="ro" style="--ro-color:${s.color}">
+        <div class="ro-val">${Math.round(cur * 10) / 10}<span class="unit">${s.unit || ''}</span> ${deltaHtml}</div>
+        <div class="ro-lbl">${s.name}</div>
+      </div>`;
+    }).join('');
+
+    // ---- Hover interaction ----
+    hitEl.onmousemove = (e) => {
+      const r = hitEl.getBoundingClientRect();
+      const fx = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+      const targetXm = xMin + fx * xSpan;
+      // nearest point on primary series
+      let best = base[0], bi = 0;
+      base.forEach((p, j) => { if (Math.abs(p.xm - targetXm) < Math.abs(best.xm - targetXm)) { best = p; bi = j; } });
+      const lx = px(best.xm);
+      guide.style.left = lx + '%'; guide.style.opacity = '1';
+      const rows = m.series.map((s, si) => {
+        const p = s.points[bi] || s.points[s.points.length - 1];
+        const hd = hoverDots[si];
+        if (hd && p) { hd.style.left = px(p.xm) + '%'; hd.style.top = py(p.y) + '%'; hd.style.opacity = '1'; }
+        return `<div class="tip-row"><span class="sw" style="background:${s.color}"></span>${s.name}<b>${Math.round(p.y * 10) / 10}${s.unit || ''}</b></div>`;
+      }).join('');
+      tip.innerHTML = `<div class="tip-t">${isTime ? fmtTime(best.xm, xSpan) : best.x}</div>${rows}`;
+      tip.style.left = Math.max(8, Math.min(98, lx)) + '%';
+      tip.style.top = py(best.y) + '%';
+      tip.style.opacity = '1';
+    };
+    hitEl.onmouseleave = () => {
+      guide.style.opacity = '0'; tip.style.opacity = '0';
+      hoverDots.forEach(d => d.style.opacity = '0');
+    };
+
+    // ---- Legend + meta ----
+    const legItems = m.series.map(s => `<span class="item"><span class="sw" style="background:${s.color}"></span>${s.name}</span>`);
+    (config.thresholds || []).forEach(th => {
+      legItems.push(`<span class="item"><span class="sw dash" style="border-color:${SEV[th.severity] || 'var(--warning)'}"></span>${th.label || `threshold ${th.value}`}</span>`);
+    });
+    legendEl.innerHTML = legItems.join('');
+    const n = base.length;
+    metaEl.textContent = isTime
+      ? `${n} pts · ${fmtTime(xMin, xSpan)}–${fmtTime(xMax, xSpan)}`
+      : `${n} points`;
+  }
+
+  return { render };
+});
+
+/* === widget sparkline === */
+
+Dashboard.register('sparkline', ({ el, config, ctx }) => {
+  el.classList.add('card');
+  el.innerHTML = `
+    <div class="card-hdr">
+      <h2>${config.title || 'Trends'}</h2>
+      <span class="meta" data-bind="meta">—</span>
+    </div>
+    <div class="w-sl-list" data-role="list"></div>
+  `;
+  const listEl = el.querySelector('[data-role="list"]');
+  const metaEl = el.querySelector('[data-bind="meta"]');
+
+  const SEV = { critical: 'var(--critical)', warning: 'var(--warning)', success: 'var(--success)', info: 'var(--info)' };
+  const num = (v) => (typeof v === 'number' ? v : parseFloat(v));
+
+  function seriesPoints(raw) {
+    return (raw || []).map(p => (typeof p === 'object' ? num('y' in p ? p.y : p.value) : num(p)))
+      .filter(v => !isNaN(v));
+  }
+
+  function spark(points, color) {
+    if (points.length < 2) return { svg: '', dotX: 0, dotY: 50 };
+    const min = Math.min(...points), max = Math.max(...points);
+    const span = (max - min) || 1;
+    const n = points.length;
+    const X = (i) => (i / (n - 1)) * 100;
+    const Y = (v) => 92 - ((v - min) / span) * 84;  // 8% top / bottom padding
+    const line = points.map((v, i) => `${i ? 'L' : 'M'}${X(i).toFixed(2)},${Y(v).toFixed(2)}`).join(' ');
+    const area = `${line} L100,100 L0,100 Z`;
+    const gid = `w-sl-g-${Math.random().toString(36).slice(2, 7)}`;
+    const svg = `<svg viewBox="0 0 100 100" preserveAspectRatio="none">
+      <defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${color}" stop-opacity="0.22"/>
+        <stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
+      <path d="${area}" fill="url(#${gid})"/>
+      <path class="ln" d="${line}" style="stroke:${color}"/>
+    </svg>`;
+    return { svg, dotX: X(n - 1), dotY: Y(points[n - 1]) };
+  }
+
+  function render(data) {
+    let m;
+    if (config.compute && window.computeFns[config.compute]) {
+      m = window.computeFns[config.compute](data, config);
+    } else {
+      m = { items: config.items || [] };
+    }
+    const items = (m && m.items) || [];
+    if (!items.length) {
+      listEl.innerHTML = `<div class="empty-state">${config.empty_text || 'No data'}</div>`;
+      metaEl.textContent = '—';
+      return;
+    }
+    listEl.innerHTML = items.map(it => {
+      const pts = seriesPoints(it.points);
+      const color = it.color || (it.severity && SEV[it.severity]) || 'var(--brand)';
+      const cur = it.value != null ? num(it.value) : (pts.length ? pts[pts.length - 1] : 0);
+      const prev = pts.length > 1 ? pts[pts.length - 2] : cur;
+      const d = cur - prev;
+      const higherBetter = it.higher_better != null ? it.higher_better : config.higher_better;
+      let cls = d > 0 ? 'up' : d < 0 ? 'down' : 'flat';
+      if (higherBetter != null && d !== 0) cls = ((d > 0) === !!higherBetter) ? 'good' : 'bad';
+      const arrow = d > 0 ? '▲' : d < 0 ? '▼' : '▬';
+      const deltaHtml = pts.length > 1 ? `<span class="w-sl-delta ${cls}">${arrow}${Math.abs(Math.round(d * 10) / 10)}</span>` : '';
+      const sp = spark(pts, color);
+      const dot = pts.length >= 2
+        ? `<div class="dot" style="left:${sp.dotX}%;top:${sp.dotY}%;background:${color}"></div>` : '';
+      return `<div class="w-sl-row">
+        <div class="w-sl-label">
+          <div class="nm">${it.label ?? ''}</div>
+          ${it.sublabel ? `<div class="sub">${it.sublabel}</div>` : ''}
+        </div>
+        <div class="w-sl-spark">${sp.svg}${dot}</div>
+        <div class="w-sl-right">
+          <span class="w-sl-val">${Math.round(cur * 10) / 10}<span class="u">${it.unit || ''}</span></span>
+          ${deltaHtml}
+        </div>
+      </div>`;
+    }).join('');
+    metaEl.textContent = `${items.length} ${items.length === 1 ? 'metric' : 'metrics'}`;
+  }
+
+  return { render };
+});
+
+/* === widget session_timeline === */
+
+Dashboard.register('session_timeline', ({ el, config, ctx }) => {
+  el.classList.add('card');
+  el.innerHTML = `
+    <div class="card-hdr">
+      <h2>${config.title || 'Session timeline'}</h2>
+      <span class="meta" data-bind="meta">—</span>
+    </div>
+    <div class="w-st-wrap" data-role="wrap">
+      <div class="w-st-axis" data-role="axis"></div>
+      <div class="w-st-lanes" data-role="lanes"></div>
+    </div>
+    <div class="w-st-legend" data-role="legend"></div>
+  `;
+  const wrap = el.querySelector('[data-role="wrap"]');
+  const axisEl = el.querySelector('[data-role="axis"]');
+  const lanesEl = el.querySelector('[data-role="lanes"]');
+  const legendEl = el.querySelector('[data-role="legend"]');
+  const metaEl = el.querySelector('[data-bind="meta"]');
+
+  const LANE_PALETTE = ['var(--brand)', 'var(--info)', 'var(--success)', '#8b5cf6', '#0ea5e9', '#ec4899'];
+  const num = (v) => (typeof v === 'number' ? v : parseFloat(v));
+  const toMs = (x) => (typeof x === 'number' ? x : Date.parse(x));
+
+  function fmtAxis(ms, span) {
+    const d = new Date(ms); const p = (n) => String(n).padStart(2, '0');
+    if (span > 3 * 86400000) return `${d.getMonth() + 1}/${d.getDate()}`;
+    if (span > 86400000) return `${d.getMonth() + 1}/${d.getDate()} ${p(d.getHours())}h`;
+    return `${p(d.getHours())}:${p(d.getMinutes())}`;
+  }
+  function fmtDur(ms) {
+    if (ms == null || isNaN(ms)) return '—';
+    const s = Math.round(ms / 1000);
+    if (s < 60) return `${s}s`;
+    const m = Math.round(s / 60); if (m < 60) return `${m}m`;
+    const h = Math.floor(m / 60); return `${h}h ${m % 60}m`;
+  }
+  function fmtClock(ms) {
+    const d = new Date(ms); const p = (n) => String(n).padStart(2, '0');
+    return `${d.getMonth() + 1}/${d.getDate()} ${p(d.getHours())}:${p(d.getMinutes())}`;
+  }
+
+  let tip = null;
+  function ensureTip() {
+    if (!tip) { tip = document.createElement('div'); tip.className = 'w-st-tip'; document.body.appendChild(tip); }
+    return tip;
+  }
+
+  function render(data) {
+    let m;
+    if (config.compute && window.computeFns[config.compute]) {
+      m = window.computeFns[config.compute](data, config);
+    } else {
+      m = { sessions: config.sessions || [], lanes: config.lanes };
+    }
+    const sessions = ((m && m.sessions) || []).map(s => {
+      const start = toMs(s.start_ms != null ? s.start_ms : s.start);
+      let end = s.end_ms != null ? toMs(s.end_ms) : (s.end != null ? toMs(s.end) : null);
+      if (end == null && s.duration_ms != null) end = start + num(s.duration_ms);
+      if (end == null || end < start) end = start + 1;
+      return { ...s, _s: start, _e: end, lane: s.lane != null ? String(s.lane) : '—' };
+    }).filter(s => !isNaN(s._s));
+
+    if (!sessions.length) {
+      lanesEl.innerHTML = `<div class="empty-state">${config.empty_text || 'No session history'}</div>`;
+      axisEl.innerHTML = ''; legendEl.innerHTML = ''; metaEl.textContent = '—';
+      return;
+    }
+
+    const tMin = Math.min(...sessions.map(s => s._s));
+    const tMax = Math.max(...sessions.map(s => s._e), ...(m.now_ms ? [toMs(m.now_ms)] : []));
+    const span = (tMax - tMin) || 1;
+    const pad = span * 0.02;
+    const dMin = tMin - pad, dMax = tMax + pad, dSpan = dMax - dMin;
+    const px = (t) => ((t - dMin) / dSpan) * 100;
+
+    // lanes: explicit order, else first-appearance
+    let lanes = m.lanes && m.lanes.length ? m.lanes.slice() : [];
+    if (!lanes.length) sessions.forEach(s => { if (!lanes.includes(s.lane)) lanes.push(s.lane); });
+    const laneColor = {};
+    lanes.forEach((l, i) => { laneColor[l] = LANE_PALETTE[i % LANE_PALETTE.length]; });
+
+    // axis ticks (~5)
+    const TICKS = 5;
+    let ax = '';
+    for (let i = 0; i < TICKS; i++) {
+      const t = dMin + (i / (TICKS - 1)) * dSpan;
+      ax += `<span class="tick" style="left:${px(t).toFixed(1)}%">${fmtAxis(t, span)}</span>`;
+    }
+    axisEl.innerHTML = ax;
+
+    // lanes + bars
+    lanesEl.innerHTML = lanes.map(lane => {
+      const color = laneColor[lane];
+      const bars = sessions.filter(s => s.lane === lane).map((s, i) => {
+        const left = px(s._s), w = Math.max(0.6, px(s._e) - px(s._s));
+        const sev = (s.status === 'critical' || s.status === 'warning') ? s.status : null;
+        const flag = sev ? `<span class="flag sev-${sev}"></span>` : '';
+        const payload = encodeURIComponent(JSON.stringify({
+          lane, label: s.label || lane, start: s._s, end: s._e,
+          dur: s._e - s._s, status: s.status || '', detail: s.detail || s.note || '',
+          band: s.band || '', color
+        }));
+        return `<div class="w-st-bar${sev ? ' sev-' + sev : ''}" data-st="${payload}"
+                  style="left:${left.toFixed(2)}%;width:${w.toFixed(2)}%;background:${color}">${flag}</div>`;
+      }).join('');
+      const nowMark = m.now_ms ? `<div class="w-st-now" style="left:${px(toMs(m.now_ms)).toFixed(2)}%"></div>` : '';
+      return `<div class="w-st-lane">
+        <div class="w-st-lane-lbl"><span class="sw" style="background:${color}"></span>${lane}</div>
+        <div class="w-st-track">${bars}${nowMark}</div>
+      </div>`;
+    }).join('');
+
+    // hover tooltip (fixed-positioned, follows pointer)
+    const tipEl = ensureTip();
+    lanesEl.querySelectorAll('.w-st-bar').forEach(bar => {
+      bar.addEventListener('mousemove', (e) => {
+        const d = JSON.parse(decodeURIComponent(bar.dataset.st));
+        const rows = [
+          `<div class="tr"><span>start</span><span>${fmtClock(d.start)}</span></div>`,
+          `<div class="tr"><span>duration</span><span>${fmtDur(d.dur)}</span></div>`,
+          d.band ? `<div class="tr"><span>band</span><span>${d.band}</span></div>` : '',
+          d.detail ? `<div class="tr"><span>info</span><span>${String(d.detail)}</span></div>` : '',
+        ].join('');
+        tipEl.innerHTML = `<div class="tt"><span class="sw" style="background:${d.color}"></span>${d.label}${d.status ? ` · ${d.status}` : ''}</div>${rows}`;
+        tipEl.style.opacity = '1';
+        const pad = 14;
+        let x = e.clientX + pad, y = e.clientY + pad;
+        const r = tipEl.getBoundingClientRect();
+        if (x + r.width > window.innerWidth - 8) x = e.clientX - r.width - pad;
+        if (y + r.height > window.innerHeight - 8) y = e.clientY - r.height - pad;
+        tipEl.style.left = x + 'px'; tipEl.style.top = y + 'px';
+      });
+      bar.addEventListener('mouseleave', () => { tipEl.style.opacity = '0'; });
+    });
+
+    // legend
+    const leg = lanes.map(l => `<span class="item"><span class="sw" style="background:${laneColor[l]}"></span>${l}</span>`);
+    const hasCrit = sessions.some(s => s.status === 'critical');
+    const hasWarn = sessions.some(s => s.status === 'warning');
+    if (hasCrit) leg.push(`<span class="item" style="color:var(--critical)"><span class="sw ring"></span><span style="color:var(--text-2)">${config.critical_label || 'issue'}</span></span>`);
+    if (hasWarn) leg.push(`<span class="item" style="color:var(--warning)"><span class="sw ring"></span><span style="color:var(--text-2)">${config.warning_label || 'at-risk'}</span></span>`);
+    legendEl.innerHTML = leg.join('');
+
+    metaEl.textContent = `${sessions.length} sessions · ${lanes.length} ${lanes.length === 1 ? 'AP' : 'APs'} · ${fmtDur(span)}`;
+  }
+
+  return { render };
+});
+
+</script>
+
+<script>
+/* === inline compute_fns from spec === */
+/* Initialize window.computeFns if no widget has done so yet (some single-widget
+   dashboards don't include any widget that bootstraps it). */
+window.computeFns = window.computeFns || {};
+
+window.computeFns = window.computeFns || {};
+function _hist(data){ return (data.ap_stat && data.ap_stat.data && data.ap_stat.data.content && data.ap_stat.data.content.history) || []; }
+window.computeFns.apLoadTrend = function(data){
+  const h=_hist(data);
+  return { unit:'%', thresholds:[{value:40,label:'記憶體警戒線 40%',severity:'warning'}], series:[
+    {name:'CPU 使用率', unit:'%', points:h.map(p=>({x:p.timestamp,y:p.cpu_load}))},
+    {name:'記憶體使用', unit:'%', color:'var(--info)', points:h.map(p=>({x:p.timestamp,y:p.memory_usage.used}))}
+  ]};
+};
+window.computeFns.apMetricsSpark = function(data){
+  const h=_hist(data);
+  return { items:[
+    {label:'CPU 使用率', sublabel:'cpu_load', unit:'%', higher_better:false, points:h.map(p=>p.cpu_load)},
+    {label:'記憶體使用', sublabel:'memory used', unit:'%', higher_better:false, points:h.map(p=>p.memory_usage.used)},
+    {label:'Cache / Buffer', sublabel:'memory cache_buffer', unit:'%', points:h.map(p=>p.memory_usage.cache_buffer)}
+  ]};
+};
+window.computeFns.clientJourneySample = function(){
+  const now=Date.now(), M=60000;
+  return { now_ms:now, lanes:['AP-Lobby','AP-Office'], sessions:[
+    {lane:'AP-Lobby', start_ms:now-95*M, duration_ms:40*M, band:'5G', status:'ok'},
+    {lane:'AP-Office', start_ms:now-52*M, duration_ms:18*M, band:'5G', status:'ok'},
+    {lane:'AP-Lobby', start_ms:now-33*M, duration_ms:1.5*M, band:'2.4G', status:'warning', detail:'短連線 90s'},
+    {lane:'AP-Office', start_ms:now-30.5*M, duration_ms:0.5*M, band:'5G', status:'critical', detail:'auth_fail ×2'},
+    {lane:'AP-Lobby', start_ms:now-28*M, duration_ms:26*M, band:'5G', status:'ok'},
+    {lane:'AP-Office', start_ms:now-2*M, duration_ms:2*M, band:'5G', status:'ok', detail:'目前連線中'}
+  ]};
+};
+
+</script>
+
+<script>
+Dashboard.init({"live_data": {"ap_stat": "live-data/ap_stat.json"}, "sections": [{"id": "cpu-line", "widget": "line_chart", "title": "AP 即時負載趨勢（line_chart）", "y_min": 0, "y_max": 50, "compute": "apLoadTrend"}, {"id": "metrics-spark", "widget": "sparkline", "title": "關鍵指標微趨勢（sparkline）", "compute": "apMetricsSpark"}, {"id": "journey", "widget": "session_timeline", "title": "client 連線歷程 · 範例資料（session_timeline）", "compute": "clientJourneySample", "critical_label": "認證失敗", "warning_label": "短連線"}], "locale": "zh-TW", "i18n": {"deploy": {"title": "部署與分享 Dashboard", "close": "關閉", "target": "部署到", "target_vercel": "Vercel", "target_vercel_sub": "公開網址 · 3–30 秒 · 需 vercel login", "target_ghpages": "GitHub Pages", "target_ghpages_sub": "公開網址 · 1–2 分 · 需 gh login + 你的 repo", "eta": "所需時間", "eta_vercel": "3–30 秒", "eta_ghpages": "1–2 分鐘", "url_label": "網址", "url_suffix": ".vercel.app", "url_help": "改這裡 → 網址跟著變。只能小寫英數字跟 -、最多 100 字", "url_invalid": "名字只能用小寫英數字跟 - 號", "repo_label": "GitHub Repo", "repo_placeholder": "owner/repo", "repo_help": "選你的 repo（從 gh CLI 抓）、或自己打 owner/repo", "repo_invalid": "格式：owner/repo", "repo_loading": "撈 repo 列表中…", "repo_no_gh": "gh CLI 沒裝或沒登入。`brew install gh && gh auth login`", "path_label": "路徑", "path_placeholder": "canvas-my-dashboard", "path_help": "在那個 repo 的 gh-pages branch 底下的子資料夾", "path_invalid": "只能用英數字 / 點 / 底線 / dash", "scan_title": "分享前的檢查", "scan_pending": "檢查中…", "scan_clean": "✓ 沒有偵測到可辨識的個人/組織資料、可以放心分享", "scan_has": "這張 dashboard 包含以下可辨識的資料：", "purpose_title": "這次部署的用途", "purpose_keep_label": "我自己或團隊內部用", "purpose_keep_desc": "保留真實的 org_id / MAC / IP / Email。網址會公開、所以只分享給本來就能看到原始資料的人。", "purpose_share_label": "分享給別人 / 對外 demo", "purpose_share_desc": "自動把 org_id / MAC / IP / Email 換成 demo 假資料（org A → demo-org-1、同值整張一致替換、圖表不破）。", "cancel": "取消", "deploy": "部署", "deploying": "正在部署到 Vercel… 通常 3–30 秒。", "deploy_failed": "部署失敗", "deployed": "部署完成 ✓", "copy": "複製網址", "copied": "已複製！", "network_err": "連不到 server。請確認 `bash scripts/serve.sh` 還在跑。", "not_a_canvas": "只有放在 /dashboard-builder/canvases/<id>/ 底下的 dashboard 才能 deploy。", "fields": {"org": "組織 ID", "mac": "MAC 位址", "serial": "序號", "ip": "IP 位址", "email": "Email"}}, "settings": {"title": "設定", "close": "關閉", "current_using": "目前使用", "no_account": "尚未取得帳號", "key_label": "EnGenius API Key", "key_placeholder": "貼上 key 來覆寫預設…", "key_help": "預設來自 .env / 內建值。在這裡輸入只在本次 server process 有效、重啟後自動回到預設。", "reveal": "顯示", "hide": "隱藏", "reset": "恢復預設", "save": "儲存並套用", "saving": "驗證中…", "invalid": "格式不對（8–200 字元、英數字+/=_-）", "api_error": "API 拒絕這把 key", "saved": "✓ 已套用", "reset_done": "✓ 已恢復預設", "auto_refresh_label": "自動更新", "auto_off": "關閉", "auto_5min": "每 5 分鐘", "auto_10min": "每 10 分鐘", "auto_15min": "每 15 分鐘", "auto_help": "頁面在前景時自動跑 Refresh。Tab 切走會暫停、連續 3 次失敗也會自動暫停。"}, "status": {"refreshing": "更新中", "refreshed": "已更新", "refresh_failed": "更新失敗", "refresh_error": "更新錯誤", "files_one": "個檔案", "files_many": "個檔案", "scope_all": "範圍=全部", "scope_org": "範圍=組織", "scope_hv": "範圍=hv", "scope_network": "範圍=網路", "next_in": "下次: {time}", "auto_paused": "⚠ 自動更新已暫停（{n} 次錯誤）"}, "table": {"search_placeholder": "搜尋…", "empty_state": "沒有符合條件的資料", "page_first": "« 第一頁", "page_prev": "← 上一頁", "page_next": "下一頁 →", "page_last": "最後一頁 »", "page_indicator": "第 {n} 頁 / 共 {total} 頁", "title_first": "跳到第一頁", "title_prev": "上一頁", "title_next": "下一頁", "title_last": "跳到最後一頁", "items_count": "共 {n} 筆"}}});
+</script>
+
+</body>
+</html>
