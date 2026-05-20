@@ -1,0 +1,370 @@
+{
+  "topic": "stat",
+  "device": "88:dc:96:96:d9:31",
+  "data": {
+    "content": {
+      "history": [
+        {
+          "timestamp": "2026-05-20T07:30:55.855520+00:00",
+          "cpu_load": 3,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:30:56.855721+00:00",
+          "cpu_load": 4,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:30:57.856367+00:00",
+          "cpu_load": 3,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:30:58.862150+00:00",
+          "cpu_load": 7,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:30:59.859484+00:00",
+          "cpu_load": 12,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:06.863366+00:00",
+          "cpu_load": 6,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:07.861515+00:00",
+          "cpu_load": 3,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:09.019508+00:00",
+          "cpu_load": 8,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:09.864183+00:00",
+          "cpu_load": 4,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:10.863591+00:00",
+          "cpu_load": 4,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:18.037010+00:00",
+          "cpu_load": 3,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:18.868472+00:00",
+          "cpu_load": 4,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:19.877968+00:00",
+          "cpu_load": 2,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:20.864975+00:00",
+          "cpu_load": 4,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:21.864429+00:00",
+          "cpu_load": 3,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:29.094935+00:00",
+          "cpu_load": 6,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:29.931893+00:00",
+          "cpu_load": 3,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:30.912339+00:00",
+          "cpu_load": 3,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:31.876642+00:00",
+          "cpu_load": 3,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:33.086667+00:00",
+          "cpu_load": 3,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:39.923096+00:00",
+          "cpu_load": 2,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:40.878777+00:00",
+          "cpu_load": 3,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:41.876480+00:00",
+          "cpu_load": 3,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:42.878625+00:00",
+          "cpu_load": 7,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:44.125727+00:00",
+          "cpu_load": 12,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:50.883078+00:00",
+          "cpu_load": 3,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:51.878812+00:00",
+          "cpu_load": 3,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:52.875923+00:00",
+          "cpu_load": 2,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:53.879155+00:00",
+          "cpu_load": 6,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:31:54.881405+00:00",
+          "cpu_load": 6,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:32:01.885283+00:00",
+          "cpu_load": 16,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:32:02.881528+00:00",
+          "cpu_load": 4,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:32:03.879568+00:00",
+          "cpu_load": 4,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:32:04.881646+00:00",
+          "cpu_load": 9,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:32:05.880264+00:00",
+          "cpu_load": 7,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:32:12.895544+00:00",
+          "cpu_load": 3,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:32:13.885684+00:00",
+          "cpu_load": 6,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:32:14.888126+00:00",
+          "cpu_load": 7,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:32:15.885329+00:00",
+          "cpu_load": 4,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:32:16.888308+00:00",
+          "cpu_load": 6,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:32:23.894444+00:00",
+          "cpu_load": 7,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:32:25.002230+00:00",
+          "cpu_load": 8,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:32:25.891240+00:00",
+          "cpu_load": 3,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:32:26.890939+00:00",
+          "cpu_load": 4,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        },
+        {
+          "timestamp": "2026-05-20T07:32:27.892382+00:00",
+          "cpu_load": 4,
+          "memory_usage": {
+            "used": 33,
+            "cache_buffer": 8
+          }
+        }
+      ]
+    }
+  }
+}
