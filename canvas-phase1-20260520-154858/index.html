@@ -589,12 +589,19 @@ body {
    SVG edge layer + draggable / collapsible HTML node pills. */
 .w-dt-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 2px 0 6px 2px; flex-wrap: wrap; }
 .w-dt-hint { font-size: 11px; color: var(--text-3); }
+.w-dt-controls { display: inline-flex; gap: 8px; flex-wrap: wrap; }
 .w-dt-modes { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
 .w-dt-modes button { font-family: inherit; font-size: 11px; font-weight: 600; padding: 4px 12px; border: none; background: transparent; color: var(--text-2); cursor: pointer; }
 .w-dt-modes button + button { border-left: 1px solid var(--border); }
 .w-dt-modes button.active { background: var(--brand); color: #fff; }
 .w-dt-wrap { position: relative; overflow: auto; max-height: 600px; padding: 4px 2px 8px; }
 .w-dt-canvas { position: relative; }
+.w-dt-zoom { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+.w-dt-zoomctl { display: inline-flex; align-items: center; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
+.w-dt-zoomctl button { font-family: inherit; font-size: 13px; font-weight: 700; padding: 4px 10px; border: none; background: transparent; color: var(--text-2); cursor: pointer; line-height: 1; }
+.w-dt-zoomctl button.lbl { min-width: 44px; font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-1); }
+.w-dt-zoomctl button + button { border-left: 1px solid var(--border); }
+.w-dt-zoomctl button:hover { background: var(--surface-2); }
 .w-dt-edges { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
 .w-dt-edge { fill: none; stroke: var(--border-strong); stroke-width: 1.5; transition: stroke .1s, stroke-width .1s; }
 .w-dt-edge.down { stroke: var(--critical); stroke-dasharray: 4 3; }
@@ -618,6 +625,7 @@ body {
   display: flex; align-items: center; justify-content: center;
   font-size: 11px; font-weight: 800; color: #fff; background: var(--n-color, var(--brand));
 }
+.w-dt-node .ic svg { width: 17px; height: 17px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .w-dt-node .tx { min-width: 0; display: flex; flex-direction: column; line-height: 1.2; overflow: hidden; pointer-events: none; }
 .w-dt-node .nm { font-size: 12.5px; font-weight: 600; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 104px; }
 .w-dt-node .ml { font-size: 10.5px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 104px; }
@@ -737,7 +745,7 @@ body {
       <img class="db-brand-logo" src="data:image/png;base64,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" alt="EnGenius Cloud" />
       <div class="db-hdr-titles">
         <h1>Phase 1 驗證 · network-statistics skill + device_topology widget</h1>
-        <div class="crumb">Danny org 實體 topology（68 設備·可切換 Org›HV›Network / 實體接線）· Senna AP 過去 24h client 數（真實 falcon history）</div>
+        <div class="crumb">Danny org topology（68 設備 + 即時 client·可切 Org›HV›Network / 實體接線）</div>
       </div>
     </div>
     <div class="db-hdr-right">
@@ -764,7 +772,7 @@ body {
 
   <div class="db-footnote">
     <div>Generated by dashboard-builder · auto-refresh every 5s</div>
-    <div class="skills">get_hierarchy_view_topology_plus + get_network_ap_device_traffic</div>
+    <div class="skills">get_hierarchy_view_topology_plus + get_hierarchy_view_clients_traffic + get_network_ap_device_traffic</div>
   </div>
 
 </main>
@@ -2009,21 +2017,36 @@ Dashboard.register('device_topology', ({ el, config, ctx }) => {
     </div>
     <div class="w-dt-bar">
       <div class="w-dt-hint">${config.hint || '滑過看連線 · 拖曳排列 · 點有子節點的可收合'}</div>
-      <div class="w-dt-modes" data-role="modes">
-        <button data-mode="logical">${config.logical_label || 'Org › HV › Network'}</button>
-        <button data-mode="physical">${config.physical_label || '實體接線'}</button>
+      <div class="w-dt-controls">
+        <div class="w-dt-modes" data-role="modes">
+          <button data-mode="logical">${config.logical_label || 'Org › HV › Network'}</button>
+          <button data-mode="physical">${config.physical_label || '實體接線'}</button>
+        </div>
+        <div class="w-dt-modes" data-role="orient">
+          <button data-orient="horizontal">⇄ 橫</button>
+          <button data-orient="vertical">⇅ 直</button>
+        </div>
+        <div class="w-dt-zoomctl" data-role="zoomctl">
+          <button data-zoom="out" aria-label="zoom out">−</button>
+          <button data-zoom="reset" class="lbl">100%</button>
+          <button data-zoom="in" aria-label="zoom in">+</button>
+        </div>
       </div>
     </div>
     <div class="w-dt-wrap" data-role="wrap">
-      <div class="w-dt-canvas" data-role="canvas"><svg class="w-dt-edges" data-role="edges"></svg></div>
+      <div class="w-dt-canvas" data-role="canvas"><div class="w-dt-zoom" data-role="zoom"><svg class="w-dt-edges" data-role="edges"></svg></div></div>
     </div>
     <div class="w-dt-legend" data-role="legend"></div>
   `;
+  const wrap = el.querySelector('[data-role="wrap"]');
   const canvas = el.querySelector('[data-role="canvas"]');
   const edges = el.querySelector('[data-role="edges"]');
   const legendEl = el.querySelector('[data-role="legend"]');
   const metaEl = el.querySelector('[data-bind="meta"]');
   const modesEl = el.querySelector('[data-role="modes"]');
+  const orientEl = el.querySelector('[data-role="orient"]');
+  const zoomEl = el.querySelector('[data-role="zoom"]');
+  const zoomCtlEl = el.querySelector('[data-role="zoomctl"]');
 
   const TYPE = {
     internet: { c: 'var(--text-3)', g: 'WAN' }, org: { c: '#475569', g: 'ORG' },
@@ -2031,14 +2054,31 @@ Dashboard.register('device_topology', ({ el, config, ctx }) => {
     gateway: { c: 'var(--brand)', g: 'GW' }, switch: { c: 'var(--info)', g: 'SW' },
     switch_extender: { c: '#0ea5e9', g: 'EXT' }, ap: { c: 'var(--success)', g: 'AP' },
     camera: { c: '#8b5cf6', g: 'CAM' }, pdu: { c: 'var(--warning)', g: 'PDU' },
+    client: { c: '#ec4899', g: 'CLI' },
   };
-  const COL_W = 280, ROW_H = 54, NODE_W = 168, NODE_H = 38;
+  // Inline device-type glyphs (line icons; white on the type-colored badge).
+  const ICON = {
+    gateway: '<rect x="3" y="12" width="18" height="6" rx="1.5"/><path d="M7.5 7.5V4l1.8 1.8M7.5 4 5.7 5.8"/><path d="M16.5 7.5V4l-1.8 1.8M16.5 4l1.8 1.8"/><circle cx="6.8" cy="15" r="1" fill="#fff" stroke="none"/>',
+    switch: '<rect x="3" y="8.5" width="18" height="6.5" rx="1.3"/><path d="M6.5 15v3M10 15v3M13.5 15v3M17 15v3"/>',
+    switch_extender: '<rect x="4" y="9" width="16" height="6" rx="1.3"/><path d="M7 15v2.5M11 15v2.5M15 15v2.5"/>',
+    ap: '<path d="M4.5 11a10.5 10.5 0 0 1 15 0"/><path d="M7.5 14a6.3 6.3 0 0 1 9 0"/><circle cx="12" cy="17.4" r="1.4" fill="#fff" stroke="none"/>',
+    camera: '<rect x="3" y="8" width="12" height="8.5" rx="1.6"/><path d="M15 11l5-2.6v7.2L15 13z"/>',
+    pdu: '<rect x="3.5" y="9" width="17" height="6.5" rx="1.3"/><circle cx="8" cy="12.2" r="1" fill="#fff" stroke="none"/><circle cx="12" cy="12.2" r="1" fill="#fff" stroke="none"/><circle cx="16" cy="12.2" r="1" fill="#fff" stroke="none"/>',
+    client: '<rect x="7" y="3.5" width="10" height="17" rx="2"/><path d="M10.5 17.6h3"/>',
+    internet: '<path d="M6.6 18a3.8 3.8 0 0 1 .4-7.6 5 5 0 0 1 9.5-1A3.6 3.6 0 0 1 17 18z"/>',
+    org: '<rect x="5" y="4" width="14" height="16" rx="1.2"/><path d="M9 8h1.5M13.5 8H15M9 12h1.5M13.5 12H15M11 20v-3h2v3"/>',
+    hv: '<path d="M12 4l8 3.8-8 3.8-8-3.8z"/><path d="M4.5 12.2 12 15.8l7.5-3.6"/>',
+    network: '<circle cx="12" cy="6" r="2.2"/><circle cx="6.6" cy="18" r="2.2"/><circle cx="17.4" cy="18" r="2.2"/><path d="M12 8.2v3.6M12 11.8H6.6V16M12 11.8h5.4V16"/>',
+  };
+  const NODE_W = 168, NODE_H = 38;
+  let orientation = config.orientation === 'vertical' ? 'vertical' : 'horizontal';
 
   let tip = null;
   const ensureTip = () => (tip || (tip = document.body.appendChild(Object.assign(document.createElement('div'), { className: 'w-dt-tip' }))));
   let savedPos = null, userMoved = false, dragging = null;
   let mode = config.mode || 'logical';
-  let logicalInited = false;
+  let logicalInited = false, didScroll = false;
+  let zoom = 1, lastMaxX = 0, lastMaxY = 0;
   const collapsed = new Set();
 
   const deviceDesc = (n) => n._children.reduce((s, c) => s + (c._group ? 0 : 1) + deviceDesc(c), 0);
@@ -2060,7 +2100,8 @@ Dashboard.register('device_topology', ({ el, config, ctx }) => {
       byId.set('__root', root);
       const nameFor = (id, k) => (labels && labels[id]) || `${k} ·${String(id || '?').slice(-6)}`;
       const hvN = new Map(), netN = new Map();
-      nodes.forEach(n => {
+      // group infra DEVICES by HV → Network; clients attach under their AP afterwards
+      nodes.filter(n => n.type !== 'client').forEach(n => {
         const hv = n.hierarchy_view_id || 'unknown', net = n.network_id || 'unknown';
         let h = hvN.get(hv);
         if (!h) { h = { id: '__hv_' + hv, type: 'hv', name: nameFor(hv, 'HV'), _children: [], _synthetic: true, _group: true }; hvN.set(hv, h); byId.set(h.id, h); root._children.push(h); }
@@ -2068,6 +2109,10 @@ Dashboard.register('device_topology', ({ el, config, ctx }) => {
         let g = netN.get(nk);
         if (!g) { g = { id: '__net_' + nk, type: 'network', name: nameFor(net, 'Net'), _children: [], _synthetic: true, _group: true }; netN.set(nk, g); byId.set(g.id, g); h._children.push(g); }
         g._children.push(byId.get(n.id));
+      });
+      nodes.filter(n => n.type === 'client').forEach(c => {
+        const ap = c.parent && byId.get(c.parent.id);
+        if (ap && !ap._synthetic) ap._children.push(byId.get(c.id));
       });
     }
     return { root, byId };
@@ -2081,29 +2126,54 @@ Dashboard.register('device_topology', ({ el, config, ctx }) => {
     } else nodes = config.nodes;
 
     // mode buttons
-    [...modesEl.children].forEach(b => { b.classList.toggle('active', b.dataset.mode === mode); b.onclick = () => { if (mode === b.dataset.mode) return; mode = b.dataset.mode; savedPos = null; collapsed.clear(); logicalInited = false; render(data); }; });
+    [...modesEl.children].forEach(b => { b.classList.toggle('active', b.dataset.mode === mode); b.onclick = () => { if (mode === b.dataset.mode) return; mode = b.dataset.mode; savedPos = null; collapsed.clear(); logicalInited = false; didScroll = false; render(data); }; });
+    [...orientEl.children].forEach(b => { b.classList.toggle('active', b.dataset.orient === orientation); b.onclick = () => { if (orientation === b.dataset.orient) return; orientation = b.dataset.orient; savedPos = null; didScroll = false; render(data); }; });
+    [...zoomCtlEl.children].forEach(b => { b.onclick = () => {
+      const z = b.dataset.zoom, old = zoom;
+      zoom = z === 'in' ? Math.min(2.5, zoom * 1.25) : z === 'out' ? Math.max(0.4, zoom / 1.25) : 1;
+      const cx = (wrap.scrollLeft + wrap.clientWidth / 2) / old, cy = (wrap.scrollTop + wrap.clientHeight / 2) / old;
+      applyZoom();
+      wrap.scrollLeft = Math.max(0, cx * zoom - wrap.clientWidth / 2);
+      wrap.scrollTop = Math.max(0, cy * zoom - wrap.clientHeight / 2);
+    }; });
 
     if (!Array.isArray(nodes) || nodes.length === 0) {
-      canvas.querySelectorAll('.w-dt-node, .empty-state').forEach(n => n.remove());
-      edges.innerHTML = ''; canvas.insertAdjacentHTML('beforeend', `<div class="empty-state">${config.empty_text || 'No topology data'}</div>`);
+      zoomEl.querySelectorAll('.w-dt-node, .empty-state').forEach(n => n.remove());
+      edges.innerHTML = ''; zoomEl.insertAdjacentHTML('beforeend', `<div class="empty-state">${config.empty_text || 'No topology data'}</div>`);
       legendEl.innerHTML = ''; metaEl.textContent = '—'; return;
     }
 
     const { root, byId } = buildTree(nodes, labels);
-    // logical view: start with Network groups collapsed → clean Org→HV→Network overview
+    // logical view default: collapse Network groups for a clean Org→HV→Network
+    // overview, but keep ONE HV's networks expanded so real devices show on load.
     if (mode === 'logical' && !logicalInited) {
-      for (const id of byId.keys()) if (id.startsWith('__net_')) collapsed.add(id);
+      const hvs = root._children;
+      const keepHv = (config.expanded_hv && hvs.find(h => h.name === config.expanded_hv)) || hvs[0];
+      const keep = new Set((keepHv ? keepHv._children : []).map(n => n.id));
+      for (const id of byId.keys()) if (id.startsWith('__net_') && !keep.has(id)) collapsed.add(id);
       logicalInited = true;
     }
 
+    const DEPTH_GAP = orientation === 'vertical' ? 112 : 280;  // root→leaf axis
+    const SIB_GAP = orientation === 'vertical' ? 190 : 54;     // sibling spacing axis
     let leaf = 0; const visible = [];
     (function place(node, depth) {
-      node._x = depth * COL_W; visible.push(node);
+      node._depth = depth; visible.push(node);
       const kids = collapsed.has(node.id) ? [] : node._children;
       node._vis = kids;
-      if (!kids.length) { node._y = leaf * ROW_H; leaf++; }
-      else { kids.forEach(c => place(c, depth + 1)); node._y = (kids[0]._y + kids[kids.length - 1]._y) / 2; }
+      if (!kids.length) { node._sib = leaf * SIB_GAP; leaf++; }
+      else { kids.forEach(c => place(c, depth + 1)); node._sib = (kids[0]._sib + kids[kids.length - 1]._sib) / 2; }
     })(root, 0);
+    // map depth/sibling positions onto x/y per orientation
+    visible.forEach(n => {
+      const d = n._depth * DEPTH_GAP;
+      if (orientation === 'vertical') { n._x = n._sib; n._y = d; }
+      else { n._x = d; n._y = n._sib; }
+    });
+    // keep the root visually centered on the sibling axis over the whole tree
+    // (left-center when horizontal, top-center when vertical)
+    if (orientation === 'vertical') { const xs = visible.map(n => n._x); root._x = (Math.min(...xs) + Math.max(...xs)) / 2; }
+    else { const ys = visible.map(n => n._y); root._y = (Math.min(...ys) + Math.max(...ys)) / 2; }
 
     const pos = new Map();
     visible.forEach(n => { const s = savedPos && savedPos.get(n.id); pos.set(n.id, s ? { ...s } : { x: n._x, y: n._y }); });
@@ -2117,16 +2187,31 @@ Dashboard.register('device_topology', ({ el, config, ctx }) => {
     const adj = new Map();
     edgeList.forEach(e => { (adj.get(e.from) || adj.set(e.from, new Set()).get(e.from)).add(e.to); (adj.get(e.to) || adj.set(e.to, new Set()).get(e.to)).add(e.from); });
 
+    const applyZoom = () => {
+      zoomEl.style.transform = `scale(${zoom})`;
+      canvas.style.width = (lastMaxX * zoom) + 'px'; canvas.style.height = (lastMaxY * zoom) + 'px';
+      const lbl = zoomCtlEl && zoomCtlEl.querySelector('[data-zoom="reset"]'); if (lbl) lbl.textContent = Math.round(zoom * 100) + '%';
+    };
     const sizeCanvas = () => {
       const xs = [...pos.values()];
       const maxX = Math.max(...xs.map(p => p.x)) + NODE_W + 24, maxY = Math.max(...xs.map(p => p.y)) + NODE_H + 16;
-      canvas.style.width = maxX + 'px'; canvas.style.height = maxY + 'px';
+      lastMaxX = maxX; lastMaxY = maxY;
+      zoomEl.style.width = maxX + 'px'; zoomEl.style.height = maxY + 'px';
       edges.setAttribute('width', maxX); edges.setAttribute('height', maxY); edges.setAttribute('viewBox', `0 0 ${maxX} ${maxY}`);
+      applyZoom();
     };
-    const edgeD = (e) => { const a = pos.get(e.from), b = pos.get(e.to); const x1 = a.x + NODE_W, y1 = a.y + NODE_H / 2, x2 = b.x, y2 = b.y + NODE_H / 2, mx = x1 + (x2 - x1) / 2; return `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`; };
+    const edgeD = (e) => {
+      const a = pos.get(e.from), b = pos.get(e.to);
+      if (orientation === 'vertical') {
+        const x1 = a.x + NODE_W / 2, y1 = a.y + NODE_H, x2 = b.x + NODE_W / 2, y2 = b.y, my = y1 + (y2 - y1) / 2;
+        return `M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`;
+      }
+      const x1 = a.x + NODE_W, y1 = a.y + NODE_H / 2, x2 = b.x, y2 = b.y + NODE_H / 2, mx = x1 + (x2 - x1) / 2;
+      return `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`;
+    };
     const drawEdges = (hlId) => { edges.innerHTML = edgeList.map(e => `<path class="w-dt-edge${e.down ? ' down' : ''}${hlId && (e.from === hlId || e.to === hlId) ? ' hl' : ''}" d="${edgeD(e)}"/>`).join(''); };
 
-    canvas.querySelectorAll('.w-dt-node, .empty-state').forEach(n => n.remove());
+    zoomEl.querySelectorAll('.w-dt-node, .empty-state').forEach(n => n.remove());
     sizeCanvas(); drawEdges();
 
     const divs = new Map();
@@ -2138,7 +2223,7 @@ Dashboard.register('device_topology', ({ el, config, ctx }) => {
       div.style.cssText = `left:${p.x}px;top:${p.y}px;width:${NODE_W}px;height:${NODE_H}px;--n-color:${t.c}`;
       const tg = hasKids ? `<span class="tg">${isColl ? `<span class="cnt">+${deviceDesc(n)}</span><span class="chev">▸</span>` : '<span class="chev">▾</span>'}</span>` : '';
       const warn = (n.warnings && n.warnings.length) ? '<span class="warn"></span>' : '';
-      div.innerHTML = `<span class="ic">${t.g}</span><span class="tx"><span class="nm">${n.name || n.mac || n.id}</span>${n._group ? '' : (n.model ? `<span class="ml">${n.model}</span>` : '')}</span>${warn}${tg}`;
+      div.innerHTML = `<span class="ic">${ICON[n.type] ? `<svg viewBox="0 0 24 24">${ICON[n.type]}</svg>` : t.g}</span><span class="tx"><span class="nm">${n.name || n.mac || n.id}</span>${n._group ? '' : (n.model ? `<span class="ml">${n.model}</span>` : '')}</span>${warn}${tg}`;
       divs.set(n.id, div);
 
       div.addEventListener('mouseenter', () => {
@@ -2152,11 +2237,10 @@ Dashboard.register('device_topology', ({ el, config, ctx }) => {
         const te = ensureTip();
         let rows;
         if (n._group) rows = `<div class="tr"><span>${mode === 'physical' ? 'downstream' : 'contains'}</span><span>${deviceDesc(n)} ${config.unit_label || '設備'}</span></div>`;
-        else rows = [
-          `<div class="tr"><span>type</span><span>${n.type || '—'}</span></div>`,
-          n.model ? `<div class="tr"><span>model</span><span>${n.model}</span></div>` : '',
-          n.mac ? `<div class="tr"><span>mac</span><span>${n.mac}</span></div>` : '',
-        ].join('');
+        else { const tr = (k, v) => (v != null && v !== '') ? `<div class="tr"><span>${k}</span><span>${v}</span></div>` : '';
+          rows = tr('type', n.type) + tr('model', n.model) + tr('ssid', n.ssid_name) + tr('band', n.band)
+               + tr('rssi', n.rssi != null ? n.rssi + ' dBm' : '') + tr('snr', n.snr != null ? n.snr + ' dB' : '') + tr('mac', n.mac);
+        }
         te.innerHTML = `<div class="tt"><span class="sw" style="background:${t.c}"></span>${n.name || n.id}</div>${rows}`;
         te.style.opacity = '1';
         let x = e.clientX + 14, y = e.clientY + 14, r = te.getBoundingClientRect();
@@ -2175,7 +2259,7 @@ Dashboard.register('device_topology', ({ el, config, ctx }) => {
         if (!dragging || dragging.id !== n.id) return;
         if (!dragging.moved && Math.abs(e.clientX - dragging.sx) + Math.abs(e.clientY - dragging.sy) < 4) return;
         dragging.moved = true; div.classList.add('dragging');
-        const nx = Math.max(0, dragging.ox + (e.clientX - dragging.sx)), ny = Math.max(0, dragging.oy + (e.clientY - dragging.sy));
+        const nx = Math.max(0, dragging.ox + (e.clientX - dragging.sx) / zoom), ny = Math.max(0, dragging.oy + (e.clientY - dragging.sy) / zoom);
         pos.set(n.id, { x: nx, y: ny }); div.style.left = nx + 'px'; div.style.top = ny + 'px'; drawEdges(n.id);
       });
       const endDrag = (e) => {
@@ -2187,7 +2271,7 @@ Dashboard.register('device_topology', ({ el, config, ctx }) => {
       };
       div.addEventListener('pointerup', endDrag);
       div.addEventListener('pointercancel', endDrag);
-      canvas.appendChild(div);
+      zoomEl.appendChild(div);
     });
 
     const present = [...new Set(nodes.map(n => n.type))].filter(x => TYPE[x]);
@@ -2198,6 +2282,16 @@ Dashboard.register('device_topology', ({ el, config, ctx }) => {
 
     const counts = present.map(x => `${nodes.filter(n => n.type === x).length} ${x}`).join(' · ');
     metaEl.textContent = `${nodes.length} devices · ${counts}`;
+
+    // first paint (and after a mode/orientation switch): scroll so the root sits
+    // centered in the viewport along the sibling axis — root visible, not buried.
+    if (!didScroll) {
+      didScroll = true;
+      requestAnimationFrame(() => {
+        if (orientation === 'vertical') wrap.scrollLeft = Math.max(0, (root._x + NODE_W / 2) * zoom - wrap.clientWidth / 2);
+        else wrap.scrollTop = Math.max(0, (root._y + NODE_H / 2) * zoom - wrap.clientHeight / 2);
+      });
+    }
   }
 
   return { render };
@@ -2433,16 +2527,28 @@ window.computeFns = window.computeFns || {};
 
 window.computeFns = window.computeFns || {};
 var __DT_LABELS = {"665fcf4044ecb32cbf77b8ca": "root", "669f0faf0197d09bca1d5a68": "HV-2", "66ab310dda1a1be0d6b924f5": "arthur test", "66c69ed884ba31f815bab546": "HV-1", "66c69ee584ba31f815bab547": "HV-1-1", "69800c06b553ff9571746f43": "For Mavis", "66a1cdcd87437b41655377c4": "HV-2_Network-1", "66a70d6f052b4e8e3a7c147b": "HV-2_Network-2", "66ab3126da1a1be0d6b924f6": "test net 1", "66ab3136da1a1be0d6b924f9": "test net 2", "665fcf4344ecb32cbf77b8cb": "HV-1-1_Network-1", "66a0d3ec0fdb006e593642c1": "HV-1-1_Network-2", "672d7147be7a2bc2d7af11f8": "L Series", "67637baf77a2cd1e9fd233db": "PoE-2", "676a36e443642596c588005d": "HV-1-1_Network-3", "69c0a39f11406f958682932f": "test", "69cc8ce67e4a72387413a01f": "For_Ryan"};
-window.computeFns.topoNodes = function(data){ return { nodes: data.topo || [], labels: __DT_LABELS }; };
+window.computeFns.topoNodes = function(data){
+  const topo = data.topo || [], clients = data.clients || [];
+  const macToId = {}, macToHv = {};
+  topo.forEach(n => { if(n.mac){ const m=n.mac.toLowerCase(); macToId[m]=n.id; macToHv[m]=n.hierarchy_view_id; } });
+  const cli = clients.map(c => {
+    const apMac=(c.device_ap_mac||'').toLowerCase(), apId=macToId[apMac];
+    if(!apId) return null;
+    return { id:'cli_'+c.client_mac, mac:c.client_mac, name:c.client_name||c.client_mac, type:'client',
+             parent:{id:apId}, network_id:c.network_id, hierarchy_view_id:macToHv[apMac],
+             band:c.band, rssi:c.rssi, snr:c.snr, ssid_name:c.ssid_name, model:c.band };
+  }).filter(Boolean);
+  return { nodes: topo.concat(cli), labels: __DT_LABELS };
+};
 window.computeFns.apTraffic = function(data){
-  const det = (data.ap_traffic && data.ap_traffic.details) || [];
-  return { unit:'', series:[ { name:'連線 client 數', unit:'', points: det.map(r=>({x:r.time, y:r.clients})) } ]};
+  const det=(data.ap_traffic&&data.ap_traffic.details)||[];
+  return { unit:'', series:[ {name:'連線 client 數', unit:'', points: det.map(r=>({x:r.time,y:r.clients}))} ]};
 };
 
 </script>
 
 <script>
-Dashboard.init({"live_data": {"topo": "live-data/topo.json", "ap_traffic": "live-data/ap_traffic.json"}, "sections": [{"id": "topo", "widget": "device_topology", "title": "實體 topology（device_topology）", "mode": "logical", "compute": "topoNodes"}, {"id": "ap-traffic", "widget": "line_chart", "title": "ECW520-0614 過去 24h 連線 client 數（line_chart · get_network_ap_device_traffic）", "y_min": 0, "compute": "apTraffic"}], "locale": "zh-TW", "i18n": {"deploy": {"title": "部署與分享 Dashboard", "close": "關閉", "target": "部署到", "target_vercel": "Vercel", "target_vercel_sub": "公開網址 · 3–30 秒 · 需 vercel login", "target_ghpages": "GitHub Pages", "target_ghpages_sub": "公開網址 · 1–2 分 · 需 gh login + 你的 repo", "eta": "所需時間", "eta_vercel": "3–30 秒", "eta_ghpages": "1–2 分鐘", "url_label": "網址", "url_suffix": ".vercel.app", "url_help": "改這裡 → 網址跟著變。只能小寫英數字跟 -、最多 100 字", "url_invalid": "名字只能用小寫英數字跟 - 號", "repo_label": "GitHub Repo", "repo_placeholder": "owner/repo", "repo_help": "選你的 repo（從 gh CLI 抓）、或自己打 owner/repo", "repo_invalid": "格式：owner/repo", "repo_loading": "撈 repo 列表中…", "repo_no_gh": "gh CLI 沒裝或沒登入。`brew install gh && gh auth login`", "path_label": "路徑", "path_placeholder": "canvas-my-dashboard", "path_help": "在那個 repo 的 gh-pages branch 底下的子資料夾", "path_invalid": "只能用英數字 / 點 / 底線 / dash", "scan_title": "分享前的檢查", "scan_pending": "檢查中…", "scan_clean": "✓ 沒有偵測到可辨識的個人/組織資料、可以放心分享", "scan_has": "這張 dashboard 包含以下可辨識的資料：", "purpose_title": "這次部署的用途", "purpose_keep_label": "我自己或團隊內部用", "purpose_keep_desc": "保留真實的 org_id / MAC / IP / Email。網址會公開、所以只分享給本來就能看到原始資料的人。", "purpose_share_label": "分享給別人 / 對外 demo", "purpose_share_desc": "自動把 org_id / MAC / IP / Email 換成 demo 假資料（org A → demo-org-1、同值整張一致替換、圖表不破）。", "cancel": "取消", "deploy": "部署", "deploying": "正在部署到 Vercel… 通常 3–30 秒。", "deploy_failed": "部署失敗", "deployed": "部署完成 ✓", "copy": "複製網址", "copied": "已複製！", "network_err": "連不到 server。請確認 `bash scripts/serve.sh` 還在跑。", "not_a_canvas": "只有放在 /dashboard-builder/canvases/<id>/ 底下的 dashboard 才能 deploy。", "fields": {"org": "組織 ID", "mac": "MAC 位址", "serial": "序號", "ip": "IP 位址", "email": "Email"}}, "settings": {"title": "設定", "close": "關閉", "current_using": "目前使用", "no_account": "尚未取得帳號", "key_label": "EnGenius API Key", "key_placeholder": "貼上 key 來覆寫預設…", "key_help": "預設來自 .env / 內建值。在這裡輸入只在本次 server process 有效、重啟後自動回到預設。", "reveal": "顯示", "hide": "隱藏", "reset": "恢復預設", "save": "儲存並套用", "saving": "驗證中…", "invalid": "格式不對（8–200 字元、英數字+/=_-）", "api_error": "API 拒絕這把 key", "saved": "✓ 已套用", "reset_done": "✓ 已恢復預設", "auto_refresh_label": "自動更新", "auto_off": "關閉", "auto_5min": "每 5 分鐘", "auto_10min": "每 10 分鐘", "auto_15min": "每 15 分鐘", "auto_help": "頁面在前景時自動跑 Refresh。Tab 切走會暫停、連續 3 次失敗也會自動暫停。"}, "status": {"refreshing": "更新中", "refreshed": "已更新", "refresh_failed": "更新失敗", "refresh_error": "更新錯誤", "files_one": "個檔案", "files_many": "個檔案", "scope_all": "範圍=全部", "scope_org": "範圍=組織", "scope_hv": "範圍=hv", "scope_network": "範圍=網路", "next_in": "下次: {time}", "auto_paused": "⚠ 自動更新已暫停（{n} 次錯誤）"}, "table": {"search_placeholder": "搜尋…", "empty_state": "沒有符合條件的資料", "page_first": "« 第一頁", "page_prev": "← 上一頁", "page_next": "下一頁 →", "page_last": "最後一頁 »", "page_indicator": "第 {n} 頁 / 共 {total} 頁", "title_first": "跳到第一頁", "title_prev": "上一頁", "title_next": "下一頁", "title_last": "跳到最後一頁", "items_count": "共 {n} 筆"}}});
+Dashboard.init({"live_data": {"topo": "live-data/topo.json", "clients": "live-data/clients.json", "ap_traffic": "live-data/ap_traffic.json"}, "sections": [{"id": "topo", "widget": "device_topology", "title": "實體 topology + 連線 client（device_topology）", "mode": "logical", "compute": "topoNodes"}, {"id": "ap-traffic", "widget": "line_chart", "title": "ECW520-0614 過去 24h 連線 client 數（line_chart · get_network_ap_device_traffic）", "y_min": 0, "compute": "apTraffic"}], "locale": "zh-TW", "i18n": {"deploy": {"title": "部署與分享 Dashboard", "close": "關閉", "target": "部署到", "target_vercel": "Vercel", "target_vercel_sub": "公開網址 · 3–30 秒 · 需 vercel login", "target_ghpages": "GitHub Pages", "target_ghpages_sub": "公開網址 · 1–2 分 · 需 gh login + 你的 repo", "eta": "所需時間", "eta_vercel": "3–30 秒", "eta_ghpages": "1–2 分鐘", "url_label": "網址", "url_suffix": ".vercel.app", "url_help": "改這裡 → 網址跟著變。只能小寫英數字跟 -、最多 100 字", "url_invalid": "名字只能用小寫英數字跟 - 號", "repo_label": "GitHub Repo", "repo_placeholder": "owner/repo", "repo_help": "選你的 repo（從 gh CLI 抓）、或自己打 owner/repo", "repo_invalid": "格式：owner/repo", "repo_loading": "撈 repo 列表中…", "repo_no_gh": "gh CLI 沒裝或沒登入。`brew install gh && gh auth login`", "path_label": "路徑", "path_placeholder": "canvas-my-dashboard", "path_help": "在那個 repo 的 gh-pages branch 底下的子資料夾", "path_invalid": "只能用英數字 / 點 / 底線 / dash", "scan_title": "分享前的檢查", "scan_pending": "檢查中…", "scan_clean": "✓ 沒有偵測到可辨識的個人/組織資料、可以放心分享", "scan_has": "這張 dashboard 包含以下可辨識的資料：", "purpose_title": "這次部署的用途", "purpose_keep_label": "我自己或團隊內部用", "purpose_keep_desc": "保留真實的 org_id / MAC / IP / Email。網址會公開、所以只分享給本來就能看到原始資料的人。", "purpose_share_label": "分享給別人 / 對外 demo", "purpose_share_desc": "自動把 org_id / MAC / IP / Email 換成 demo 假資料（org A → demo-org-1、同值整張一致替換、圖表不破）。", "cancel": "取消", "deploy": "部署", "deploying": "正在部署到 Vercel… 通常 3–30 秒。", "deploy_failed": "部署失敗", "deployed": "部署完成 ✓", "copy": "複製網址", "copied": "已複製！", "network_err": "連不到 server。請確認 `bash scripts/serve.sh` 還在跑。", "not_a_canvas": "只有放在 /dashboard-builder/canvases/<id>/ 底下的 dashboard 才能 deploy。", "fields": {"org": "組織 ID", "mac": "MAC 位址", "serial": "序號", "ip": "IP 位址", "email": "Email"}}, "settings": {"title": "設定", "close": "關閉", "current_using": "目前使用", "no_account": "尚未取得帳號", "key_label": "EnGenius API Key", "key_placeholder": "貼上 key 來覆寫預設…", "key_help": "預設來自 .env / 內建值。在這裡輸入只在本次 server process 有效、重啟後自動回到預設。", "reveal": "顯示", "hide": "隱藏", "reset": "恢復預設", "save": "儲存並套用", "saving": "驗證中…", "invalid": "格式不對（8–200 字元、英數字+/=_-）", "api_error": "API 拒絕這把 key", "saved": "✓ 已套用", "reset_done": "✓ 已恢復預設", "auto_refresh_label": "自動更新", "auto_off": "關閉", "auto_5min": "每 5 分鐘", "auto_10min": "每 10 分鐘", "auto_15min": "每 15 分鐘", "auto_help": "頁面在前景時自動跑 Refresh。Tab 切走會暫停、連續 3 次失敗也會自動暫停。"}, "status": {"refreshing": "更新中", "refreshed": "已更新", "refresh_failed": "更新失敗", "refresh_error": "更新錯誤", "files_one": "個檔案", "files_many": "個檔案", "scope_all": "範圍=全部", "scope_org": "範圍=組織", "scope_hv": "範圍=hv", "scope_network": "範圍=網路", "next_in": "下次: {time}", "auto_paused": "⚠ 自動更新已暫停（{n} 次錯誤）"}, "table": {"search_placeholder": "搜尋…", "empty_state": "沒有符合條件的資料", "page_first": "« 第一頁", "page_prev": "← 上一頁", "page_next": "下一頁 →", "page_last": "最後一頁 »", "page_indicator": "第 {n} 頁 / 共 {total} 頁", "title_first": "跳到第一頁", "title_prev": "上一頁", "title_next": "下一頁", "title_last": "跳到最後一頁", "items_count": "共 {n} 筆"}}});
 </script>
 
 </body>
