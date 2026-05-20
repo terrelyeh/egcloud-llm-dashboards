@@ -1,0 +1,125 @@
+{
+  "ids": {
+    "org_id": "665fcf4044ecb32cbf77b8c9",
+    "root_hv_id": "665fcf4044ecb32cbf77b8ca",
+    "hv_id": "669f0faf0197d09bca1d5a68",
+    "network_id": "69800c06b553ff9571746f43"
+  },
+  "hv_candidates": [
+    {
+      "hv_id": "665fcf4044ecb32cbf77b8ca",
+      "hv_name": "root",
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    },
+    {
+      "hv_id": "669f0faf0197d09bca1d5a68",
+      "hv_name": "HV-2",
+      "parent_hierarchy_view_id": "665fcf4044ecb32cbf77b8ca",
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    },
+    {
+      "hv_id": "66ab310dda1a1be0d6b924f5",
+      "hv_name": "arthur test",
+      "parent_hierarchy_view_id": "665fcf4044ecb32cbf77b8ca",
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    },
+    {
+      "hv_id": "66c69ed884ba31f815bab546",
+      "hv_name": "HV-1",
+      "parent_hierarchy_view_id": "665fcf4044ecb32cbf77b8ca",
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    },
+    {
+      "hv_id": "66c69ee584ba31f815bab547",
+      "hv_name": "HV-1-1",
+      "parent_hierarchy_view_id": "66c69ed884ba31f815bab546",
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    }
+  ],
+  "network_candidates": [
+    {
+      "network_id": "69800c06b553ff9571746f43",
+      "name": "For Mavis",
+      "network_name": "For Mavis",
+      "hierarchy_view_id": "665fcf4044ecb32cbf77b8ca",
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    },
+    {
+      "network_id": "66a1cdcd87437b41655377c4",
+      "name": "HV-2_Network-1",
+      "network_name": "HV-2_Network-1",
+      "hierarchy_view_id": "669f0faf0197d09bca1d5a68",
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    },
+    {
+      "network_id": "66a70d6f052b4e8e3a7c147b",
+      "name": "HV-2_Network-2",
+      "network_name": "HV-2_Network-2",
+      "hierarchy_view_id": "669f0faf0197d09bca1d5a68",
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    },
+    {
+      "network_id": "66ab3126da1a1be0d6b924f6",
+      "name": "test net 1",
+      "network_name": "test net 1",
+      "hierarchy_view_id": "66ab310dda1a1be0d6b924f5",
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    },
+    {
+      "network_id": "66ab3136da1a1be0d6b924f9",
+      "name": "test net 2",
+      "network_name": "test net 2",
+      "hierarchy_view_id": "66ab310dda1a1be0d6b924f5",
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    },
+    {
+      "network_id": "665fcf4344ecb32cbf77b8cb",
+      "name": "HV-1-1_Network-1",
+      "network_name": "HV-1-1_Network-1",
+      "hierarchy_view_id": "66c69ee584ba31f815bab547",
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    },
+    {
+      "network_id": "66a0d3ec0fdb006e593642c1",
+      "name": "HV-1-1_Network-2",
+      "network_name": "HV-1-1_Network-2",
+      "hierarchy_view_id": "66c69ee584ba31f815bab547",
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    },
+    {
+      "network_id": "672d7147be7a2bc2d7af11f8",
+      "name": "L Series",
+      "network_name": "L Series",
+      "hierarchy_view_id": "66c69ee584ba31f815bab547",
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    },
+    {
+      "network_id": "67637baf77a2cd1e9fd233db",
+      "name": "PoE-2",
+      "network_name": "PoE-2",
+      "hierarchy_view_id": "66c69ee584ba31f815bab547",
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    },
+    {
+      "network_id": "676a36e443642596c588005d",
+      "name": "HV-1-1_Network-3",
+      "network_name": "HV-1-1_Network-3",
+      "hierarchy_view_id": "66c69ee584ba31f815bab547",
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    },
+    {
+      "network_id": "69c0a39f11406f958682932f",
+      "name": "test",
+      "network_name": "test",
+      "hierarchy_view_id": "66c69ee584ba31f815bab547",
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    },
+    {
+      "network_id": "69cc8ce67e4a72387413a01f",
+      "name": "For_Ryan",
+      "network_name": "For_Ryan",
+      "hierarchy_view_id": "66c69ee584ba31f815bab547",
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    }
+  ]
+}

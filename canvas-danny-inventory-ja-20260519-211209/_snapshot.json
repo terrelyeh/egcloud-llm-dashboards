@@ -1,0 +1,15 @@
+{
+  "deployed_at": "2026-05-20T07:44:08+00:00",
+  "source_canvas": "canvas-danny-inventory-ja-20260519-211209",
+  "redacted": false,
+  "account": {
+    "email": "ian.lai@senao.com"
+  },
+  "scope": {
+    "kind": "org",
+    "name": "Danny",
+    "ids": {
+      "org_id": "665fcf4044ecb32cbf77b8c9"
+    }
+  }
+}

@@ -1,0 +1,445 @@
+{
+  "ids": {
+    "org_id": "665fcf4044ecb32cbf77b8c9"
+  },
+  "org_member_candidates": [
+    {
+      "user_id": "64f97e6edfd1d5896cd8c6b6",
+      "user_name": "JUN-YAO Hsu",
+      "email": "ryan.hsu@senao.com",
+      "user_status": "active",
+      "last_login_time": 1779261744000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "6528a2e37c9f62bdff9b940f",
+      "user_name": "蘇 碩鈞",
+      "email": "shuochun.su@senao.com",
+      "user_status": "active",
+      "last_login_time": 1775013543000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "6650600c37f90f727f5d23fb",
+      "user_name": "mark chung",
+      "email": "mark.chung@senao.com",
+      "user_status": "active",
+      "last_login_time": 1779258435000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "66c2a9876ad30bcf31beafc7",
+      "user_name": "Mark Chung",
+      "email": "mark.rd.tw@gmail.com",
+      "user_status": "active",
+      "last_login_time": 1777442452000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "66ced722039ff85b4066a99b",
+      "user_name": "kaiser tsai",
+      "email": "kaiser.tsai@senao.com",
+      "user_status": "active",
+      "last_login_time": 1776064751000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "66deafb1aedae62353d7f056",
+      "user_name": "Eva lin",
+      "email": "eva.lin@senao.com",
+      "user_status": "active",
+      "last_login_time": 1775700301000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "66fce505837a7d90a4a07981",
+      "user_name": "Ian123 Lai",
+      "email": "ian.lai@senao.com",
+      "user_status": "active",
+      "last_login_time": 1779260822000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "671759ebc949ca55281a3cac",
+      "user_name": "Derek Yu",
+      "email": "derek.yu@senao.com",
+      "user_status": "active",
+      "last_login_time": 1779260340000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "networks": [
+        {
+          "id": "665fcf4344ecb32cbf77b8cb",
+          "hierarchy_view_id": "66c69ee584ba31f815bab547",
+          "name": "HV-1-1_Network-1",
+          "role": "admin",
+          "status": "active",
+          "created_time": 1766021249000,
+          "modified_time": 1766021249000
+        }
+      ]
+    },
+    {
+      "user_id": "67ac12943e4a61daa09e8ec4",
+      "user_name": "tony jian",
+      "email": "tony.jian@senao.com",
+      "user_status": "active",
+      "last_login_time": 1779248890000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "67e6cd969bdd4bba61de83d9",
+      "user_name": "duncan chen",
+      "email": "duncan.chen@senao.com",
+      "user_status": "active",
+      "last_login_time": 1779245778000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "67e70fbdd936425d9a8e480f",
+      "user_name": "Bryan Slayman",
+      "email": "bryan.slayman@engeniustech.com",
+      "user_status": "active",
+      "last_login_time": 1773410405000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "networks": [
+        {
+          "id": "665fcf4344ecb32cbf77b8cb",
+          "hierarchy_view_id": "66c69ee584ba31f815bab547",
+          "name": "HV-1-1_Network-1",
+          "role": "viewer",
+          "status": "active",
+          "created_time": 1743395595000,
+          "modified_time": 1743395595000
+        }
+      ]
+    },
+    {
+      "user_id": "67eb4c3702ef546f3360c873",
+      "user_name": "高延國 網路系統研發處",
+      "email": "joe.kao@senao.com",
+      "user_status": "active",
+      "last_login_time": 1778232101000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "697315ad289116ca624ca8ba",
+      "user_name": "Gordon Yang",
+      "email": "gordon.yang@senao.com",
+      "user_status": "active",
+      "last_login_time": 1778913737000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "69b8e9a33e6495f4880e8a77",
+      "user_name": "Johnson Lee",
+      "email": "johnson.lee@senao.com",
+      "user_status": "active",
+      "last_login_time": 1774467392000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "5e3d03a63b10d97e44240675",
+      "user_name": "Jonse Chang",
+      "email": "jonse.chang@senao.com",
+      "user_status": "active",
+      "last_login_time": 1776978285000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "5e3d08690abefd2cf2743d4d",
+      "user_name": "Robot Framework",
+      "email": "robot@senao.com",
+      "user_status": "active",
+      "last_login_time": 1775093887000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "5f647b7b61ee7828752702f5",
+      "user_name": "RÓn HÓu",
+      "email": "ron.hou@senao.com",
+      "user_status": "active",
+      "last_login_time": 1779176276000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "networks": [
+        {
+          "id": "665fcf4344ecb32cbf77b8cb",
+          "hierarchy_view_id": "66c69ee584ba31f815bab547",
+          "name": "HV-1-1_Network-1",
+          "role": "frontdesk",
+          "status": "active",
+          "created_time": 1765794715000,
+          "modified_time": 1765794715000
+        }
+      ]
+    },
+    {
+      "user_id": "5fab9136e0c653b16dfdfe53",
+      "user_name": "A C",
+      "email": "ally.chou@senao.com",
+      "user_status": "active",
+      "last_login_time": 1775026848000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "6282fecc56a3240485223b52",
+      "user_name": "Brian Wu",
+      "email": "brian.wu@senao.com",
+      "user_status": "active",
+      "last_login_time": 1778834946000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "635b75b62e9994a2b1e86388",
+      "user_name": "Len Chen",
+      "email": "len.chen@senao.com",
+      "user_status": "active",
+      "last_login_time": 1778553833000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "64c8d6223862897d32781ff7",
+      "user_name": "Arthur Chiang",
+      "email": "arthur.chiang@senao.com",
+      "user_status": "active",
+      "last_login_time": 1758097006000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "64c9fefc676bc16dafc50ded",
+      "user_name": "黃 依雯",
+      "email": "franny.huang@senao.com",
+      "user_status": "active",
+      "last_login_time": 1778988914000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "652654b8e897d9dfb5e86ec5",
+      "user_name": "Anita Chen",
+      "email": "anita.chen@senao.com",
+      "user_status": "active",
+      "last_login_time": 1779259097000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "viewer",
+      "org_status": "active",
+      "networks": [
+        {
+          "id": "676a36e443642596c588005d",
+          "hierarchy_view_id": "66c69ee584ba31f815bab547",
+          "name": "HV-1-1_Network-3",
+          "role": "admin",
+          "status": "active",
+          "created_time": 1770106992000,
+          "modified_time": 1770106992000
+        }
+      ]
+    },
+    {
+      "user_id": "660131fa7436f3864a175a0c",
+      "user_name": "claudia cheng",
+      "email": "claudia.cheng@senao.com",
+      "user_status": "active",
+      "last_login_time": 1779175646000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "665fcd3c44ecb32cbf77b8c4",
+      "user_name": "Danny Wang",
+      "email": "danny.wang@senao.com",
+      "user_status": "active",
+      "last_login_time": 1779171360000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "66bc1080a56d6e2c99a0d931",
+      "user_name": "Danny Wang",
+      "email": "danny.wang.company@gmail.com",
+      "user_status": "active",
+      "last_login_time": 1777452966000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "viewer",
+      "org_status": "active",
+      "networks": [
+        {
+          "id": "665fcf4344ecb32cbf77b8cb",
+          "hierarchy_view_id": "66c69ee584ba31f815bab547",
+          "name": "HV-1-1_Network-1",
+          "role": "admin",
+          "status": "active",
+          "created_time": 1768902987000,
+          "modified_time": 1768902987000
+        }
+      ]
+    },
+    {
+      "user_id": "690d68a85b0cd0b7662b4b0f",
+      "user_name": "Danny Wang",
+      "email": "danny.wang.test@senao.com",
+      "user_status": "active",
+      "last_login_time": 1766991436000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "networks": [
+        {
+          "id": "665fcf4344ecb32cbf77b8cb",
+          "hierarchy_view_id": "66c69ee584ba31f815bab547",
+          "name": "HV-1-1_Network-1",
+          "role": "viewer",
+          "status": "active",
+          "created_time": 1763531788000,
+          "modified_time": 1763531788000
+        }
+      ]
+    },
+    {
+      "user_id": "69254abd847ca98badcd0363",
+      "user_name": "Danny Wang",
+      "email": "danny.wang.test@hocsinc.com",
+      "user_status": "active",
+      "last_login_time": 1777514781000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "69254b5cdc75a6ef0970d46c",
+      "user_name": "Danny Wang",
+      "email": "danny.wang.test@engeniustech.com",
+      "user_status": "active",
+      "last_login_time": 1777514921000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "69254c44847ca98badcd0365",
+      "user_name": "Danny Wang",
+      "email": "danny.wang.test@hocs.com",
+      "user_status": "active",
+      "last_login_time": 1777514896000,
+      "org_id": "665fcf4044ecb32cbf77b8c9",
+      "org_name": "Danny",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    }
+  ],
+  "network_membership_candidates": [
+    {
+      "network_id": "676a36e443642596c588005d",
+      "network_name": "HV-1-1_Network-3",
+      "hierarchy_view_id": "66c69ee584ba31f815bab547",
+      "network_role": "admin",
+      "network_status": "active"
+    },
+    {
+      "network_id": "665fcf4344ecb32cbf77b8cb",
+      "network_name": "HV-1-1_Network-1",
+      "hierarchy_view_id": "66c69ee584ba31f815bab547",
+      "network_role": "admin",
+      "network_status": "active"
+    },
+    {
+      "network_id": "665fcf4344ecb32cbf77b8cb",
+      "network_name": "HV-1-1_Network-1",
+      "hierarchy_view_id": "66c69ee584ba31f815bab547",
+      "network_role": "viewer",
+      "network_status": "active"
+    },
+    {
+      "network_id": "665fcf4344ecb32cbf77b8cb",
+      "network_name": "HV-1-1_Network-1",
+      "hierarchy_view_id": "66c69ee584ba31f815bab547",
+      "network_role": "frontdesk",
+      "network_status": "active"
+    }
+  ]
+}
