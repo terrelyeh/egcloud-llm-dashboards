@@ -1,0 +1,36 @@
+[
+  {
+    "is_enable": false,
+    "protocol": "tcp",
+    "policy": "allow",
+    "src_ip": "255.255.255.255",
+    "src_port": "any",
+    "dst_ip": "any",
+    "dst_port": "any",
+    "description": "broadcast test",
+    "is_syslog_enable": false
+  },
+  {
+    "is_enable": false,
+    "protocol": "tcp",
+    "policy": "allow",
+    "src_ip": "any",
+    "src_port": "any",
+    "dst_ip": "www.google.com",
+    "dst_port": "any",
+    "description": "",
+    "is_syslog_enable": false
+  },
+  {
+    "is_enable": true,
+    "protocol": "any",
+    "policy": "allow",
+    "src_ip": "any",
+    "src_port": "any",
+    "dst_ip": "any",
+    "dst_port": "any",
+    "description": "Default",
+    "is_syslog_enable": false,
+    "is_default": true
+  }
+]

@@ -1,0 +1,110 @@
+{
+  "code": 200,
+  "message": null,
+  "ap_alert": {
+    "is_config_changed": true,
+    "is_send_firmware_upgrade_email": true,
+    "offline_setting": {
+      "is_enable": true,
+      "minutes": 5
+    },
+    "client_count_setting": {
+      "is_enable": true,
+      "client_count": null
+    },
+    "is_suspicious_ssids_detected": true,
+    "is_evil_twins_detected": true,
+    "is_malicious_attacks_detected": true,
+    "is_rf_jamming_detected": true,
+    "severity_setting": {
+      "is_enable": true,
+      "severity": "warning"
+    }
+  },
+  "switch_alert": {
+    "is_config_changed": true,
+    "is_send_firmware_upgrade_email": false,
+    "offline_setting": {
+      "is_enable": true,
+      "minutes": 5
+    },
+    "is_link_status_changed": false,
+    "is_stp_port_status_changed": true,
+    "is_lbd_port_status_changed": true,
+    "severity_setting": {
+      "is_enable": true,
+      "severity": "warning"
+    }
+  },
+  "gateway_alert": {
+    "is_config_changed": false,
+    "is_send_firmware_upgrade_email": false,
+    "offline_setting": {
+      "is_enable": true,
+      "minutes": 5
+    },
+    "severity_setting": {
+      "is_enable": true,
+      "severity": "warning"
+    },
+    "is_dhcp_pool_exhausted": false,
+    "is_vpn_status_changed": false,
+    "is_primary_wan_status_changed": false,
+    "is_client_tracker": false,
+    "is_ha_failover_occurred": false,
+    "tracked_clients": []
+  },
+  "pdu_alert": {
+    "is_config_changed": true,
+    "is_send_firmware_upgrade_email": true,
+    "offline_setting": {
+      "is_enable": true,
+      "minutes": 5
+    },
+    "severity_setting": {
+      "is_enable": true,
+      "severity": "warning"
+    },
+    "power_safe_range": {
+      "is_enabled": true,
+      "safe_range_from": 5,
+      "safe_range_to": 98
+    },
+    "current_safe_range": {
+      "is_enabled": true,
+      "safe_range_from": 2,
+      "safe_range_to": 98
+    },
+    "is_outlet_out_of_amp_safe_range": true,
+    "is_pdu_out_of_voltage_safe_range": true
+  },
+  "switch_extender_alert": {
+    "is_config_changed": false,
+    "is_send_firmware_upgrade_email": false,
+    "offline_setting": {
+      "is_enable": true,
+      "minutes": 5
+    },
+    "is_link_status_changed": false,
+    "is_stp_port_status_changed": false,
+    "severity_setting": {
+      "is_enable": true,
+      "severity": "warning"
+    }
+  },
+  "camera_alert": {
+    "is_config_changed": false,
+    "is_send_firmware_upgrade_email": false,
+    "offline_setting": {
+      "is_enable": true,
+      "minutes": 5
+    },
+    "severity_setting": {
+      "is_enable": true,
+      "severity": "warning"
+    },
+    "is_camera_record_failed": true,
+    "is_nas_record_failed": true,
+    "is_nvs_record_failed": true
+  }
+}

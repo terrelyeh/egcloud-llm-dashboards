@@ -1,0 +1,73 @@
+{
+  "code": 200,
+  "message": null,
+  "ipsec": {
+    "is_enable": false,
+    "client_vpn_server": "ipsec",
+    "client_hostname": "e-opvvt7k2tulq.staging.ec-domain.com",
+    "vpn_client_subnet": "172.20.1.1/24",
+    "dns_server_type": "google",
+    "dns_server": {
+      "primary_dns": null,
+      "secondary_dns": null
+    },
+    "is_vpn_enable": false,
+    "wins_server_type": "none",
+    "wins_server": {
+      "primary_dns": null,
+      "secondary_dns": null
+    },
+    "pre_shared_key": "987654321",
+    "authentication_type": "esg",
+    "ike_type": "ikev2",
+    "radius_server": {
+      "retries": 4,
+      "server_1_ip": null,
+      "server_1_port": 1812,
+      "server_1_secret": null,
+      "server_2_ip": null,
+      "server_2_port": null,
+      "server_2_secret": null
+    },
+    "radius_setting": {
+      "is_nas_id": false,
+      "nas_id": null,
+      "is_nas_ip": false,
+      "nas_ip": null,
+      "is_nas_port": false,
+      "nas_port": null
+    }
+  },
+  "open_vpn": {
+    "is_enable": false,
+    "is_vpn_enable": false,
+    "server_protocol": "UDP",
+    "server_port": 1194,
+    "vpn_client_subnet": null,
+    "dns_server_type": "google",
+    "dns_server": {
+      "primary_dns": null,
+      "secondary_dns": null
+    },
+    "client_routing": "send_to_all",
+    "authentication_type": "esg",
+    "radius_server": {
+      "retries": 4,
+      "server_1_ip": null,
+      "server_1_port": 1812,
+      "server_1_secret": null,
+      "server_2_ip": null,
+      "server_2_port": null,
+      "server_2_secret": null
+    },
+    "radius_setting": {
+      "is_nas_id": false,
+      "nas_id": null,
+      "is_nas_ip": false,
+      "nas_ip": null,
+      "is_nas_port": false,
+      "nas_port": null
+    },
+    "client_hostname": "e-opvvt7k2tulq.staging.ec-domain.com"
+  }
+}

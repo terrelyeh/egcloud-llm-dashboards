@@ -1,0 +1,24 @@
+{
+  "code": 200,
+  "message": null,
+  "size": 4,
+  "is_devices_over_vlan_limitation": false,
+  "vlans": [
+    {
+      "id": 1,
+      "name": "default"
+    },
+    {
+      "id": 7,
+      "name": "VLAN7"
+    },
+    {
+      "id": 16,
+      "name": "VLAN16"
+    },
+    {
+      "id": 99,
+      "name": "VLAN99"
+    }
+  ]
+}

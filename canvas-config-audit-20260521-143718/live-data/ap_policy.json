@@ -1,0 +1,354 @@
+{
+  "code": 200,
+  "message": null,
+  "radios": [
+    {
+      "type": "2_4G",
+      "is_enable": true,
+      "channel": "0",
+      "channel_list": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "ht_mode": "20",
+      "tx_power": 0,
+      "client_limit": 128,
+      "min_bitrate": 1.0,
+      "opmode": "ap",
+      "is_mesh_enable": false,
+      "is_legacy_hwmode_deny": false,
+      "is_green_mode": true,
+      "is_80211ax_disable": true,
+      "is_80211be_disable": true,
+      "is_background_scanning": true,
+      "is_airtimefairness": false,
+      "fast_handover": {
+        "force_disconnect": {
+          "is_enable": false,
+          "value": -80
+        },
+        "probe_request": {
+          "is_enable": false,
+          "value": -80
+        },
+        "association_request": {
+          "is_enable": false,
+          "value": -80
+        }
+      },
+      "client_balance": {
+        "is_enable": true
+      }
+    },
+    {
+      "type": "5G",
+      "is_enable": true,
+      "channel": "0",
+      "channel_list": [
+        36,
+        40,
+        44,
+        48,
+        52,
+        56,
+        60,
+        64,
+        100,
+        104,
+        108,
+        112,
+        116,
+        120,
+        124,
+        128,
+        132,
+        136,
+        140,
+        144,
+        149,
+        153,
+        157,
+        161
+      ],
+      "ht_mode": "80",
+      "tx_power": 0,
+      "client_limit": 128,
+      "min_bitrate": 6.0,
+      "opmode": "ap",
+      "is_mesh_enable": false,
+      "is_legacy_hwmode_deny": false,
+      "is_green_mode": true,
+      "is_80211ax_disable": false,
+      "is_80211be_disable": false,
+      "is_background_scanning": true,
+      "is_airtimefairness": false,
+      "fast_handover": {
+        "force_disconnect": {
+          "is_enable": false,
+          "value": -80
+        },
+        "probe_request": {
+          "is_enable": false,
+          "value": -80
+        },
+        "association_request": {
+          "is_enable": false,
+          "value": -80
+        }
+      },
+      "client_balance": {
+        "is_enable": true
+      },
+      "dfs_backup_channel": "",
+      "is_exclude_dfs_channel": false,
+      "is_zero_wait_dfs_enable": false
+    },
+    {
+      "type": "6G",
+      "is_enable": true,
+      "channel": "0",
+      "channel_list": [
+        1,
+        5,
+        9,
+        13,
+        17,
+        21,
+        25,
+        29,
+        33,
+        37,
+        41,
+        45,
+        49,
+        53,
+        57,
+        61,
+        65,
+        69,
+        73,
+        77,
+        81,
+        85,
+        89,
+        93
+      ],
+      "ht_mode": "20",
+      "tx_power": 0,
+      "client_limit": 127,
+      "min_bitrate": 6.0,
+      "opmode": "ap",
+      "is_mesh_enable": false,
+      "is_airtimefairness": false,
+      "is_80211be_disable": false,
+      "is_psc_channel_enable": true,
+      "client_balance": {
+        "is_enable": true
+      },
+      "fast_handover": {
+        "force_disconnect": {
+          "is_enable": false,
+          "value": -80
+        },
+        "probe_request": {
+          "is_enable": false,
+          "value": -80
+        },
+        "association_request": {
+          "is_enable": false,
+          "value": -80
+        }
+      }
+    }
+  ],
+  "radios_outdoor": [
+    {
+      "type": "2_4G",
+      "is_enable": true,
+      "channel": "0",
+      "channel_list": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "ht_mode": "20",
+      "tx_power": 0,
+      "client_limit": 127,
+      "min_bitrate": 1.0,
+      "opmode": "ap",
+      "is_mesh_enable": false,
+      "is_legacy_hwmode_deny": false,
+      "is_green_mode": true,
+      "is_80211ax_disable": true,
+      "is_80211be_disable": true,
+      "is_background_scanning": true,
+      "is_airtimefairness": false,
+      "fast_handover": {
+        "force_disconnect": {
+          "is_enable": false,
+          "value": -80
+        },
+        "probe_request": {
+          "is_enable": false,
+          "value": -80
+        },
+        "association_request": {
+          "is_enable": false,
+          "value": -80
+        }
+      },
+      "client_balance": {
+        "is_enable": true
+      },
+      "is_rts_cts_disable": false
+    },
+    {
+      "type": "5G",
+      "is_enable": true,
+      "channel": "0",
+      "channel_list": [
+        36,
+        40,
+        44,
+        48,
+        52,
+        56,
+        60,
+        64,
+        100,
+        104,
+        108,
+        112,
+        116,
+        120,
+        124,
+        128,
+        132,
+        136,
+        140,
+        144,
+        149,
+        153,
+        157,
+        161
+      ],
+      "ht_mode": "80",
+      "tx_power": 0,
+      "client_limit": 127,
+      "min_bitrate": 6.0,
+      "opmode": "ap",
+      "is_mesh_enable": false,
+      "is_legacy_hwmode_deny": false,
+      "is_green_mode": true,
+      "is_80211ax_disable": false,
+      "is_80211be_disable": false,
+      "is_background_scanning": true,
+      "is_airtimefairness": false,
+      "fast_handover": {
+        "force_disconnect": {
+          "is_enable": false,
+          "value": -80
+        },
+        "probe_request": {
+          "is_enable": false,
+          "value": -80
+        },
+        "association_request": {
+          "is_enable": false,
+          "value": -80
+        }
+      },
+      "client_balance": {
+        "is_enable": true
+      },
+      "dfs_backup_channel": "",
+      "is_exclude_dfs_channel": false,
+      "is_zero_wait_dfs_enable": false,
+      "is_rts_cts_disable": false
+    },
+    {
+      "type": "6G",
+      "is_enable": false,
+      "channel": "0",
+      "channel_list": [],
+      "ht_mode": "20",
+      "tx_power": 17,
+      "client_limit": 127,
+      "min_bitrate": 6.0,
+      "opmode": "ap",
+      "is_mesh_enable": false,
+      "is_airtimefairness": false,
+      "is_80211be_disable": false,
+      "is_psc_channel_enable": true,
+      "client_balance": {
+        "is_enable": true
+      },
+      "fast_handover": {
+        "force_disconnect": {
+          "is_enable": false,
+          "value": -80
+        },
+        "probe_request": {
+          "is_enable": false,
+          "value": -80
+        },
+        "association_request": {
+          "is_enable": false,
+          "value": -80
+        }
+      },
+      "is_rts_cts_disable": false
+    }
+  ],
+  "dcs_settings_indoor": {
+    "is_enable": true,
+    "mode": "interval",
+    "interval": 180,
+    "start_time_1": "00:00",
+    "start_time_2": "02:00"
+  },
+  "dcs_settings_outdoor": {
+    "is_enable": false,
+    "mode": "interval",
+    "interval": 180,
+    "start_time_1": "00:00",
+    "start_time_2": "02:00"
+  },
+  "advanced": {
+    "management_vlan": {
+      "is_enable": false,
+      "vlan_id": null
+    },
+    "mesh": {
+      "id": "83260543",
+      "password": "ab2ee775c193465584836b07761f2a30",
+      "rssi": -90,
+      "last_mesh_auto_pairing_time": null,
+      "indoor_last_mesh_auto_pairing_time": 1697434465000,
+      "outdoor_last_mesh_auto_pairing_time": null
+    }
+  },
+  "created_time": 1679383260000,
+  "modified_time": 1776154926000
+}

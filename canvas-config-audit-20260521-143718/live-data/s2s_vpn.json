@@ -1,0 +1,35 @@
+{
+  "code": 200,
+  "message": null,
+  "is_enable": false,
+  "vpn_type": "hub",
+  "hubs": [],
+  "lans": [
+    {
+      "id": "6413d4fafafeb4e9fd37be86",
+      "name": "LAN",
+      "subnet": "192.168.65.0/24",
+      "is_vpn_enable": false
+    }
+  ],
+  "static_routes": [],
+  "third_party_gateways": [],
+  "outbound_rules": [
+    {
+      "policy": "allow",
+      "protocol": "any",
+      "src_ip": "any",
+      "src_port": "any",
+      "dst_ip": "any",
+      "dst_port": "any",
+      "is_default": true,
+      "description": "Default"
+    }
+  ],
+  "nat_type": "restricted cone",
+  "nat_traversal": "automatic",
+  "public_ip_address": null,
+  "public_port": null,
+  "primary_wan_ip": "1.34.137.147",
+  "default_route_gateway_id": "disabled"
+}
