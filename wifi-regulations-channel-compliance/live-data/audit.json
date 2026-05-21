@@ -1,0 +1,92 @@
+{
+  "network": "Network (Senna)",
+  "country": "Taiwan (TW)",
+  "channel_mode": "auto (DCS)",
+  "power_mode": "auto",
+  "summary": {
+    "total_candidates": 61,
+    "illegal": 0,
+    "dfs": 16,
+    "mode": "auto (DCS)",
+    "bw_5g": "80 / ≤160 MHz"
+  },
+  "bands": [
+    {
+      "band": "2.4 GHz",
+      "enabled": true,
+      "candidates": 13,
+      "all_legal": true,
+      "dfs": 0,
+      "power": "EIRP 36dBm",
+      "bandwidth": "20 MHz"
+    },
+    {
+      "band": "5 GHz",
+      "enabled": true,
+      "candidates": 24,
+      "all_legal": true,
+      "dfs": 16,
+      "power": "EIRP 30–36dBm",
+      "bandwidth": "80 MHz（台灣 ≤160 ✅）"
+    },
+    {
+      "band": "6 GHz",
+      "enabled": true,
+      "candidates": 24,
+      "all_legal": true,
+      "dfs": 0,
+      "power": "EIRP 23dBm (LPI)",
+      "bandwidth": "20 MHz"
+    }
+  ],
+  "band5_segments": [
+    {
+      "label": "Non-DFS（UNII-1/3）",
+      "value": 8,
+      "severity": "success"
+    },
+    {
+      "label": "DFS（UNII-2A/2C）",
+      "value": 16,
+      "severity": "warning"
+    }
+  ],
+  "tw_reference": [
+    {
+      "band": "2.4 GHz",
+      "channels": "1–13",
+      "power": "EIRP 36dBm",
+      "dfs": "—"
+    },
+    {
+      "band": "5 GHz · UNII-1",
+      "channels": "36–48",
+      "power": "EIRP 36dBm",
+      "dfs": "—"
+    },
+    {
+      "band": "5 GHz · UNII-2A",
+      "channels": "52–64",
+      "power": "EIRP 30dBm",
+      "dfs": "需要"
+    },
+    {
+      "band": "5 GHz · UNII-2C",
+      "channels": "100–144",
+      "power": "EIRP 30dBm",
+      "dfs": "需要"
+    },
+    {
+      "band": "5 GHz · UNII-3",
+      "channels": "149–165",
+      "power": "EIRP 36dBm",
+      "dfs": "—"
+    },
+    {
+      "band": "6 GHz · UNII-5 LPI",
+      "channels": "1–93",
+      "power": "EIRP 23dBm",
+      "dfs": "室內"
+    }
+  ]
+}
