@@ -1,0 +1,92 @@
+{
+  "summary": {
+    "total_candidates": 61,
+    "illegal": 4,
+    "dfs": 16,
+    "sixg_mode": "LPI（屋内）"
+  },
+  "bands": [
+    {
+      "band": "2.4 GHz",
+      "enabled": true,
+      "candidates": 13,
+      "all_legal": true,
+      "illegal": 0,
+      "dfs": 0,
+      "bandwidth": "20 MHz"
+    },
+    {
+      "band": "5 GHz",
+      "enabled": true,
+      "candidates": 24,
+      "all_legal": false,
+      "illegal": 4,
+      "dfs": 16,
+      "bandwidth": "80 MHz（日本 ≤160 ✅）"
+    },
+    {
+      "band": "6 GHz",
+      "enabled": true,
+      "candidates": 24,
+      "all_legal": true,
+      "illegal": 0,
+      "dfs": 0,
+      "bandwidth": "20 MHz（LPI 屋内）"
+    }
+  ],
+  "band5_segments": [
+    {
+      "label": "合法・Non-DFS（UNII-1）",
+      "value": 4,
+      "severity": "success"
+    },
+    {
+      "label": "合法・DFS（UNII-2A/2C）",
+      "value": 16,
+      "severity": "warning"
+    },
+    {
+      "label": "不許可（UNII-3）",
+      "value": 4,
+      "severity": "critical"
+    }
+  ],
+  "jp_reference": [
+    {
+      "band": "2.4 GHz",
+      "channels": "1–13",
+      "power": "23dBm",
+      "dfs": "—"
+    },
+    {
+      "band": "5 GHz · UNII-1",
+      "channels": "36–48",
+      "power": "23dBm",
+      "dfs": "—"
+    },
+    {
+      "band": "5 GHz · UNII-2A",
+      "channels": "52–64",
+      "power": "23dBm",
+      "dfs": "必要（気象レーダー）"
+    },
+    {
+      "band": "5 GHz · UNII-2C",
+      "channels": "100–144",
+      "power": "23dBm",
+      "dfs": "必要（気象レーダー）"
+    },
+    {
+      "band": "5 GHz · UNII-3",
+      "channels": "なし（不許可）",
+      "power": "—",
+      "dfs": "—"
+    },
+    {
+      "band": "6 GHz · UNII-5 LPI",
+      "channels": "1–93",
+      "power": "EIRP 23dBm",
+      "dfs": "屋内のみ（LPI）"
+    }
+  ]
+}
