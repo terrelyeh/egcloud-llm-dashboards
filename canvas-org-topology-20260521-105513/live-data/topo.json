@@ -1,0 +1,460 @@
+{
+ "nodes": [
+  {
+   "id": "67eb4c56a0fb733374143c0c",
+   "mac": "88:dc:96:22:06:12",
+   "name": "ECW510-0612",
+   "type": "ap",
+   "model": "ECW510",
+   "is_root": true,
+   "parent": {
+    "id": "internet"
+   },
+   "neighbors": [
+    {
+     "id": "internet",
+     "source_port": null,
+     "source_port_status": null,
+     "target_port_status": null,
+     "source_port_speed": null,
+     "source_port_usage_all": 0.0
+    }
+   ],
+   "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+   "network_id": "64195adcfafeb4e9fd37c3bf",
+   "status": "offline",
+   "warnings": {
+    "is_config_unsynced": false,
+    "is_config_reverted": false,
+    "is_firmware_out_of_date": false,
+    "is_license_expired": false,
+    "is_license_nearly_expired": false,
+    "reverted_config_timestamp": null
+   }
+  },
+  {
+   "id": "6785d063ff07e0586b18d12c",
+   "mac": "00:12:34:22:02:56",
+   "name": "ECW516L-0256",
+   "type": "ap",
+   "model": "ECW516L",
+   "is_root": true,
+   "parent": {
+    "id": "internet"
+   },
+   "neighbors": [
+    {
+     "id": "internet",
+     "source_port": null,
+     "source_port_status": null,
+     "target_port_status": null,
+     "source_port_speed": null,
+     "source_port_usage_all": 0.0
+    }
+   ],
+   "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+   "network_id": "64195adcfafeb4e9fd37c3bf",
+   "status": "offline",
+   "warnings": {
+    "is_config_unsynced": false,
+    "is_config_reverted": false,
+    "is_firmware_out_of_date": false,
+    "is_license_expired": true,
+    "is_license_nearly_expired": false,
+    "reverted_config_timestamp": null
+   }
+  },
+  {
+   "id": "63c8b72b7c8927ce4f0c507e",
+   "mac": "88:dc:97:14:b9:92",
+   "name": "ECW130-B992",
+   "type": "ap",
+   "model": "ECW130",
+   "is_root": true,
+   "parent": {
+    "id": "internet"
+   },
+   "neighbors": [
+    {
+     "id": "internet",
+     "source_port": null,
+     "source_port_status": null,
+     "target_port_status": null,
+     "source_port_speed": null,
+     "source_port_usage_all": 0.0
+    }
+   ],
+   "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+   "network_id": "64195adcfafeb4e9fd37c3bf",
+   "status": "offline",
+   "warnings": {
+    "is_config_unsynced": false,
+    "is_config_reverted": false,
+    "is_firmware_out_of_date": false,
+    "is_license_expired": true,
+    "is_license_nearly_expired": false,
+    "reverted_config_timestamp": null
+   }
+  },
+  {
+   "id": "689e94ea3f1c1ce8ca1bb8d6",
+   "mac": "c4:e3:ce:63:c3:a5",
+   "name": "ECW520-C3A5",
+   "type": "ap",
+   "model": "ECW520",
+   "is_root": true,
+   "parent": {
+    "id": "internet"
+   },
+   "neighbors": [
+    {
+     "id": "internet",
+     "source_port": null,
+     "source_port_status": null,
+     "target_port_status": null,
+     "source_port_speed": null,
+     "source_port_usage_all": 0.0
+    }
+   ],
+   "hierarchy_view_id": "67c969fecf3bfa5fb063c856",
+   "network_id": "66a1e8f90197d09bca1d7a14",
+   "status": "online",
+   "warnings": {
+    "is_config_unsynced": false,
+    "is_config_reverted": false,
+    "is_firmware_out_of_date": false,
+    "is_license_expired": false,
+    "is_license_nearly_expired": false,
+    "reverted_config_timestamp": 0
+   }
+  },
+  {
+   "id": "623d75d8288c8d750422212c",
+   "mac": "88:dc:96:08:44:44",
+   "name": "ESG510-4444",
+   "type": "gateway",
+   "model": "ESG510",
+   "is_root": true,
+   "parent": {
+    "id": "internet"
+   },
+   "neighbors": [
+    {
+     "id": "internet",
+     "source_port": null,
+     "source_port_status": null,
+     "target_port_status": null,
+     "source_port_speed": null,
+     "source_port_usage_all": 0.0
+    }
+   ],
+   "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+   "network_id": "69c5e42c05e3e23611934634",
+   "status": "offline",
+   "warnings": {
+    "is_config_unsynced": false,
+    "is_config_reverted": false,
+    "is_firmware_out_of_date": false,
+    "is_license_expired": true,
+    "is_license_nearly_expired": false,
+    "reverted_config_timestamp": null
+   }
+  },
+  {
+   "id": "652cc8f7688447abcc98eef4",
+   "mac": "88:dc:96:96:d9:31",
+   "name": "ECW230v3-API-test",
+   "type": "ap",
+   "model": "ECW230v3",
+   "is_root": true,
+   "parent": {
+    "id": "internet"
+   },
+   "neighbors": [
+    {
+     "id": "internet",
+     "source_port": null,
+     "source_port_status": null,
+     "target_port_status": null,
+     "source_port_speed": null,
+     "source_port_usage_all": 0.0
+    }
+   ],
+   "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+   "network_id": "6a018b88030f861f6cdf7c95",
+   "status": "online",
+   "warnings": {
+    "is_config_unsynced": false,
+    "is_config_reverted": false,
+    "is_firmware_out_of_date": false,
+    "is_license_expired": false,
+    "is_license_nearly_expired": false,
+    "reverted_config_timestamp": 0
+   }
+  },
+  {
+   "id": "680215f946c77c5ee156d6ca",
+   "mac": "88:dc:96:22:16:c5",
+   "name": "ECW210L-16C5",
+   "type": "ap",
+   "model": "ECW210L",
+   "is_root": true,
+   "parent": {
+    "id": "internet"
+   },
+   "neighbors": [
+    {
+     "id": "internet",
+     "source_port": null,
+     "source_port_status": null,
+     "target_port_status": null,
+     "source_port_speed": null,
+     "source_port_usage_all": 0.0
+    }
+   ],
+   "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+   "network_id": "64195adcfafeb4e9fd37c3bf",
+   "status": "offline",
+   "warnings": {
+    "is_config_unsynced": false,
+    "is_config_reverted": false,
+    "is_firmware_out_of_date": false,
+    "is_license_expired": true,
+    "is_license_nearly_expired": false,
+    "reverted_config_timestamp": null
+   }
+  },
+  {
+   "id": "608779c64d5a2352d5faf79b",
+   "mac": "88:dc:96:83:2e:b3",
+   "name": "ECW115-2EB3",
+   "type": "ap",
+   "model": "ECW115",
+   "is_root": true,
+   "parent": {
+    "id": "internet"
+   },
+   "neighbors": [
+    {
+     "id": "internet",
+     "source_port": null,
+     "source_port_status": null,
+     "target_port_status": null,
+     "source_port_speed": null,
+     "source_port_usage_all": 0.0
+    }
+   ],
+   "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+   "network_id": "64195adcfafeb4e9fd37c3bf",
+   "status": "offline",
+   "warnings": {
+    "is_config_unsynced": false,
+    "is_config_reverted": false,
+    "is_firmware_out_of_date": false,
+    "is_license_expired": false,
+    "is_license_nearly_expired": false,
+    "reverted_config_timestamp": 0
+   }
+  },
+  {
+   "id": "67eb4c56a0fb733374143c0d",
+   "mac": "88:dc:96:22:06:14",
+   "name": "ECW520-0614",
+   "type": "ap",
+   "model": "ECW520",
+   "is_root": true,
+   "parent": {
+    "id": "internet"
+   },
+   "neighbors": [
+    {
+     "id": "internet",
+     "source_port": null,
+     "source_port_status": null,
+     "target_port_status": null,
+     "source_port_speed": null,
+     "source_port_usage_all": 0.0
+    }
+   ],
+   "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+   "network_id": "64195adcfafeb4e9fd37c3bf",
+   "status": "offline",
+   "warnings": {
+    "is_config_unsynced": false,
+    "is_config_reverted": false,
+    "is_firmware_out_of_date": false,
+    "is_license_expired": false,
+    "is_license_nearly_expired": false,
+    "reverted_config_timestamp": null
+   }
+  },
+  {
+   "id": "672486a40ccfb9cd4b1484a0",
+   "mac": "88:dc:97:30:aa:59",
+   "name": "ESG320-AA59",
+   "type": "gateway",
+   "model": "ESG320",
+   "is_root": true,
+   "parent": {
+    "id": "internet"
+   },
+   "neighbors": [
+    {
+     "id": "internet",
+     "source_port": "WAN1",
+     "source_port_status": null,
+     "target_port_status": null,
+     "source_port_speed": null,
+     "source_port_usage_all": 0.0
+    }
+   ],
+   "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+   "network_id": "64195adcfafeb4e9fd37c3bf",
+   "status": "online",
+   "warnings": {
+    "is_config_unsynced": false,
+    "is_config_reverted": false,
+    "is_firmware_out_of_date": false,
+    "is_license_expired": false,
+    "is_license_nearly_expired": true,
+    "reverted_config_timestamp": 0
+   }
+  },
+  {
+   "id": "680215f946c77c5ee156d6cb",
+   "mac": "88:dc:96:22:16:c7",
+   "name": "ECW212L-16C7",
+   "type": "ap",
+   "model": "ECW212L",
+   "is_root": true,
+   "parent": {
+    "id": "internet"
+   },
+   "neighbors": [
+    {
+     "id": "internet",
+     "source_port": null,
+     "source_port_status": null,
+     "target_port_status": null,
+     "source_port_speed": null,
+     "source_port_usage_all": 0.0
+    }
+   ],
+   "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+   "network_id": "64195adcfafeb4e9fd37c3bf",
+   "status": "offline",
+   "warnings": {
+    "is_config_unsynced": false,
+    "is_config_reverted": false,
+    "is_firmware_out_of_date": false,
+    "is_license_expired": false,
+    "is_license_nearly_expired": false,
+    "reverted_config_timestamp": null
+   }
+  },
+  {
+   "id": "691d85301a4427fbd30efa07",
+   "mac": "c4:e3:ce:6e:21:6d",
+   "name": "ECC500-216D",
+   "type": "camera",
+   "model": "ECC500",
+   "is_root": true,
+   "parent": {
+    "id": "internet"
+   },
+   "neighbors": [
+    {
+     "id": "internet",
+     "source_port": null,
+     "source_port_status": null,
+     "target_port_status": null,
+     "source_port_speed": null,
+     "source_port_usage_all": 0.0
+    }
+   ],
+   "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+   "network_id": "64195adcfafeb4e9fd37c3bf",
+   "status": "online",
+   "warnings": {
+    "is_config_unsynced": false,
+    "is_config_reverted": false,
+    "is_firmware_out_of_date": false,
+    "is_license_expired": true,
+    "is_license_nearly_expired": false,
+    "reverted_config_timestamp": 0
+   }
+  },
+  {
+   "id": "6486b8e30e081d01558053b7",
+   "mac": "88:dc:97:1b:fc:c5",
+   "name": "ECP214-test",
+   "type": "pdu",
+   "model": "ECP214",
+   "is_root": true,
+   "parent": {
+    "id": "internet"
+   },
+   "neighbors": [
+    {
+     "id": "internet",
+     "source_port": "Network 1",
+     "source_port_status": null,
+     "target_port_status": null,
+     "source_port_speed": null,
+     "source_port_usage_all": 0.0
+    }
+   ],
+   "hierarchy_view_id": "67c969fecf3bfa5fb063c856",
+   "network_id": "66a1e8f90197d09bca1d7a14",
+   "status": "online",
+   "warnings": {
+    "is_config_unsynced": false,
+    "is_config_reverted": true,
+    "is_firmware_out_of_date": false,
+    "is_license_expired": false,
+    "is_license_nearly_expired": false,
+    "reverted_config_timestamp": 1776331533000
+   }
+  },
+  {
+   "id": "68020f1269d194fa4d8d0191",
+   "mac": "88:dc:96:22:16:c3",
+   "name": "EXT1105P-16C3",
+   "type": "switch_extender",
+   "model": "EXT1105P",
+   "is_root": true,
+   "parent": {
+    "id": "internet"
+   },
+   "neighbors": [
+    {
+     "id": "internet",
+     "source_port": null,
+     "source_port_status": null,
+     "target_port_status": null,
+     "source_port_speed": null,
+     "source_port_usage_all": 0.0
+    }
+   ],
+   "hierarchy_view_id": "67c969fecf3bfa5fb063c856",
+   "network_id": "66a1e8f90197d09bca1d7a14",
+   "status": "offline",
+   "warnings": {
+    "is_config_unsynced": false,
+    "is_config_reverted": false,
+    "is_firmware_out_of_date": false,
+    "is_license_expired": true,
+    "is_license_nearly_expired": false,
+    "reverted_config_timestamp": null
+   }
+  }
+ ],
+ "labels": {
+  "64195adc69fc39c7385a60f2": "root",
+  "67c969fecf3bfa5fb063c856": "molly",
+  "64195adcfafeb4e9fd37c3bf": "Network",
+  "66a1e8f90197d09bca1d7a14": "Network_1",
+  "6a018b88030f861f6cdf7c95": "SWACL",
+  "69c5e42c05e3e23611934634": "GW NAT test"
+ }
+}

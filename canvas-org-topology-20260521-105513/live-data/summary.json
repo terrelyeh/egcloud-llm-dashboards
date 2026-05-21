@@ -1,0 +1,12 @@
+{
+ "total": 14,
+ "online": 5,
+ "offline": 9,
+ "lic_expired": 6,
+ "lic_near": 1,
+ "type_ap": 9,
+ "type_gateway": 2,
+ "type_switch": 0,
+ "type_pdu": 1,
+ "type_camera": 1
+}
