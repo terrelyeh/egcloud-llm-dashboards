@@ -1,10 +1,68 @@
 {
-  "summary": {
-    "total_candidates": 61,
-    "illegal": 4,
-    "dfs": 16,
-    "sixg_mode": "LPI（屋内）"
+  "fleet": {
+    "total": 7,
+    "online": 0,
+    "license_expired": 3,
+    "sixg": 2
   },
+  "aps": [
+    {
+      "name": "ECW516L-0256",
+      "model": "ECW516L",
+      "online": false,
+      "license_ok": false,
+      "sixg": true,
+      "band": "2.4/5/6 GHz"
+    },
+    {
+      "name": "ECW510-0612",
+      "model": "ECW510",
+      "online": false,
+      "license_ok": true,
+      "sixg": false,
+      "band": "2.4/5 GHz"
+    },
+    {
+      "name": "ECW520-0614",
+      "model": "ECW520",
+      "online": false,
+      "license_ok": true,
+      "sixg": true,
+      "band": "2.4/5/6 GHz"
+    },
+    {
+      "name": "ECW210L-16C5",
+      "model": "ECW210L",
+      "online": false,
+      "license_ok": false,
+      "sixg": false,
+      "band": "2.4/5 GHz"
+    },
+    {
+      "name": "ECW212L-16C7",
+      "model": "ECW212L",
+      "online": false,
+      "license_ok": true,
+      "sixg": false,
+      "band": "2.4/5 GHz"
+    },
+    {
+      "name": "ECW115-2EB3",
+      "model": "ECW115",
+      "online": false,
+      "license_ok": true,
+      "sixg": false,
+      "band": "2.4/5 GHz"
+    },
+    {
+      "name": "ECW130-B992",
+      "model": "ECW130",
+      "online": false,
+      "license_ok": true,
+      "sixg": false,
+      "band": "2.4/5 GHz"
+    }
+  ],
   "bands": [
     {
       "band": "2.4 GHz",
@@ -22,7 +80,7 @@
       "all_legal": false,
       "illegal": 4,
       "dfs": 16,
-      "bandwidth": "80 MHz（日本 ≤160 ✅）"
+      "bandwidth": "80 MHz"
     },
     {
       "band": "6 GHz",
@@ -53,39 +111,23 @@
   ],
   "jp_reference": [
     {
-      "band": "2.4 GHz",
-      "channels": "1–13",
-      "power": "23dBm",
-      "dfs": "—"
-    },
-    {
-      "band": "5 GHz · UNII-1",
-      "channels": "36–48",
-      "power": "23dBm",
-      "dfs": "—"
-    },
-    {
       "band": "5 GHz · UNII-2A",
       "channels": "52–64",
-      "power": "23dBm",
       "dfs": "必要（気象レーダー）"
     },
     {
       "band": "5 GHz · UNII-2C",
       "channels": "100–144",
-      "power": "23dBm",
       "dfs": "必要（気象レーダー）"
     },
     {
       "band": "5 GHz · UNII-3",
-      "channels": "なし（不許可）",
-      "power": "—",
+      "channels": "なし（日本不許可）",
       "dfs": "—"
     },
     {
       "band": "6 GHz · UNII-5 LPI",
-      "channels": "1–93",
-      "power": "EIRP 23dBm",
+      "channels": "1–93 · EIRP 23dBm",
       "dfs": "屋内のみ（LPI）"
     }
   ]
