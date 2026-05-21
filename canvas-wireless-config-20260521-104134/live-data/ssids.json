@@ -1,0 +1,84 @@
+{
+  "ssid_candidates": [
+    {
+      "name": "senna_cloud_1",
+      "state": "enabled", "state_disp": "🟢 啟用",
+      "auth": "WPA2-PSK", "auth_disp": "WPA2-PSK",
+      "pw_flag": "weak", "pw_disp": "⚠️ 弱密碼",
+      "vlan_flag": "none", "vlan_disp": "⚠️ 未綁 VLAN",
+      "bands_disp": "2.4G · 5G",
+      "pmf_disp": "✓ 開啟", "isolation_disp": "關閉", "roaming_disp": "關閉",
+      "portal_disp": "關閉", "lan_disp": "—", "hidden_disp": "否（公開）"
+    },
+    {
+      "name": "senna_cloud_2",
+      "state": "disabled", "state_disp": "⚪️ 停用",
+      "auth": "WPA3-Personal", "auth_disp": "WPA3 個人級",
+      "pw_flag": "weak", "pw_disp": "⚠️ 弱密碼",
+      "vlan_flag": "none", "vlan_disp": "⚠️ 未綁 VLAN",
+      "bands_disp": "2.4G · 5G",
+      "pmf_disp": "✓ 開啟", "isolation_disp": "關閉", "roaming_disp": "關閉",
+      "portal_disp": "關閉", "lan_disp": "—", "hidden_disp": "否（公開）"
+    },
+    {
+      "name": "senna_cloud_3",
+      "state": "enabled", "state_disp": "🟢 啟用",
+      "auth": "WPA2-Enterprise", "auth_disp": "WPA2 企業級",
+      "pw_flag": "enterprise", "pw_disp": "RADIUS 認證",
+      "vlan_flag": "none", "vlan_disp": "⚠️ 未綁 VLAN",
+      "bands_disp": "2.4G · 5G",
+      "pmf_disp": "✓ 開啟", "isolation_disp": "關閉", "roaming_disp": "關閉",
+      "portal_disp": "關閉", "lan_disp": "✓ 是", "hidden_disp": "否（公開）"
+    },
+    {
+      "name": "senna_cloud_L3 firewall",
+      "state": "disabled", "state_disp": "⚪️ 停用",
+      "auth": "WPA3-Personal", "auth_disp": "WPA3 個人級",
+      "pw_flag": "weak", "pw_disp": "⚠️ 弱密碼",
+      "vlan_flag": "none", "vlan_disp": "⚠️ 未綁 VLAN",
+      "bands_disp": "2.4G · 5G · 6G",
+      "pmf_disp": "✓ 開啟", "isolation_disp": "關閉", "roaming_disp": "關閉",
+      "portal_disp": "關閉", "lan_disp": "—", "hidden_disp": "否（公開）"
+    },
+    {
+      "name": "senna_cloud_L3_limit",
+      "state": "disabled", "state_disp": "⚪️ 停用",
+      "auth": "OWE", "auth_disp": "開放 (OWE)",
+      "pw_flag": "open", "pw_disp": "開放（無密碼）",
+      "vlan_flag": "none", "vlan_disp": "⚠️ 未綁 VLAN",
+      "bands_disp": "2.4G · 5G · 6G",
+      "pmf_disp": "✓ 開啟", "isolation_disp": "關閉", "roaming_disp": "關閉",
+      "portal_disp": "✓ 開啟", "lan_disp": "—", "hidden_disp": "否（公開）"
+    },
+    {
+      "name": "senna_cloud_firewall rule limit",
+      "state": "disabled", "state_disp": "⚪️ 停用",
+      "auth": "WPA3-Personal", "auth_disp": "WPA3 個人級",
+      "pw_flag": "weak", "pw_disp": "⚠️ 弱密碼",
+      "vlan_flag": "none", "vlan_disp": "⚠️ 未綁 VLAN",
+      "bands_disp": "6G",
+      "pmf_disp": "✓ 開啟", "isolation_disp": "關閉", "roaming_disp": "關閉",
+      "portal_disp": "關閉", "lan_disp": "—", "hidden_disp": "否（公開）"
+    },
+    {
+      "name": "senna_cloud_portal test",
+      "state": "disabled", "state_disp": "⚪️ 停用",
+      "auth": "OWE", "auth_disp": "開放 (OWE)",
+      "pw_flag": "open", "pw_disp": "開放（無密碼）",
+      "vlan_flag": "none", "vlan_disp": "⚠️ 未綁 VLAN",
+      "bands_disp": "2.4G · 5G · 6G",
+      "pmf_disp": "✓ 開啟", "isolation_disp": "關閉", "roaming_disp": "關閉",
+      "portal_disp": "✓ 開啟", "lan_disp": "—", "hidden_disp": "否（公開）"
+    },
+    {
+      "name": "senna slot test 1",
+      "state": "enabled", "state_disp": "🟢 啟用",
+      "auth": "WPA3-Personal", "auth_disp": "WPA3 個人級",
+      "pw_flag": "weak", "pw_disp": "⚠️ 弱密碼",
+      "vlan_flag": "none", "vlan_disp": "⚠️ 未綁 VLAN",
+      "bands_disp": "2.4G · 5G · 6G",
+      "pmf_disp": "✓ 開啟", "isolation_disp": "關閉", "roaming_disp": "關閉",
+      "portal_disp": "關閉", "lan_disp": "—", "hidden_disp": "否（公開）"
+    }
+  ]
+}

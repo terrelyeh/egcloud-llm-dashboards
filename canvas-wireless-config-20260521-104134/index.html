@@ -1,0 +1,2738 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>Senna · 無線網路設定體檢</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* === theme/tokens.css === */
+:root {
+  /* Surfaces & background — warmer cream to align with marketing site */
+  --bg: #fbf8f1;
+  --bg-gradient: radial-gradient(at 0% 0%, #f3eee2 0%, #fbf8f1 50%);
+  --surface: #ffffff;
+  --surface-2: #fbf9f3;
+  --hdr-bg: rgba(247, 247, 245, 0.85);   /* sticky frosted header */
+
+  /* Borders */
+  --border: rgba(60, 50, 35, 0.10);
+  --border-strong: rgba(60, 50, 35, 0.20);
+
+  /* Text */
+  --text-1: #1a2332;
+  --text-2: #4a5568;
+  --text-3: #8b95a4;
+
+  /* Brand — accent orange becomes primary interaction color (EG-aligned) */
+  --brand: #ff6b35;
+  --brand-2: #c2410c;
+
+  /* Severity */
+  --critical: #b91c1c;
+  --critical-bg: #fef2f2;
+  --warning: #b45309;
+  --warning-bg: #fffbeb;
+  --success: #047857;
+  --success-bg: #ecfdf5;
+  --info: #1d4ed8;
+  --info-bg: #eff6ff;
+
+  /* Effects — slightly more pronounced shadow + tighter radius */
+  --shadow-sm: 0 1px 2px rgba(60,50,35,.05), 0 0 0 1px rgba(60,50,35,.05);
+  --shadow-md: 0 6px 18px rgba(60,50,35,.08), 0 2px 4px rgba(60,50,35,.04);
+  --radius: 12px;
+  --radius-sm: 8px;
+
+  /* Typography */
+  --font-sans: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* === theme/base.css === */
+/* Base reset + shell layout */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image: var(--bg-gradient);
+  color: var(--text-1);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+.num { font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* Sticky header — outer container handles sticky + bg, inner constrains width */
+.db-hdr {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--hdr-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.db-hdr-inner {
+  max-width: 1320px; margin: 0 auto;
+  padding: 18px 32px;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 24px;
+}
+.db-hdr-left {
+  display: flex; align-items: center; gap: 14px;
+  min-width: 0;
+}
+.db-brand-logo {
+  width: 57px; height: 57px;
+  flex-shrink: 0;
+  display: block;
+}
+.db-hdr-titles { min-width: 0; }
+.db-hdr-titles h1 {
+  margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.015em;
+}
+.db-hdr-titles .crumb {
+  font-size: 13px; color: var(--text-3); margin-top: 3px; font-weight: 500;
+}
+/* Hide the subtitle row entirely when spec didn't provide one — avoids an
+   empty 16px-ish line under the title that makes some canvases look
+   bottom-heavy vs others. compose.py always renders the div for layout
+   stability; this CSS collapses it when empty. */
+.db-hdr-titles .crumb:empty { display: none; }
+
+/* Identity chips · soft-tinted pills in the right header column.
+   Account = who (info / blue tint), Scope = what is in view (brand / orange).
+   Background uses color-mix to blend the accent into surface — visible but
+   not loud enough to compete with severity pills inside the dashboard body. */
+.db-chips {
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;
+}
+.db-chips[hidden] { display: none; }
+.db-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px; border-radius: 999px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.01em;
+  color: var(--text-1); line-height: 1.2;
+  white-space: nowrap; max-width: 380px;
+  overflow: hidden; text-overflow: ellipsis;
+  cursor: default;
+}
+.db-chip[hidden] { display: none; }
+.db-chip .ic { font-size: 11px; line-height: 1; flex-shrink: 0; opacity: 0.85; }
+/* `.lbl` is hidden by default — account chip just shows the email inline.
+   Scope chip opts back in with a small uppercase tag (e.g., SCOPE Danny /
+   SNAPSHOT 2026-05-19) because the value alone is too ambiguous (a bare
+   "Danny" or "5 orgs" doesn't read as "this is the dashboard scope"). */
+.db-chip .lbl { display: none; }
+.db-chip-scope .lbl {
+  display: inline; font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-3); margin-right: 4px;
+}
+.db-chip-account {
+  background: color-mix(in srgb, var(--info) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--info) 22%, var(--border));
+}
+.db-chip-account .ic { color: var(--info); }
+.db-chip-scope {
+  background: color-mix(in srgb, var(--brand) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--brand) 22%, var(--border));
+}
+.db-chip-scope .ic { color: var(--brand); }
+/* legacy selectors kept for old canvases that haven't been recomposed */
+.db-hdr-left h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.015em; }
+.db-hdr-left .crumb { font-size: 13px; color: var(--text-3); margin-top: 3px; font-weight: 500; }
+/* Right column stacks two rows so the column has visual weight matching
+   the left title+subtitle: actions/status on top, identity chips below.
+   Each row right-aligns so the visual edge stays clean. */
+.db-hdr-right {
+  display: flex; flex-direction: column; align-items: flex-end;
+  gap: 10px; flex-shrink: 0;
+}
+.db-hdr-right-row {
+  display: flex; align-items: center; gap: 14px;
+}
+.live-dot {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--text-2); font-weight: 500;
+}
+.live-dot::before {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success); box-shadow: 0 0 0 4px var(--success-bg);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.updated { font-size: 13px; color: var(--text-3); font-family: var(--font-mono); }
+
+/* Auto-refresh state · small pill next to Live tag.
+   Two modes:
+     .countdown — "next: 4:32" while auto is running (text-3 / surface tint)
+     .paused    — "⚠ auto paused" after 3 consecutive errors (critical) */
+.db-auto-state {
+  font-family: var(--font-mono); font-size: 11px;
+  padding: 3px 9px; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.db-auto-state.countdown {
+  color: var(--text-3);
+  background: color-mix(in srgb, var(--text-3) 8%, var(--surface));
+}
+.db-auto-state.paused {
+  color: var(--critical);
+  background: color-mix(in srgb, var(--critical) 10%, var(--surface));
+}
+.db-auto-state .db-auto-state-close {
+  background: transparent; border: 0; padding: 0; margin-left: 4px;
+  cursor: pointer; color: inherit; font-size: 12px; opacity: 0.6;
+}
+.db-auto-state .db-auto-state-close:hover { opacity: 1; }
+
+/* Refresh status banner — sits between Deploy and Live, showing live recipe
+   state (pending ticker / success summary / error with close button). */
+.db-status {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 12px; border-radius: 999px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.01em;
+  line-height: 1; white-space: nowrap;
+  max-width: 360px; overflow: hidden; text-overflow: ellipsis;
+}
+.db-status[hidden] { display: none; }
+.db-status .ic { font-size: 13px; line-height: 1; }
+.db-status-pending { background: var(--info-bg);     color: var(--info); }
+.db-status-success { background: var(--success-bg);  color: var(--success); }
+.db-status-error   { background: var(--critical-bg); color: var(--critical); }
+.db-status-close {
+  background: transparent; border: 0; color: inherit; cursor: pointer;
+  font-size: 13px; line-height: 1; padding: 0 0 0 6px; opacity: 0.7;
+}
+.db-status-close:hover { opacity: 1; }
+
+/* Main wrap */
+.db-wrap { max-width: 1320px; margin: 0 auto; padding: 28px 32px 80px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--surface); border: 1px solid var(--border-strong);
+  color: var(--text-1); padding: 6px 12px; border-radius: var(--radius-sm);
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: all .15s ease; font-family: inherit;
+}
+.btn:hover { background: var(--surface-2); border-color: var(--brand); color: var(--brand); }
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn:disabled:hover { background: var(--surface); border-color: var(--border-strong); color: var(--text-1); }
+.btn.btn-primary {
+  background: var(--brand); color: white; border-color: var(--brand);
+}
+.btn.btn-primary:hover { background: var(--brand); color: white; border-color: var(--brand); filter: brightness(1.08); }
+.btn.btn-primary:disabled:hover { background: var(--brand); color: white; }
+.btn.spinning .ic { animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.ic { display: inline-block; line-height: 1; }
+.ic.spin { animation: spin 0.7s linear infinite; }
+/* Icon-only button (no label) — gear / cog / similar single-glyph actions */
+.btn.db-btn-icon { padding: 6px 9px; }
+.btn.db-btn-icon .ic { font-size: 14px; }
+
+/* Snapshot tag (replaces live-dot when canvas is a deployed snapshot) */
+.snapshot-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.02em;
+  padding: 4px 10px; border-radius: 999px;
+  background: var(--surface-2); color: var(--text-2);
+  border: 1px solid var(--border);
+}
+
+/* Deploy modal */
+.db-modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; padding: 24px;
+}
+.db-modal-backdrop[hidden] { display: none; }
+.db-modal {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  width: 100%; max-width: 560px; max-height: calc(100vh - 48px);
+  overflow: hidden; display: flex; flex-direction: column;
+}
+.db-modal-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px 14px; border-bottom: 1px solid var(--border);
+}
+.db-modal-hdr h2 {
+  margin: 0; font-size: 17px; font-weight: 700; letter-spacing: -0.01em;
+}
+.db-modal-close {
+  background: transparent; border: 0; font-size: 22px; line-height: 1;
+  color: var(--text-3); cursor: pointer; padding: 4px 8px; border-radius: 6px;
+}
+.db-modal-close:hover { color: var(--text-1); background: var(--surface-2); }
+.db-modal-body { padding: 18px 22px; overflow-y: auto; font-size: 14px; }
+.db-modal-foot {
+  display: flex; gap: 10px; justify-content: flex-end;
+  padding: 14px 22px 18px; border-top: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.db-modal-meta {
+  display: grid; grid-template-columns: 140px 1fr;
+  gap: 6px 12px; margin: 0 0 18px;
+  font-size: 13px;
+}
+.db-modal-meta dt { color: var(--text-3); font-weight: 600; }
+.db-modal-meta dd { margin: 0; color: var(--text-1); }
+.db-modal-pill {
+  display: inline-block; margin-left: 6px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
+  padding: 2px 8px; border-radius: 999px;
+  background: var(--info-bg); color: var(--info);
+}
+.db-modal-section h3 {
+  margin: 0 0 8px; font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-3);
+}
+
+/* Target chooser — Vercel vs GitHub Pages cards at the top of Deploy modal */
+.db-modal-targets {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  margin: 0 0 18px;
+}
+.db-modal-target-pick {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 12px 14px;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.db-modal-target-pick:hover { background: var(--surface-2); }
+.db-modal-target-pick:has(input:checked) {
+  background: color-mix(in srgb, var(--brand) 6%, var(--surface));
+  border-color: color-mix(in srgb, var(--brand) 38%, var(--border));
+}
+.db-modal-target-pick input[type="radio"] {
+  margin-top: 3px; flex-shrink: 0; accent-color: var(--brand);
+}
+/* Vercel / GitHub brand logos as inline SVG, currentColor so they go orange
+   when the card is the active target and stay text-1 otherwise. */
+.db-modal-target-logo {
+  width: 22px; height: 22px; flex-shrink: 0;
+  color: var(--text-1);
+  margin-top: 1px;
+}
+.db-modal-target-pick:has(input:checked) .db-modal-target-logo {
+  color: var(--brand);
+}
+.db-modal-target-body {
+  display: flex; flex-direction: column; gap: 3px;
+  font-size: 13px; line-height: 1.4;
+}
+.db-modal-target-body strong { color: var(--text-1); font-weight: 600; }
+.db-modal-target-sub { color: var(--text-3); font-size: 11px; }
+
+/* GH Pages live URL preview line — monospace, shows owner/repo/path */
+.db-modal-gh-preview {
+  font-family: var(--font-mono, ui-monospace, Menlo, monospace);
+  font-size: 12px;
+  margin-top: 4px;
+  color: var(--text-2);
+}
+.db-modal-gh-preview span[data-bind] {
+  color: var(--brand); font-weight: 600;
+}
+
+/* Hidden sections (toggled by target radio) */
+[data-show-target][hidden] { display: none !important; }
+
+/* Custom URL input: prefix + input + suffix on a single rounded line. The
+   input fills the middle, prefix/suffix are inline pseudo-buttons. */
+.db-modal-url { margin: 0 0 18px; }
+.db-modal-url-label {
+  display: block; font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--text-3); margin-bottom: 8px;
+}
+.db-modal-url-input {
+  display: flex; align-items: stretch;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+  font-family: var(--font-mono, ui-monospace, Menlo, monospace);
+  font-size: 13px;
+  transition: border-color .15s ease;
+}
+.db-modal-url-input:focus-within {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 16%, transparent);
+}
+.db-modal-url-input:has(.invalid) { border-color: var(--critical); }
+.db-modal-url-prefix,
+.db-modal-url-suffix {
+  padding: 8px 10px; color: var(--text-3); user-select: none;
+  background: var(--surface-2); flex-shrink: 0;
+}
+.db-modal-url-name {
+  flex: 1; min-width: 0;
+  border: 0; outline: none;
+  background: var(--surface); color: var(--text-1);
+  padding: 8px 6px;
+  font: inherit;
+}
+.db-modal-url-name.invalid { background: color-mix(in srgb, var(--critical) 6%, var(--surface)); }
+.db-modal-url-help {
+  font-size: 11px; color: var(--text-3); margin-top: 6px; line-height: 1.5;
+}
+
+/* Secret input (Settings modal) — masked password-style field with an eye
+   icon to toggle reveal. Reuses .db-modal-url-input structure so the visual
+   shape matches the deploy URL row right above it in the family. */
+.db-modal-secret { margin: 0 0 18px; }
+.db-modal-secret-label {
+  display: block; font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--text-3); margin-bottom: 8px;
+}
+.db-modal-secret-row {
+  display: flex; align-items: stretch;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+  transition: border-color .15s ease;
+}
+.db-modal-secret-row:focus-within {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 16%, transparent);
+}
+.db-modal-secret-row.invalid { border-color: var(--critical); }
+.db-modal-secret-input {
+  flex: 1; min-width: 0;
+  border: 0; outline: none;
+  background: transparent; color: var(--text-1);
+  padding: 9px 12px;
+  font: inherit; font-family: var(--font-mono, ui-monospace, Menlo, monospace);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+.db-modal-secret-toggle {
+  background: var(--surface-2); border: 0; border-left: 1px solid var(--border);
+  padding: 0 14px; cursor: pointer; color: var(--text-2);
+  font-size: 15px; line-height: 1;
+}
+.db-modal-secret-toggle:hover { color: var(--text-1); background: var(--surface); }
+.db-modal-secret-help {
+  font-size: 11px; color: var(--text-3); margin-top: 6px; line-height: 1.5;
+}
+
+/* Auto-refresh dropdown · same visual family as .db-modal-secret. */
+.db-modal-auto { margin: 0 0 18px; }
+.db-modal-auto-select {
+  width: 100%; padding: 9px 12px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; font: inherit; font-size: 13px;
+  color: var(--text-1); cursor: pointer;
+  transition: border-color .15s ease;
+}
+.db-modal-auto-select:focus {
+  outline: none; border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 16%, transparent);
+}
+
+/* "Currently using: <email>" line inside Settings modal */
+.db-modal-current {
+  margin: 0 0 14px; padding: 10px 12px;
+  background: color-mix(in srgb, var(--info) 6%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--info) 20%, var(--border));
+  border-radius: 8px;
+  font-size: 13px; line-height: 1.5;
+  display: flex; align-items: center; gap: 8px;
+}
+.db-modal-current .ic { font-size: 14px; color: var(--info); }
+.db-modal-current strong { font-weight: 600; }
+
+.db-modal-scan { font-size: 13px; line-height: 1.55; }
+.db-modal-scan p { margin: 0 0 6px; }
+.db-modal-ok { color: var(--success); font-weight: 600; }
+.db-modal-scan-list {
+  list-style: none; padding: 0; margin: 8px 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 6px 12px;
+}
+.db-modal-scan-list li {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: 6px 10px; background: var(--surface-2); border-radius: 6px;
+  font-size: 12px;
+}
+.db-modal-scan-list li strong {
+  font-variant-numeric: tabular-nums; color: var(--text-1); font-size: 14px;
+}
+.db-modal-hint {
+  font-size: 12px; color: var(--text-3); margin: 8px 0 0 !important;
+}
+.db-modal-check {
+  display: flex; gap: 10px; align-items: flex-start;
+  margin: 14px 0 0; font-size: 13px; line-height: 1.5;
+  padding: 10px 12px; border-radius: 8px; background: var(--surface-2);
+  cursor: pointer;
+}
+.db-modal-check input { margin-top: 3px; flex-shrink: 0; }
+
+/* Purpose radio — two options stacked. The selected one gets a brand tint
+   so the user clearly sees which case applies before pressing Deploy. */
+.db-modal-radio {
+  display: flex; gap: 10px; align-items: flex-start;
+  margin: 8px 0 0; padding: 12px 14px;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.db-modal-radio:hover { background: var(--surface-2); }
+.db-modal-radio:has(input:checked) {
+  background: color-mix(in srgb, var(--brand) 5%, var(--surface));
+  border-color: color-mix(in srgb, var(--brand) 35%, var(--border));
+}
+.db-modal-radio input[type="radio"] { margin-top: 3px; flex-shrink: 0; accent-color: var(--brand); }
+.db-modal-radio-body {
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: 13px; line-height: 1.5;
+}
+.db-modal-radio-body strong { color: var(--text-1); font-weight: 600; }
+.db-modal-radio-desc { color: var(--text-3); font-size: 12px; line-height: 1.55; }
+.db-modal-status {
+  margin-top: 14px; padding: 10px 12px; border-radius: 8px;
+  font-size: 13px; line-height: 1.5;
+}
+.db-modal-status[hidden] { display: none; }
+.db-modal-status-info { background: var(--info-bg); color: var(--info); }
+.db-modal-status-error { background: var(--critical-bg); color: var(--critical); }
+.db-modal-status-success { background: var(--success-bg); color: var(--success); }
+.db-modal-success { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.db-modal-success a {
+  color: inherit; font-family: var(--font-mono); font-size: 12px;
+  text-decoration: underline;
+}
+.db-modal-success .btn { padding: 4px 10px; font-size: 11px; }
+
+/* Card surface (shared) */
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px 22px; box-shadow: var(--shadow-sm);
+}
+.card-hdr {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px; margin-bottom: 16px;
+}
+.card-hdr h2 {
+  margin: 0; font-size: 18px; font-weight: 700;
+  letter-spacing: -0.01em; white-space: nowrap;
+}
+.card-hdr .meta {
+  font-size: 12px; color: var(--text-3); font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.04em; text-align: right;
+}
+
+/* Pills (severity) */
+.pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600;
+  padding: 3px 8px; border-radius: 999px;
+  line-height: 1; letter-spacing: 0.02em;
+}
+.pill-crit { background: var(--critical-bg); color: var(--critical); }
+.pill-warn { background: var(--warning-bg); color: var(--warning); }
+.pill-ok { background: var(--success-bg); color: var(--success); }
+.pill-info { background: var(--info-bg); color: var(--info); }
+.pill-muted { background: rgba(15,23,42,0.05); color: var(--text-2); }
+
+/* Chip filters */
+.chips {
+  display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;
+}
+.chip {
+  font-size: 11px; font-weight: 600; padding: 5px 11px;
+  border-radius: 999px; cursor: pointer;
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text-2); transition: all .15s ease;
+  font-family: inherit; letter-spacing: 0.02em;
+}
+.chip:hover { border-color: var(--brand); color: var(--brand); }
+.chip.active { background: var(--brand); color: white; border-color: var(--brand); }
+.chip .count { font-variant-numeric: tabular-nums; margin-left: 4px; opacity: 0.7; font-size: 10px; }
+
+/* Flash highlight (for cross-widget navigation) */
+.flash {
+  animation: flash-glow 1.2s ease-out 2;
+  --flash-color: var(--brand);
+}
+@keyframes flash-glow {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 40%, transparent); }
+  50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--brand) 10%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 0%, transparent); }
+}
+
+/* Empty state */
+.empty-state { text-align: center; padding: 36px 16px; color: var(--text-3); font-size: 14px; }
+
+/* Footer */
+.db-footnote {
+  margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--text-3);
+  display: flex; justify-content: space-between; gap: 16px;
+}
+.db-footnote .skills { font-family: var(--font-mono); }
+
+
+/* === widget alert === */
+
+.w-alert {
+  border-radius: 12px; padding: 14px 16px; margin-bottom: 20px;
+  border: 1px solid; display: flex; align-items: flex-start; gap: 12px;
+}
+.w-alert.severity-critical { background: var(--critical-bg); border-color: rgba(185,28,28,0.25); color: var(--critical); }
+.w-alert.severity-warning { background: var(--warning-bg); border-color: rgba(180,83,9,0.25); color: var(--warning); }
+.w-alert.severity-info { background: var(--info-bg); border-color: rgba(29,78,216,0.25); color: var(--info); }
+.w-alert.severity-success { background: var(--success-bg); border-color: rgba(4,120,87,0.25); color: var(--success); }
+.w-alert-icon {
+  width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%;
+  font-weight: 700; display: flex; align-items: center; justify-content: center;
+  font-size: 14px; margin-top: 1px; color: #fff;
+}
+.w-alert.severity-critical .w-alert-icon { background: var(--critical); }
+.w-alert.severity-warning .w-alert-icon { background: var(--warning); }
+.w-alert.severity-info .w-alert-icon { background: var(--info); }
+.w-alert.severity-success .w-alert-icon { background: var(--success); }
+.w-alert-body { flex: 1; }
+.w-alert-body strong { font-weight: 700; }
+.w-alert-body p { margin: 4px 0 0; font-size: 14px; color: var(--text-2); }
+
+/* === widget kpi_grid === */
+
+.w-kpi-grid {
+  display: grid; grid-template-columns: repeat(var(--cols, 4), 1fr); gap: 16px;
+  margin-bottom: 24px;
+}
+.w-kpi {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px 20px; box-shadow: var(--shadow-sm);
+  position: relative; overflow: hidden;
+}
+.w-kpi .lbl {
+  font-size: 12px; font-weight: 600; text-transform: uppercase;
+  color: var(--text-3); letter-spacing: 0.05em;
+}
+.w-kpi .val {
+  font-size: 36px; font-weight: 700; margin: 4px 0 0;
+  letter-spacing: -0.02em; line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.w-kpi .sub { font-size: 13px; color: var(--text-2); margin-top: 2px; }
+.w-kpi.severity-critical { border-color: rgba(185,28,28,0.2); background: linear-gradient(180deg, var(--critical-bg) 0%, var(--surface) 30%); }
+.w-kpi.severity-critical .val { color: var(--critical); }
+.w-kpi.severity-warning { border-color: rgba(180,83,9,0.2); }
+.w-kpi.severity-warning .val { color: var(--warning); }
+.w-kpi.clickable { cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
+.w-kpi.clickable:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.w-kpi.clickable::after {
+  content: '↗'; position: absolute; top: 12px; right: 14px;
+  color: var(--text-3); font-size: 14px; opacity: 0;
+  transition: opacity .15s ease;
+}
+.w-kpi.clickable:hover::after { opacity: 1; }
+
+/* === widget table === */
+
+.w-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.w-table th {
+  text-align: left; font-weight: 600; color: var(--text-3);
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 8px 10px 10px; border-bottom: 1px solid var(--border);
+}
+.w-table td {
+  padding: 11px 10px; border-bottom: 1px solid var(--border); vertical-align: middle;
+}
+.w-table tr:last-child td { border-bottom: 0; }
+.w-table tbody tr:hover td { background: var(--surface-2); }
+.w-table td.num, .w-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.w-table tr.expandable { cursor: pointer; }
+.w-table tr.expandable td:first-child::before {
+  content: '▸'; display: inline-block; margin-right: 6px;
+  color: var(--text-3); font-size: 9px; transition: transform .15s ease;
+}
+.w-table tr.expandable.open td:first-child::before { transform: rotate(90deg); }
+.w-table tr.detail { display: none; background: var(--surface-2); }
+.w-table tr.detail.open { display: table-row; }
+.w-table tr.detail td { padding: 14px 18px; border-bottom: 1px solid var(--border); }
+.w-table .detail-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px 24px;
+}
+.w-table .detail-item .k {
+  font-size: 11px; color: var(--text-3); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: 2px; font-weight: 600;
+}
+.w-table .detail-item .v {
+  font-size: 14px; color: var(--text-1); font-family: var(--font-mono); word-break: break-all;
+}
+.w-table .detail-item .v.large { font-family: var(--font-sans); font-weight: 500; }
+.w-table .ell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; }
+.w-table .type-chip {
+  display: inline-flex; gap: 6px; align-items: center;
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  color: var(--text-2); letter-spacing: 0.04em;
+}
+.w-table .type-chip .dot { width: 8px; height: 8px; border-radius: 2px; }
+.w-table .type-ap .dot { background: var(--info); }
+.w-table .type-switch .dot { background: var(--warning); }
+.w-table .type-gateway .dot { background: var(--success); }
+
+.w-table-search { margin-bottom: 12px; }
+.w-table-search input {
+  width: 100%; max-width: 360px;
+  padding: 8px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  font-family: inherit; font-size: 13px;
+  color: var(--text-1);
+}
+.w-table-search input::placeholder { color: var(--text-3); }
+.w-table-search input:focus {
+  outline: none; border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 18%, transparent);
+}
+
+.w-table-page {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.w-table-page button {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text-2);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-family: inherit; font-size: 12px; font-weight: 500;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.w-table-page button:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--brand);
+  color: var(--brand);
+}
+.w-table-page button:disabled { opacity: 0.35; cursor: not-allowed; }
+.w-table-page .indicator {
+  font-variant-numeric: tabular-nums;
+  padding: 0 12px;
+  font-weight: 500;
+  color: var(--text-1);
+}
+
+/* === widget bar_list === */
+
+.w-barlist { font-size: 14px; }
+.w-barlist .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; padding: 2px 6px; margin-left: -6px; margin-right: -6px; border-radius: 6px; }
+.w-barlist .bar-row.clickable { cursor: pointer; transition: background .15s ease; }
+.w-barlist .bar-row.clickable:hover { background: var(--surface-2); }
+.w-barlist .bar-row.clickable:hover .bar-fill { filter: brightness(1.08); }
+.w-barlist .bar-label { width: 110px; color: var(--text-2); font-weight: 500; }
+.w-barlist .bar-track { flex: 1; height: 8px; background: rgba(15,23,42,0.05); border-radius: 4px; overflow: hidden; }
+.w-barlist .bar-fill { height: 100%; border-radius: 4px; background: var(--brand); transition: width 0.6s ease, filter .15s ease; }
+.w-barlist .bar-fill.crit { background: var(--critical); }
+.w-barlist .bar-fill.warn { background: var(--warning); }
+.w-barlist .bar-fill.ok { background: var(--success); }
+.w-barlist .bar-val { width: 32px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; font-size: 14px; }
+.w-barlist .group { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+
+/* === widget chip_strip === */
+
+.w-chipstrip-wrap {
+  margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border);
+}
+.w-chipstrip-label {
+  font-size: 11px; color: var(--text-3); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: 8px; font-weight: 600;
+}
+.w-chipstrip { display: flex; flex-wrap: wrap; gap: 6px; }
+.w-chipstrip .tag {
+  font-size: 11px; padding: 4px 9px; border-radius: 6px;
+  background: var(--surface-2); border: 1px dashed var(--border-strong);
+  color: var(--text-2); font-family: var(--font-mono);
+}
+.w-chipstrip-empty { color: var(--text-3); font-size: 12px; }
+
+</style>
+<script>window.__DB_DEPLOY_META={"deployed_at": "2026-05-21T02:44:15+00:00", "source_canvas": "canvas-wireless-config-20260521-104134", "redacted": false, "account": {"email": "ian.lai@senao.com"}, "mode": "snapshot"};</script></head>
+<body>
+
+<header class="db-hdr">
+  <div class="db-hdr-inner">
+    <div class="db-hdr-left">
+      <img class="db-brand-logo" src="data:image/png;base64,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" alt="EnGenius Cloud" />
+      <div class="db-hdr-titles">
+        <h1>Senna · 無線網路設定體檢</h1>
+        <div class="crumb">EnGenius Cloud Staging · Network · 7 台 AP · 8 組 SSID · 設定快照</div>
+      </div>
+    </div>
+    <div class="db-hdr-right">
+      <div class="db-hdr-right-row">
+        <button class="btn" id="db-refresh" title="重新抓取所有資料"><span class="ic">↻</span> Refresh</button>
+        <button class="btn" id="db-deploy" title="部署這張 dashboard 到 Vercel"><span class="ic">↗</span> Deploy</button>
+        <button class="btn db-btn-icon" id="db-settings" title="設定"><span class="ic">⚙</span></button>
+        <div class="db-status" id="db-status" hidden></div>
+        <div class="live-dot" id="db-live-dot">Live</div>
+        <div class="db-auto-state" id="db-auto-state" hidden></div>
+        <div class="updated" id="db-updated">—</div>
+      </div>
+      <div class="db-chips" id="db-chips" hidden>
+        <span class="db-chip db-chip-account" id="db-chip-account" hidden></span>
+        <span class="db-chip db-chip-scope" id="db-chip-scope" hidden></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="db-wrap">
+<div data-widget-id="wifi-summary" data-widget="alert" style="margin-bottom: 20px;"></div>
+<div data-widget-id="kpis" data-widget="kpi_grid" style="margin-bottom: 20px;"></div>
+<div data-widget-id="ssid-audit" data-widget="table" style="margin-bottom: 20px;"></div>
+<div data-widget-id="auth-dist" data-widget="bar_list" style="margin-bottom: 20px;"></div>
+<div data-widget-id="radio-config" data-widget="table" style="margin-bottom: 20px;"></div>
+<div data-widget-id="vlans" data-widget="chip_strip" style="margin-bottom: 20px;"></div>
+
+  <div class="db-footnote">
+    <div>Generated by dashboard-builder · auto-refresh every 5s</div>
+    <div class="skills">get_hierarchy_views + get_ssid_profiles + get_ap_policy + get_general_policy_vlans</div>
+  </div>
+
+</main>
+
+<template id="tpl-alert">
+  <div class="w-alert">
+    <div class="w-alert-icon"><span>!</span></div>
+    <div class="w-alert-body">
+      <strong data-bind="title"></strong>
+      <p data-bind="body"></p>
+    </div>
+  </div>
+</template>
+
+
+<script>
+// Dashboard runtime: polls live-data, dispatches to widgets, exposes event bus.
+// Widgets self-register via Dashboard.register('<name>', {init, render}).
+//
+// Each widget receives in init({el, config, bus, state}) and render(data, ctx).
+// `data` is a map of alias → JSON. `ctx` exposes helpers (flash, scrollTo, etc).
+
+window.Dashboard = (() => {
+  const widgets = new Map(); // name → factory
+  const mounted = [];         // [{name, el, config, state, instance}]
+  const bus = new EventTarget();
+  let currentSpec = null;     // the spec passed to Dashboard.init — used by modal i18n lookup
+  let cachedAccount = null;   // /account response, cached after first fetch
+  let cachedOrgs = null;      // /user-orgs response, cached after first fetch
+  let liveData = {};          // alias → relative path
+  let dataSnapshot = {};      // alias → parsed JSON
+  let pollHandle = null;
+  let snapshotMeta = null;    // truthy when canvas is a deployed (frozen) snapshot
+  let liveMeta = null;        // truthy when canvas is a deployed Live copy (refresh via /api/refresh)
+
+  // Auto-refresh state — opt-in via Settings modal, persisted per-canvas in
+  // localStorage. setTimeout-based (not setInterval) so manual Refresh can
+  // cleanly reset "next at" without doubled fires. See applyAutoRefresh().
+  let autoRefreshSeconds = 0;     // 0 = off
+  let autoRefreshTimer = null;    // setTimeout handle
+  let countdownTimer = null;      // 1s setInterval for UI ticker
+  let nextRefreshAt = 0;          // ms timestamp
+  let autoRefreshFailCount = 0;
+  let autoRefreshPaused = false;
+  let runRefreshFn = null;        // bound in init() so Settings save can re-trigger
+
+  function register(name, factory) {
+    widgets.set(name, factory);
+  }
+
+  function dispatch(type, detail) {
+    bus.dispatchEvent(new CustomEvent(type, { detail }));
+  }
+
+  function on(type, handler) {
+    bus.addEventListener(type, handler);
+  }
+
+  // Helpers for widgets
+  const ctx = {
+    flash(el) {
+      if (!el) return;
+      el.classList.remove('flash');
+      void el.offsetWidth;
+      el.classList.add('flash');
+    },
+    scrollToWidget(id, opts = {}) {
+      const target = document.querySelector(`[data-widget-id="${id}"]`);
+      if (target) {
+        target.scrollIntoView({behavior:'smooth', block: opts.block || 'start'});
+        setTimeout(() => ctx.flash(target), 300);
+      }
+    },
+    fmtDate(ms) {
+      if (!ms) return 'never';
+      return new Date(ms).toISOString().split('T')[0];
+    },
+    fmtDateTime(ms) {
+      if (!ms) return 'never';
+      return new Date(ms).toISOString().replace('T',' ').slice(0,16);
+    },
+    daysSince(ms) {
+      if (!ms) return Infinity;
+      return Math.floor((Date.now() - ms) / 86400000);
+    },
+    getByPath(obj, path) {
+      if (!path) return obj;
+      // Support: foo.bar.baz, foo.bar.length, foo[0].bar, foo.bar[2]
+      // Tokenize by . and [n] (where n is integer)
+      const tokens = [];
+      path.split('.').forEach(seg => {
+        const m = seg.match(/^([^\[]*)((?:\[\d+\])*)$/);
+        if (!m) return;
+        if (m[1]) tokens.push(m[1]);
+        const idxRe = /\[(\d+)\]/g;
+        let im;
+        while ((im = idxRe.exec(m[2])) !== null) tokens.push(parseInt(im[1], 10));
+      });
+      return tokens.reduce((o, k) => {
+        if (o == null) return undefined;
+        if (k === 'length' && Array.isArray(o)) return o.length;
+        return o[k];
+      }, obj);
+    },
+  };
+
+  async function fetchAll() {
+    const out = {};
+    for (const [alias, path] of Object.entries(liveData)) {
+      try {
+        const r = await fetch(path, { cache: 'no-store' });
+        out[alias] = await r.json();
+      } catch (e) {
+        console.warn('fetch fail', path, e);
+        out[alias] = null;
+      }
+    }
+    dataSnapshot = out;
+    return out;
+  }
+
+  async function tick() {
+    await fetchAll();
+    for (const m of mounted) {
+      try {
+        m.instance.render(dataSnapshot, ctx);
+      } catch (e) {
+        console.error(`[widget ${m.name}] render error`, e);
+      }
+    }
+    // Update header timestamp (skipped in snapshot mode — handled by applySnapshotMode)
+    if (snapshotMeta) return;
+    const t = new Date();
+    const stamp = document.getElementById('db-updated');
+    if (stamp) {
+      stamp.textContent = `updated ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')}`;
+    }
+  }
+
+  // ---------- Snapshot mode ----------
+  // A canvas deployed via /deploy ships a _snapshot.json marker. When present
+  // we know we're rendering a frozen public copy (e.g. on Vercel) where the
+  // /refresh and /deploy endpoints don't exist — hide those buttons and the
+  // "Live" indicator and surface the deployed_at timestamp instead.
+  async function detectSnapshotMode() {
+    try {
+      const r = await fetch('_snapshot.json', { cache: 'no-store' });
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function applySnapshotMode(meta) {
+    const refresh = document.getElementById('db-refresh');
+    const deploy = document.getElementById('db-deploy');
+    const liveDot = document.getElementById('db-live-dot');
+    const updated = document.getElementById('db-updated');
+    if (refresh) refresh.style.display = 'none';
+    if (deploy) deploy.style.display = 'none';
+    if (liveDot) {
+      liveDot.classList.remove('live-dot');
+      liveDot.classList.add('snapshot-tag');
+      liveDot.textContent = meta.redacted ? 'Snapshot · redacted' : 'Snapshot';
+    }
+    if (updated) {
+      const t = new Date(meta.deployed_at);
+      updated.textContent = isNaN(t) ? meta.deployed_at : ctx.fmtDateTime(t.getTime());
+    }
+  }
+
+  // ---------- Live mode ----------
+  // A canvas deployed via /deploy mode=live ships a _live.json marker plus an
+  // /api/refresh serverless function. Unlike a snapshot it CAN refresh — but
+  // the deployed filesystem is read-only, so Refresh calls the function and
+  // renders the returned data inline instead of POSTing to the local server.
+  // Deploy + Settings are still hidden (a deployed copy can't redeploy or swap
+  // keys) and polling is off (data changes only on an explicit Refresh).
+  async function detectLiveMode() {
+    try {
+      const r = await fetch('_live.json', { cache: 'no-store' });
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function applyLiveMode(meta) {
+    const deploy = document.getElementById('db-deploy');
+    const settings = document.getElementById('db-settings');
+    const updated = document.getElementById('db-updated');
+    if (deploy) deploy.style.display = 'none';
+    if (settings) settings.style.display = 'none';
+    // Refresh button stays (the whole point of Live mode). Header keeps the
+    // green "Live" dot. Seed the timestamp from deploy time until first refresh.
+    if (updated && meta.deployed_at) {
+      const t = new Date(meta.deployed_at);
+      updated.textContent = isNaN(t) ? meta.deployed_at : ctx.fmtDateTime(t.getTime());
+    }
+  }
+
+  // ---------- Identity chips · Account + Scope ----------
+  // serve.py proxies these to api-skills (cached server-side). Snapshot mode
+  // can't reach the local endpoints, so it falls back to baked-in info from
+  // _snapshot.json (TODO: bake account/scope into snapshot at deploy time).
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  async function fetchJson(path) {
+    const r = await fetch(path);
+    if (!r.ok) throw new Error(`${path} → HTTP ${r.status}`);
+    return r.json();
+  }
+
+  function fillAccountChip(account) {
+    const el = document.getElementById('db-chip-account');
+    if (!el || !account) return;
+    // Email is the canonical identifier — display names can repeat or be
+    // missing. Show email inline; full name lives in the hover tooltip for
+    // anyone who wants to confirm who that mailbox belongs to.
+    const email = account.email || '';
+    if (!email) return;
+    const name = [account.given_name, account.family_name]
+      .filter(Boolean).join(' ').trim();
+    el.innerHTML = `<span class="ic">👤</span>${escapeHtml(email)}`;
+    el.hidden = false;
+    el.title = name ? `${name} · ${email}` : email;
+  }
+
+  function fillScopeChip(refresh, orgsPayload) {
+    const el = document.getElementById('db-chip-scope');
+    if (!el) return;
+    // Deployed copy (snapshot or live): no local API access. Prefer baked-in
+    // scope.name persisted into the marker file at deploy time. Snapshot has a
+    // dated "Snapshot" fallback; live always bakes scope so it shows the name.
+    const dm = snapshotMeta || liveMeta;
+    if (dm) {
+      const baked = dm.scope;
+      if (baked?.name) {
+        el.innerHTML = `<span class="ic">🎯</span><span class="lbl">Scope</span>${escapeHtml(baked.name)}`;
+        el.hidden = false;
+        return;
+      }
+      if (snapshotMeta) {
+        const date = (snapshotMeta.deployed_at || '').slice(0, 10);
+        const tag = snapshotMeta.redacted ? `${date} · redacted` : date;
+        el.innerHTML = `<span class="ic">📷</span><span class="lbl">Snapshot</span>${escapeHtml(tag)}`;
+        el.hidden = false;
+        return;
+      }
+      // live without a baked name: fall through to id-based rendering below.
+    }
+    if (!refresh || !refresh.scope) {
+      // No refresh declared and no snapshot — nothing to show.
+      return;
+    }
+    const orgs = orgsPayload?.org_candidates || [];
+    const findOrg = (id) => orgs.find(o => o.org_id === id);
+    let value = '';
+    let tooltip = '';
+    const ids = refresh.ids || {};
+    if (refresh.scope === 'all') {
+      const count = orgsPayload?.count ?? orgs.length;
+      value = `${count} org${count === 1 ? '' : 's'}`;
+      tooltip = orgs.map(o => o.name).filter(Boolean).join(', ');
+    } else if (refresh.scope === 'org') {
+      const o = findOrg(ids.org_id);
+      value = o?.name || ids.org_id || '?';
+      tooltip = ids.org_id || '';
+    } else if (refresh.scope === 'hv') {
+      const o = findOrg(ids.org_id);
+      value = `${o?.name || ids.org_id} › HV ${ids.hv_id?.slice(-6) || '?'}`;
+      tooltip = `org_id: ${ids.org_id || '?'}  hv_id: ${ids.hv_id || '?'}`;
+    } else if (refresh.scope === 'network') {
+      const o = findOrg(ids.org_id);
+      value = `${o?.name || ids.org_id} › Net ${ids.network_id?.slice(-6) || '?'}`;
+      tooltip = `org_id: ${ids.org_id || '?'}  network_id: ${ids.network_id || '?'}`;
+    } else {
+      value = refresh.scope;
+    }
+    el.innerHTML = `<span class="ic">🎯</span><span class="lbl">Scope</span>${escapeHtml(value)}`;
+    if (tooltip) el.title = tooltip;
+    el.hidden = false;
+  }
+
+  async function renderIdentityChips(refresh) {
+    const chipsHost = document.getElementById('db-chips');
+    if (!chipsHost) return;
+    // Always show the chip row container once we try; chips inside reveal as
+    // their data arrives, so a 502 on /user-orgs still lets account chip show.
+    chipsHost.hidden = false;
+    const tasks = [];
+    const dm = snapshotMeta || liveMeta;  // deployed copy → baked identity, no live endpoints
+    if (!dm) {
+      tasks.push(fetchJson('/account').then(d => { cachedAccount = d; fillAccountChip(d); }).catch(e => {
+        console.warn('[chip] /account failed:', e);
+      }));
+      tasks.push(fetchJson('/user-orgs').then(d => { cachedOrgs = d; fillScopeChip(refresh, d); }).catch(e => {
+        console.warn('[chip] /user-orgs failed:', e);
+        fillScopeChip(refresh, null);  // still render scope from ids without name lookup
+      }));
+    } else {
+      // Deployed canvas (snapshot or live): no local endpoints. Read baked
+      // identity out of the marker — the server bakes account.email +
+      // scope.{kind,name,ids} into _snapshot.json / _live.json at deploy time.
+      if (dm.account) fillAccountChip(dm.account);
+      fillScopeChip(refresh, null);  // fillScopeChip inspects snapshotMeta/liveMeta itself
+    }
+    await Promise.allSettled(tasks);
+    // Hide the host if both chips remained hidden (e.g., snapshot with no scope).
+    const accVisible = !document.getElementById('db-chip-account')?.hidden;
+    const scpVisible = !document.getElementById('db-chip-scope')?.hidden;
+    if (!accVisible && !scpVisible) chipsHost.hidden = true;
+  }
+
+  // ---------- Deploy modal ----------
+  function deriveCanvasDir() {
+    // Pattern: /dashboard-builder/canvases/<canvas-id>/{index.html,}
+    // Returns repo-relative dashboard-builder/canvases/<id>, or null if canvas
+    // isn't served from the expected path (legacy flat canvas / dev server).
+    const path = window.location.pathname;
+    const m = path.match(/^(.*\/canvases\/[^/]+)\/?(index\.html)?$/);
+    if (!m) return null;
+    return m[1].replace(/^\//, '');
+  }
+
+  // ---------- i18n · UI strings ----------
+  // Source of truth lives in dashboard-builder/skill/locales/*.json.
+  // compose.py loads the requested locale (with en fallback) and embeds the
+  // resolved dict as spec.i18n. Runtime + widgets read from there.
+  // Adding a new language = drop a new locales/<lang>.json + zero JS changes.
+  //
+  // EN_FALLBACK kicks in only for legacy canvases composed before i18n was
+  // wired up — those canvases lack spec.i18n. Mirrors locales/en.json so old
+  // canvases keep working until they're recomposed.
+  const EN_FALLBACK = {"deploy":{"title":"Deploy & share this dashboard","close":"Close","target":"Deploy to","target_vercel":"Vercel","target_vercel_sub":"Public URL · 3–30s · needs vercel login","target_ghpages":"GitHub Pages","target_ghpages_sub":"Public URL · 1–2 min · needs gh login + your repo","eta":"Estimated time","eta_vercel":"3–30 seconds","eta_ghpages":"1–2 minutes","url_label":"URL","url_suffix":".vercel.app","url_help":"Type here → URL updates live. Lowercase letters, digits and -, max 100 chars.","url_invalid":"Only lowercase letters, digits and -","repo_label":"GitHub repo","repo_placeholder":"owner/repo","repo_help":"Pick one of your repos (listed via gh CLI), or type owner/repo manually.","repo_invalid":"Format: owner/repo","repo_loading":"Listing repos…","repo_no_gh":"gh CLI not installed / logged in. Try `brew install gh && gh auth login`.","path_label":"Path","path_placeholder":"canvas-my-dashboard","path_help":"Subdirectory on the gh-pages branch of that repo.","path_invalid":"Only letters / digits / . _ -","scan_title":"Privacy check","scan_pending":"Checking…","scan_clean":"✓ No personal or org identifiers found — safe to share.","scan_has":"This dashboard includes identifying data:","purpose_title":"What's this deploy for?","purpose_keep_label":"Just me or my team","purpose_keep_desc":"Keep real org_id / MAC / IP / email values. The URL is public, so only share it with people who already have access to the raw data.","purpose_share_label":"Sharing with others / external demo","purpose_share_desc":"Auto-replace org_id / MAC / IP / email with demo placeholders (org A → demo-org-1; same input → same placeholder, so charts keep working).","cancel":"Cancel","deploy":"Deploy","deploying":"Deploying to Vercel… usually 3–30 seconds.","deploy_failed":"Deploy failed","deployed":"Deployed ✓","copy":"Copy URL","copied":"Copied!","live_label":"🔄 Live mode — refreshable after deploy","live_desc":"Ships a small serverless function so the deployed page can re-fetch live data when you press Refresh. Demo-only: the public URL has no auth and your API key is stored in the deployment. Vercel only.","live_needs_scope":"Live mode needs a refresh scope on this canvas.","network_err":"Can't reach the local server. Is `bash scripts/serve.sh` running?","not_a_canvas":"Deploy is only available for canvases served from /dashboard-builder/canvases/<id>/.","fields":{"org":"org_id","mac":"MAC","serial":"serial","ip":"IP","email":"email"}},"settings":{"title":"Settings","close":"Close","current_using":"Currently using","no_account":"No account loaded","key_label":"EnGenius API key","key_placeholder":"Paste a key to override the default…","key_help":"Default comes from .env / built-in value. A key entered here lives only in this server process — server restart reverts.","reveal":"Show","hide":"Hide","reset":"Reset to default","save":"Save & apply","saving":"Validating…","invalid":"Wrong shape (8–200 chars, letters/digits/+/=_-)","api_error":"API rejected this key","saved":"✓ Applied","reset_done":"✓ Reset to default","auto_refresh_label":"Auto-refresh","auto_off":"Off","auto_5min":"Every 5 minutes","auto_10min":"Every 10 minutes","auto_15min":"Every 15 minutes","auto_help":"Re-runs Refresh on a timer while the tab is in foreground. Pauses when the tab is hidden or after 3 consecutive errors."},"status":{"refreshing":"refreshing","refreshed":"refreshed","refresh_failed":"refresh failed","refresh_error":"refresh error","files_one":"file","files_many":"files","scope_all":"scope=all","scope_org":"scope=org","scope_hv":"scope=hv","scope_network":"scope=network","next_in":"next: {time}","auto_paused":"⚠ auto paused ({n} errors)"},"table":{"search_placeholder":"Search...","empty_state":"No rows match this filter","page_first":"« First","page_prev":"← Prev","page_next":"Next →","page_last":"Last »","page_indicator":"Page {n} of {total}","title_first":"First page","title_prev":"Previous page","title_next":"Next page","title_last":"Last page","items_count":"{n} items"}};
+
+  function t() {
+    return (currentSpec && currentSpec.i18n) || EN_FALLBACK;
+  }
+  // Interpolate {placeholder} in a string with values from `vars`.
+  function tFmt(str, vars) {
+    if (!str) return '';
+    return String(str).replace(/\{(\w+)\}/g, (_, k) => (vars && k in vars ? vars[k] : `{${k}}`));
+  }
+
+
+  // Vercel project name rules: lowercase alphanumeric + dash, ≤ 100 chars.
+  // We normalise as user types: dash-separate invalid chunks, collapse runs.
+  // Crucially the edge-dash strip ONLY runs on submit — stripping while the
+  // user is mid-edit eats the dash they just typed and prevents them from
+  // continuing (e.g. typing "abc-" → field becomes "abc" → can't add "-d").
+  const PROJECT_NAME_RE = /^[a-z0-9-]+$/;
+  function sanitizeProjectName(raw, { trimEdges = false } = {}) {
+    let s = String(raw || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9-]+/g, '-')
+      .replace(/-+/g, '-')
+      .slice(0, 100);
+    if (trimEdges) s = s.replace(/^-+|-+$/g, '');
+    return s;
+  }
+  function deriveDefaultProjectName(canvasDir) {
+    // canvasDir is dashboard-builder/canvases/<id>/. Use the trailing <id>.
+    const m = String(canvasDir || '').match(/canvases\/([^/]+)\/?$/);
+    return sanitizeProjectName(m ? m[1] : 'canvas-snapshot');
+  }
+
+  // Build the identity payload to bake into _snapshot.json so the deployed
+  // copy keeps Account + Scope chips populated even without live endpoints.
+  // Reads from the in-memory caches populated by renderIdentityChips.
+  function buildSnapshotMetaForDeploy(refresh) {
+    const out = {};
+    if (cachedAccount?.email) {
+      out.account = { email: cachedAccount.email };
+    }
+    if (refresh?.scope) {
+      const orgs = cachedOrgs?.org_candidates || [];
+      const findOrg = (id) => orgs.find(o => o.org_id === id);
+      const ids = refresh.ids || {};
+      let name = '';
+      if (refresh.scope === 'all') {
+        const count = cachedOrgs?.count ?? orgs.length;
+        name = `${count} org${count === 1 ? '' : 's'}`;
+      } else if (refresh.scope === 'org') {
+        name = findOrg(ids.org_id)?.name || ids.org_id || '?';
+      } else if (refresh.scope === 'hv') {
+        name = `${findOrg(ids.org_id)?.name || ids.org_id} › HV ${ids.hv_id?.slice(-6) || '?'}`;
+      } else if (refresh.scope === 'network') {
+        name = `${findOrg(ids.org_id)?.name || ids.org_id} › Net ${ids.network_id?.slice(-6) || '?'}`;
+      }
+      if (name) out.scope = { kind: refresh.scope, name, ids };
+    }
+    return Object.keys(out).length ? out : null;
+  }
+
+  function ensureModal(t) {
+    let host = document.getElementById('db-deploy-modal');
+    if (host) return host;
+    host = document.createElement('div');
+    host.id = 'db-deploy-modal';
+    host.className = 'db-modal-backdrop';
+    host.hidden = true;
+    host.innerHTML = `
+      <div class="db-modal" role="dialog" aria-labelledby="db-modal-title">
+        <div class="db-modal-hdr">
+          <h2 id="db-modal-title">${escapeHtml(t.title)}</h2>
+          <button class="db-modal-close" type="button" aria-label="${escapeHtml(t.close)}">×</button>
+        </div>
+        <div class="db-modal-body">
+          <div class="db-modal-targets" data-section="targets">
+            <label class="db-modal-target-pick">
+              <input type="radio" name="db-modal-target" value="vercel" checked />
+              <svg class="db-modal-target-logo" viewBox="0 0 76 65" aria-hidden="true">
+                <path fill="currentColor" d="M37.5274 0L75.0548 65H0z"/>
+              </svg>
+              <span class="db-modal-target-body">
+                <strong>${escapeHtml(t.target_vercel)}</strong>
+                <span class="db-modal-target-sub">${escapeHtml(t.target_vercel_sub)}</span>
+              </span>
+            </label>
+            <label class="db-modal-target-pick">
+              <input type="radio" name="db-modal-target" value="gh-pages" />
+              <svg class="db-modal-target-logo" viewBox="0 0 16 16" aria-hidden="true">
+                <!-- Invertocat: filled circle + cat cutout. Circle takes
+                     currentColor (brand when selected, text-1 otherwise);
+                     cat uses --surface so it always reads as contrast. -->
+                <circle cx="8" cy="8" r="8" fill="currentColor"/>
+                <path fill="var(--surface)" d="M8 1.5C4.69 1.5 2 4.19 2 7.5c0 2.66 1.72 4.91 4.1 5.7.3.06.41-.13.41-.28v-.99c-1.51.27-1.9-.37-2.02-.71-.07-.17-.36-.71-.61-.85-.21-.11-.51-.39-.01-.4.47 0 .81.43.92.61.54.91 1.4.65 1.75.5.05-.39.21-.65.39-.8-1.34-.15-2.74-.67-2.74-2.96 0-.65.23-1.2.61-1.61-.06-.15-.27-.77.06-1.59 0 0 .51-.16 1.65.61.48-.13.99-.2 1.5-.2.51 0 1.02.07 1.5.2 1.15-.78 1.65-.61 1.65-.61.33.82.12 1.44.06 1.59.38.42.61.96.61 1.61 0 2.3-1.4 2.81-2.73 2.96.22.19.4.55.4 1.11v1.65c0 .16.11.35.41.28a6.011 6.011 0 0 0 4.1-5.7c0-3.31-2.69-6-6-6z"/>
+              </svg>
+              <span class="db-modal-target-body">
+                <strong>${escapeHtml(t.target_ghpages)}</strong>
+                <span class="db-modal-target-sub">${escapeHtml(t.target_ghpages_sub)}</span>
+              </span>
+            </label>
+          </div>
+
+          <dl class="db-modal-meta">
+            <dt>${escapeHtml(t.eta)}</dt><dd id="db-modal-eta">${escapeHtml(t.eta_vercel)}</dd>
+          </dl>
+
+          <!-- Live mode toggle (Vercel only — needs a serverless function) -->
+          <div class="db-modal-section db-modal-live" data-show-target="vercel">
+            <label class="db-modal-radio">
+              <input type="checkbox" id="db-modal-live" />
+              <span class="db-modal-radio-body">
+                <strong>${escapeHtml(t.live_label || '🔄 Live mode — refreshable after deploy')}</strong>
+                <span class="db-modal-radio-desc">${escapeHtml(t.live_desc || 'Ships a small serverless function so the deployed page can re-fetch live data when you press Refresh. Demo-only: the public URL has no auth and your API key is stored in the deployment. Vercel only.')}</span>
+              </span>
+            </label>
+          </div>
+
+          <!-- Vercel-only fields -->
+          <div class="db-modal-url" data-section="url" data-show-target="vercel">
+            <label class="db-modal-url-label" for="db-modal-name">${escapeHtml(t.url_label)}</label>
+            <div class="db-modal-url-input">
+              <span class="db-modal-url-prefix">https://</span>
+              <input id="db-modal-name" type="text" class="db-modal-url-name" autocomplete="off" spellcheck="false" />
+              <span class="db-modal-url-suffix">${escapeHtml(t.url_suffix)}</span>
+            </div>
+            <div class="db-modal-url-help">${escapeHtml(t.url_help)}</div>
+          </div>
+
+          <!-- GH Pages-only fields -->
+          <div class="db-modal-ghp" data-section="ghpages" data-show-target="gh-pages" hidden>
+            <div class="db-modal-url">
+              <label class="db-modal-url-label" for="db-modal-gh-repo">${escapeHtml(t.repo_label)}</label>
+              <div class="db-modal-url-input">
+                <input id="db-modal-gh-repo" type="text" class="db-modal-url-name"
+                       list="db-modal-gh-repos" placeholder="${escapeHtml(t.repo_placeholder)}"
+                       autocomplete="off" spellcheck="false" />
+              </div>
+              <datalist id="db-modal-gh-repos"></datalist>
+              <div class="db-modal-url-help" id="db-modal-gh-repo-help">${escapeHtml(t.repo_help)}</div>
+            </div>
+            <div class="db-modal-url">
+              <label class="db-modal-url-label" for="db-modal-gh-path">${escapeHtml(t.path_label)}</label>
+              <div class="db-modal-url-input">
+                <input id="db-modal-gh-path" type="text" class="db-modal-url-name"
+                       placeholder="${escapeHtml(t.path_placeholder)}"
+                       autocomplete="off" spellcheck="false" />
+              </div>
+              <div class="db-modal-url-help">${escapeHtml(t.path_help)}</div>
+            </div>
+            <div class="db-modal-url-help db-modal-gh-preview">
+              https://<span data-bind="gh-owner">owner</span>.github.io/<span data-bind="gh-name">repo</span>/<span data-bind="gh-path">path</span>/
+            </div>
+          </div>
+
+          <div class="db-modal-section" data-section="identifiers">
+            <h3>${escapeHtml(t.scan_title)}</h3>
+            <div class="db-modal-scan">${escapeHtml(t.scan_pending)}</div>
+          </div>
+          <div class="db-modal-section" data-section="purpose" data-show="if-identifiers">
+            <h3>${escapeHtml(t.purpose_title)}</h3>
+            <label class="db-modal-radio">
+              <input type="radio" name="db-modal-purpose" value="keep" checked />
+              <span class="db-modal-radio-body">
+                <strong>${escapeHtml(t.purpose_keep_label)}</strong>
+                <span class="db-modal-radio-desc">${escapeHtml(t.purpose_keep_desc)}</span>
+              </span>
+            </label>
+            <label class="db-modal-radio">
+              <input type="radio" name="db-modal-purpose" value="share" />
+              <span class="db-modal-radio-body">
+                <strong>${escapeHtml(t.purpose_share_label)}</strong>
+                <span class="db-modal-radio-desc">${escapeHtml(t.purpose_share_desc)}</span>
+              </span>
+            </label>
+          </div>
+          <div class="db-modal-status" hidden></div>
+        </div>
+        <div class="db-modal-foot">
+          <button class="btn db-modal-cancel" type="button">${escapeHtml(t.cancel)}</button>
+          <button class="btn btn-primary db-modal-go" type="button" disabled>${escapeHtml(t.deploy)} →</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(host);
+
+    const close = () => { host.hidden = true; };
+    host.querySelector('.db-modal-close').addEventListener('click', close);
+    host.querySelector('.db-modal-cancel').addEventListener('click', close);
+    host.addEventListener('click', (e) => { if (e.target === host) close(); });
+    return host;
+  }
+
+  function setModalScan(host, payload, t) {
+    const scanEl = host.querySelector('[data-section="identifiers"] .db-modal-scan');
+    const total = payload.identifiers?.total || 0;
+    const counts = payload.identifiers?.counts || {};
+    const conditional = host.querySelectorAll('[data-show="if-identifiers"]');
+    const go = host.querySelector('.db-modal-go');
+    if (!total) {
+      // No identifiers at all → safe path: skip the purpose chooser.
+      scanEl.innerHTML = `<span class="db-modal-ok">${escapeHtml(t.scan_clean)}</span>`;
+      conditional.forEach(el => el.style.display = 'none');
+      go.disabled = false;
+      return;
+    }
+    const items = Object.entries(counts)
+      .map(([k, n]) => `<li><span>${escapeHtml(t.fields[k] || k)}</span><strong>${n}</strong></li>`)
+      .join('');
+    scanEl.innerHTML = `
+      <p>${escapeHtml(t.scan_has)}</p>
+      <ul class="db-modal-scan-list">${items}</ul>
+    `;
+    conditional.forEach(el => el.style.display = '');
+    // Reset purpose radio to default = keep (no redact). Both options always
+    // selectable; Deploy is enabled unconditionally since the radio has a
+    // default value, and either choice is a valid deploy.
+    const keepRadio = host.querySelector('input[name="db-modal-purpose"][value="keep"]');
+    if (keepRadio) keepRadio.checked = true;
+    go.disabled = false;
+  }
+
+  function setModalStatus(host, msg, kind = 'info') {
+    const el = host.querySelector('.db-modal-status');
+    el.hidden = false;
+    el.className = `db-modal-status db-modal-status-${kind}`;
+    el.innerHTML = msg;
+  }
+
+  // ---------- Settings modal · live API-key swap for demos ----------
+  function ensureSettingsModal(t) {
+    let host = document.getElementById('db-settings-modal');
+    if (host) return host;
+    host = document.createElement('div');
+    host.id = 'db-settings-modal';
+    host.className = 'db-modal-backdrop';
+    host.hidden = true;
+    host.innerHTML = `
+      <div class="db-modal" role="dialog" aria-labelledby="db-settings-title">
+        <div class="db-modal-hdr">
+          <h2 id="db-settings-title">${escapeHtml(t.title)}</h2>
+          <button class="db-modal-close" type="button" aria-label="${escapeHtml(t.close)}">×</button>
+        </div>
+        <div class="db-modal-body">
+          <div class="db-modal-current">
+            <span class="ic">👤</span>
+            <span><span style="color:var(--text-3)">${escapeHtml(t.current_using)}:</span> <strong id="db-settings-current">${escapeHtml(t.no_account)}</strong></span>
+          </div>
+          <div class="db-modal-secret">
+            <label class="db-modal-secret-label" for="db-settings-key">${escapeHtml(t.key_label)}</label>
+            <div class="db-modal-secret-row">
+              <input id="db-settings-key" type="password"
+                     class="db-modal-secret-input"
+                     placeholder="${escapeHtml(t.key_placeholder)}"
+                     autocomplete="off" spellcheck="false" />
+              <button class="db-modal-secret-toggle" type="button" data-toggle="reveal" aria-label="${escapeHtml(t.reveal)}">👁</button>
+            </div>
+            <div class="db-modal-secret-help">${escapeHtml(t.key_help)}</div>
+          </div>
+          <div class="db-modal-auto">
+            <label class="db-modal-secret-label" for="db-settings-auto">${escapeHtml(t.auto_refresh_label || 'Auto-refresh')}</label>
+            <select id="db-settings-auto" class="db-modal-auto-select">
+              <option value="0">${escapeHtml(t.auto_off || 'Off')}</option>
+              <option value="300">${escapeHtml(t.auto_5min || 'Every 5 minutes')}</option>
+              <option value="600">${escapeHtml(t.auto_10min || 'Every 10 minutes')}</option>
+              <option value="900">${escapeHtml(t.auto_15min || 'Every 15 minutes')}</option>
+            </select>
+            <div class="db-modal-secret-help">${escapeHtml(t.auto_help || '')}</div>
+          </div>
+          <div class="db-modal-status" hidden></div>
+        </div>
+        <div class="db-modal-foot">
+          <button class="btn db-settings-reset" type="button">${escapeHtml(t.reset)}</button>
+          <button class="btn btn-primary db-settings-save" type="button">${escapeHtml(t.save)}</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(host);
+
+    const close = () => { host.hidden = true; };
+    host.querySelector('.db-modal-close').addEventListener('click', close);
+    host.addEventListener('click', (e) => { if (e.target === host) close(); });
+
+    // Reveal/hide toggle
+    const input = host.querySelector('#db-settings-key');
+    const toggle = host.querySelector('[data-toggle="reveal"]');
+    toggle.addEventListener('click', () => {
+      const masked = input.type === 'password';
+      input.type = masked ? 'text' : 'password';
+      toggle.setAttribute('aria-label', masked ? t.hide : t.reveal);
+    });
+    return host;
+  }
+
+  async function openSettingsModal() {
+    const t = (currentSpec?.i18n?.settings) || EN_FALLBACK.settings;
+    const host = ensureSettingsModal(t);
+    host.hidden = false;
+    host.querySelector('.db-modal-status').hidden = true;
+    host.querySelector('#db-settings-key').value = '';
+    host.querySelector('.db-modal-secret-row').classList.remove('invalid');
+
+    // Show currently-active account (from the cached /account fetched on init)
+    const currentEl = host.querySelector('#db-settings-current');
+    currentEl.textContent = cachedAccount?.email || t.no_account;
+
+    // Sync auto-refresh dropdown with current state (localStorage or in-memory)
+    const autoSelect = host.querySelector('#db-settings-auto');
+    if (autoSelect) autoSelect.value = String(autoRefreshSeconds || 0);
+
+    // Wire Save (clone-replace to drop any prior handler from earlier open)
+    const oldSave = host.querySelector('.db-settings-save');
+    const save = oldSave.cloneNode(true);
+    oldSave.parentNode.replaceChild(save, oldSave);
+
+    const oldReset = host.querySelector('.db-settings-reset');
+    const reset = oldReset.cloneNode(true);
+    oldReset.parentNode.replaceChild(reset, oldReset);
+
+    const input = host.querySelector('#db-settings-key');
+    const row = host.querySelector('.db-modal-secret-row');
+    const status = host.querySelector('.db-modal-status');
+
+    save.addEventListener('click', async () => {
+      const key = input.value.trim();
+      // Always apply auto-refresh selection on Save (even when API key is empty,
+      // user might just be toggling the auto dropdown).
+      const autoSelectEl = host.querySelector('#db-settings-auto');
+      const autoSeconds = autoSelectEl ? parseInt(autoSelectEl.value, 10) || 0 : 0;
+      const autoChanged = autoSeconds !== autoRefreshSeconds;
+
+      // If user didn't enter a key but only changed auto, accept that.
+      if (!key) {
+        if (autoChanged) {
+          applyAutoRefresh(autoSeconds);
+          status.hidden = false;
+          status.className = 'db-modal-status db-modal-status-success';
+          status.innerHTML = `<span class="ic">✓</span> ${escapeHtml(t.saved)}`;
+          setTimeout(() => { host.hidden = true; }, 800);
+        } else {
+          // Nothing to do — close
+          host.hidden = true;
+        }
+        return;
+      }
+
+      // Client-side shape check first to avoid noisy server round-trip
+      if (!/^[A-Za-z0-9+/=_-]{8,200}$/.test(key)) {
+        row.classList.add('invalid');
+        status.hidden = false;
+        status.className = 'db-modal-status db-modal-status-error';
+        status.textContent = t.invalid;
+        return;
+      }
+      row.classList.remove('invalid');
+      save.disabled = true;
+      save.classList.add('spinning');
+      status.hidden = false;
+      status.className = 'db-modal-status db-modal-status-info';
+      status.innerHTML = `<span class="ic spin">↻</span> ${escapeHtml(t.saving)}`;
+      try {
+        const r = await fetch('/settings/api-key', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ api_key: key }),
+        });
+        const payload = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          status.className = 'db-modal-status db-modal-status-error';
+          status.textContent = `${t.api_error}: ${payload.error || r.statusText}`;
+          save.disabled = false;
+          save.classList.remove('spinning');
+          return;
+        }
+        status.className = 'db-modal-status db-modal-status-success';
+        status.innerHTML = `<span class="ic">✓</span> ${escapeHtml(t.saved)} · ${escapeHtml(payload.email || '')}`;
+        // Bust caches and reload chips so the header reflects the swap
+        cachedAccount = null;
+        cachedOrgs = null;
+        renderIdentityChips(currentSpec?.refresh).catch(() => {});
+        // Also apply auto-refresh selection if it changed
+        if (autoChanged) applyAutoRefresh(autoSeconds);
+        save.classList.remove('spinning');
+        setTimeout(() => { host.hidden = true; }, 1200);
+      } catch (e) {
+        status.className = 'db-modal-status db-modal-status-error';
+        status.textContent = `${t.api_error}: ${e.message}`;
+        save.disabled = false;
+        save.classList.remove('spinning');
+      }
+    });
+
+    reset.addEventListener('click', async () => {
+      reset.disabled = true;
+      try {
+        const r = await fetch('/settings/api-key', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reset: true }),
+        });
+        if (!r.ok) {
+          const err = await r.json().catch(() => ({}));
+          status.hidden = false;
+          status.className = 'db-modal-status db-modal-status-error';
+          status.textContent = err.error || r.statusText;
+          reset.disabled = false;
+          return;
+        }
+        status.hidden = false;
+        status.className = 'db-modal-status db-modal-status-success';
+        status.textContent = t.reset_done;
+        cachedAccount = null;
+        cachedOrgs = null;
+        renderIdentityChips(currentSpec?.refresh).catch(() => {});
+        setTimeout(() => { host.hidden = true; reset.disabled = false; }, 1200);
+      } catch (e) {
+        status.hidden = false;
+        status.className = 'db-modal-status db-modal-status-error';
+        status.textContent = e.message;
+        reset.disabled = false;
+      }
+    });
+  }
+
+  async function openDeployModal() {
+    const t = (currentSpec?.i18n?.deploy) || EN_FALLBACK.deploy;
+    const canvasDir = deriveCanvasDir();
+    if (!canvasDir) {
+      alert(t.not_a_canvas);
+      return;
+    }
+    const host = ensureModal(t);
+    host.hidden = false;
+    host.querySelector('.db-modal-status').hidden = true;
+
+    // Reset Vercel URL input each open: clear any previous edit, seed from
+    // canvas folder name. User can override before pressing Deploy.
+    const nameInput = host.querySelector('#db-modal-name');
+    nameInput.value = deriveDefaultProjectName(canvasDir);
+    nameInput.classList.remove('invalid');
+    nameInput.oninput = () => {
+      const cleaned = sanitizeProjectName(nameInput.value);
+      if (cleaned !== nameInput.value) nameInput.value = cleaned;
+      const help = nameInput.closest('.db-modal-url')?.querySelector('.db-modal-url-help');
+      if (!PROJECT_NAME_RE.test(nameInput.value) || nameInput.value.length === 0) {
+        nameInput.classList.add('invalid');
+        if (help) help.textContent = t.url_invalid;
+      } else {
+        nameInput.classList.remove('invalid');
+        if (help) help.textContent = t.url_help;
+      }
+    };
+
+    // GH Pages fields — repo dropdown + path slug + URL preview. Repo list
+    // is fetched lazily when the target radio first switches to gh-pages.
+    const repoInput = host.querySelector('#db-modal-gh-repo');
+    const pathInput = host.querySelector('#db-modal-gh-path');
+    const repoHelpEl = host.querySelector('#db-modal-gh-repo-help');
+    const ghPreview = {
+      owner: host.querySelector('[data-bind="gh-owner"]'),
+      name:  host.querySelector('[data-bind="gh-name"]'),
+      path:  host.querySelector('[data-bind="gh-path"]'),
+    };
+    const updateGhPreview = () => {
+      const repo = repoInput.value.trim();
+      const [owner, name] = repo.split('/');
+      ghPreview.owner.textContent = owner || 'owner';
+      ghPreview.name.textContent = name || 'repo';
+      ghPreview.path.textContent = (pathInput.value.trim() || 'path');
+    };
+    // Default path slug = same auto-derived value as Vercel
+    pathInput.value = deriveDefaultProjectName(canvasDir);
+    repoInput.value = '';  // user picks each time
+    repoInput.oninput = updateGhPreview;
+    pathInput.oninput = () => {
+      // Sanitize path slug like vercel but allow dot + underscore too
+      const cleaned = String(pathInput.value || '').replace(/[^A-Za-z0-9._-]+/g, '-').slice(0, 100);
+      if (cleaned !== pathInput.value) pathInput.value = cleaned;
+      updateGhPreview();
+    };
+    updateGhPreview();
+
+    // Target radio · switches visible sections + ETA + button state
+    const ghRepoListLoaded = { done: false };
+    async function loadRepoListOnce() {
+      if (ghRepoListLoaded.done) return;
+      ghRepoListLoaded.done = true;
+      repoHelpEl.textContent = t.repo_loading;
+      try {
+        const r = await fetch('/gh/repos');
+        if (!r.ok) {
+          const err = await r.json().catch(() => ({}));
+          repoHelpEl.textContent = `${t.repo_no_gh}: ${err.error || r.statusText}`;
+          return;
+        }
+        const { repos = [] } = await r.json();
+        const datalist = host.querySelector('#db-modal-gh-repos');
+        datalist.innerHTML = repos
+          .map(r => `<option value="${escapeHtml(r.nameWithOwner)}"></option>`)
+          .join('');
+        repoHelpEl.textContent = t.repo_help;
+      } catch (e) {
+        repoHelpEl.textContent = `${t.repo_no_gh}: ${e.message}`;
+      }
+    }
+    const targetRadios = host.querySelectorAll('input[name="db-modal-target"]');
+    const etaEl = host.querySelector('#db-modal-eta');
+    function applyTarget(target) {
+      host.querySelectorAll('[data-show-target]').forEach(el => {
+        el.hidden = el.dataset.showTarget !== target;
+      });
+      etaEl.textContent = target === 'gh-pages' ? t.eta_ghpages : t.eta_vercel;
+      if (target === 'gh-pages') loadRepoListOnce();
+    }
+    targetRadios.forEach(r => r.onchange = () => applyTarget(r.value));
+    applyTarget('vercel');  // default
+
+    // Live toggle: reset each open. Disable when the canvas has no refresh
+    // scope (nothing for the function to re-fetch).
+    const liveToggle = host.querySelector('#db-modal-live');
+    if (liveToggle) {
+      const canLive = !!currentSpec?.refresh?.scope;
+      liveToggle.checked = false;
+      liveToggle.disabled = !canLive;
+      const liveSection = liveToggle.closest('.db-modal-live');
+      if (liveSection) liveSection.style.opacity = canLive ? '' : '0.5';
+    }
+
+    // Clone-replace the Deploy button FIRST to drop any click handler from a
+    // previous open. Order matters: setModalScan() binds `ack.onchange` to
+    // toggle this button's `.disabled`, so the bound reference must be the
+    // node that's currently in the DOM. Cloning AFTER setModalScan strands
+    // the binding on a detached node and leaves the visible button frozen
+    // as disabled. See PR #43 follow-up.
+    const oldGo = host.querySelector('.db-modal-go');
+    const go = oldGo.cloneNode(true);
+    oldGo.parentNode.replaceChild(go, oldGo);
+
+    // Fetch identifier scan
+    try {
+      const r = await fetch('/deploy/preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ canvas_dir: canvasDir }),
+      });
+      if (!r.ok) {
+        const err = await r.json().catch(() => ({}));
+        setModalStatus(host, `${t.deploy_failed}: ${escapeHtml(err.error || r.statusText)}`, 'error');
+        return;
+      }
+      const payload = await r.json();
+      setModalScan(host, payload, t);
+    } catch (e) {
+      setModalStatus(host, t.network_err, 'error');
+      return;
+    }
+
+    go.addEventListener('click', async () => {
+      const target = host.querySelector('input[name="db-modal-target"]:checked')?.value || 'vercel';
+      const liveOn = target === 'vercel' && !!host.querySelector('#db-modal-live')?.checked;
+      const body = {
+        canvas_dir: canvasDir,
+        target,
+        mode: liveOn ? 'live' : 'snapshot',
+        snapshot_meta: buildSnapshotMetaForDeploy(currentSpec?.refresh),
+      };
+      if (liveOn) {
+        // Live mode re-fetches real data on the deployed page; it never
+        // redacts, and it needs the refresh scope/ids to know what to fetch.
+        if (!currentSpec?.refresh?.scope) {
+          setModalStatus(host, t.live_needs_scope || 'Live mode needs a refresh scope on this canvas.', 'error');
+          return;
+        }
+        body.refresh = currentSpec.refresh;
+        body.redact = false;
+      } else {
+        // Read purpose radio for redact decision. If no radio exists (no
+        // identifiers found) → no redact needed.
+        const purposeEl = host.querySelector('input[name="db-modal-purpose"]:checked');
+        body.redact = purposeEl?.value === 'share';
+      }
+
+      if (target === 'vercel') {
+        // Vercel: trim trailing dashes only at submit (mid-edit would block
+        // the user from typing "abc-def").
+        const finalName = sanitizeProjectName(nameInput.value, { trimEdges: true });
+        nameInput.value = finalName;
+        if (!PROJECT_NAME_RE.test(finalName)) {
+          nameInput.classList.add('invalid');
+          nameInput.focus();
+          return;
+        }
+        body.project_name = finalName;
+      } else {
+        // gh-pages: validate repo (owner/name) + path slug
+        const repo = repoInput.value.trim();
+        const path = pathInput.value.trim();
+        if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,99}\/[A-Za-z0-9._-]{1,100}$/.test(repo)) {
+          repoInput.classList.add('invalid');
+          repoHelpEl.textContent = t.repo_invalid;
+          repoInput.focus();
+          return;
+        }
+        if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,98}$/.test(path)) {
+          pathInput.classList.add('invalid');
+          pathInput.focus();
+          return;
+        }
+        repoInput.classList.remove('invalid');
+        pathInput.classList.remove('invalid');
+        body.github_repo = repo;
+        body.github_path = path;
+      }
+
+      go.disabled = true;
+      go.classList.add('spinning');
+      setModalStatus(host, `<span class="ic spin">↻</span> ${escapeHtml(t.deploying)}`, 'info');
+      try {
+        const r = await fetch('/deploy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const payload = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          setModalStatus(host, `${t.deploy_failed}: ${escapeHtml(payload.error || r.statusText)}`, 'error');
+          go.disabled = false;
+          go.classList.remove('spinning');
+          return;
+        }
+        setModalStatus(host, `
+          <div class="db-modal-success">
+            <strong>${escapeHtml(t.deployed)}</strong>
+            <a href="${escapeHtml(payload.url)}" target="_blank" rel="noopener">${escapeHtml(payload.url)}</a>
+            <button type="button" class="btn db-modal-copy" data-url="${escapeHtml(payload.url)}">${escapeHtml(t.copy)}</button>
+          </div>
+        `, 'success');
+        const copyBtn = host.querySelector('.db-modal-copy');
+        copyBtn?.addEventListener('click', () => {
+          navigator.clipboard.writeText(payload.url).then(() => {
+            copyBtn.textContent = t.copied;
+            setTimeout(() => copyBtn.textContent = t.copy, 1500);
+          });
+        });
+        go.classList.remove('spinning');
+        // Leave Deploy button disabled — this canvas is now deployed.
+      } catch (e) {
+        setModalStatus(host, `${t.deploy_failed}: ${escapeHtml(e.message)}`, 'error');
+        go.disabled = false;
+        go.classList.remove('spinning');
+      }
+    });
+  }
+
+  // ---------- Auto-refresh state machine ----------
+  // Reads localStorage on init, dropdown in Settings modal writes back.
+  // setTimeout-based scheduling so we can cleanly reset "next at" when manual
+  // Refresh fires mid-cycle (vs setInterval which doesn't expose elapsed time).
+  function autoRefreshStorageKey() {
+    return `db-auto-refresh-${deriveCanvasDir() || 'unknown'}`;
+  }
+  function cancelAutoRefresh() {
+    if (autoRefreshTimer) { clearTimeout(autoRefreshTimer); autoRefreshTimer = null; }
+    if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+  }
+  function hideAutoStateEl() {
+    const el = document.getElementById('db-auto-state');
+    if (el) { el.hidden = true; el.className = 'db-auto-state'; el.textContent = ''; }
+  }
+  function showCountdownPill() {
+    const el = document.getElementById('db-auto-state');
+    if (!el) return;
+    if (document.hidden) return;  // don't render countdown while tab hidden
+    const remaining = Math.max(0, nextRefreshAt - Date.now());
+    const m = Math.floor(remaining / 60000);
+    const s = Math.floor((remaining % 60000) / 1000);
+    const time = `${m}:${String(s).padStart(2, '0')}`;
+    const template = ((t().status || {}).next_in) || 'next: {time}';
+    el.hidden = false;
+    el.className = 'db-auto-state countdown';
+    el.textContent = template.replace('{time}', time);
+  }
+  function showAutoPausedPill() {
+    const el = document.getElementById('db-auto-state');
+    if (!el) return;
+    const template = ((t().status || {}).auto_paused) || '⚠ auto paused ({n} errors)';
+    el.hidden = false;
+    el.className = 'db-auto-state paused';
+    el.innerHTML =
+      `${template.replace('{n}', autoRefreshFailCount).replace(/</g,'&lt;')}` +
+      ` <button class="db-auto-state-close" type="button" aria-label="dismiss">✕</button>`;
+    el.querySelector('.db-auto-state-close')?.addEventListener('click', hideAutoStateEl);
+  }
+  function scheduleNextAutoRefresh() {
+    if (autoRefreshTimer) clearTimeout(autoRefreshTimer);
+    const delay = Math.max(0, nextRefreshAt - Date.now());
+    autoRefreshTimer = setTimeout(async () => {
+      // Skip if tab hidden — visibilitychange will reschedule on resume.
+      if (document.hidden) {
+        nextRefreshAt = Date.now() + autoRefreshSeconds * 1000;
+        scheduleNextAutoRefresh();
+        return;
+      }
+      if (!runRefreshFn) {
+        nextRefreshAt = Date.now() + autoRefreshSeconds * 1000;
+        scheduleNextAutoRefresh();
+        return;
+      }
+      try {
+        const ok = await runRefreshFn();
+        if (ok) {
+          autoRefreshFailCount = 0;
+        } else {
+          autoRefreshFailCount++;
+        }
+      } catch (e) {
+        console.warn('Auto-refresh error', e);
+        autoRefreshFailCount++;
+      }
+      if (autoRefreshFailCount >= 3) {
+        autoRefreshPaused = true;
+        cancelAutoRefresh();
+        showAutoPausedPill();
+        return;
+      }
+      nextRefreshAt = Date.now() + autoRefreshSeconds * 1000;
+      scheduleNextAutoRefresh();
+    }, delay);
+  }
+  function applyAutoRefresh(seconds) {
+    cancelAutoRefresh();
+    autoRefreshSeconds = seconds | 0;
+    autoRefreshFailCount = 0;
+    autoRefreshPaused = false;
+    try { localStorage.setItem(autoRefreshStorageKey(), String(autoRefreshSeconds)); } catch {}
+    if (!autoRefreshSeconds || snapshotMeta) {
+      hideAutoStateEl();
+      return;
+    }
+    nextRefreshAt = Date.now() + autoRefreshSeconds * 1000;
+    showCountdownPill();
+    countdownTimer = setInterval(showCountdownPill, 1000);
+    scheduleNextAutoRefresh();
+  }
+  function resetAutoRefreshTimer() {
+    // Called when manual Refresh fires — pushes next auto-refresh from now.
+    if (!autoRefreshSeconds || autoRefreshPaused) return;
+    autoRefreshFailCount = 0;
+    nextRefreshAt = Date.now() + autoRefreshSeconds * 1000;
+    showCountdownPill();
+    scheduleNextAutoRefresh();
+  }
+  function loadAutoRefreshSetting() {
+    try {
+      const v = parseInt(localStorage.getItem(autoRefreshStorageKey()) || '0', 10);
+      if ([300, 600, 900].includes(v)) return v;
+    } catch {}
+    return 0;
+  }
+
+  async function init(spec) {
+    currentSpec = spec;  // captured for i18n lookup (Deploy / Settings / status / widgets)
+    ctx.i18n = (spec && spec.i18n) || {};  // expose to widgets via ctx.i18n.<namespace>.<key>
+    // Guard: Chrome's file:// security policy blocks fetch() of live-data/*.json.
+    // Show friendly instructions instead of an empty 0-filled dashboard.
+    if (window.location.protocol === 'file:') {
+      const banner = document.createElement('div');
+      banner.style.cssText = 'position:fixed;inset:0;background:#fef3c7;color:#92400e;padding:40px;font:14px/1.6 system-ui,sans-serif;z-index:99999;overflow:auto;';
+      banner.innerHTML = '<h1 style="margin:0 0 16px 0;font-size:20px;">⚠️ Dashboard needs to be served over HTTP</h1>' +
+        '<p style="margin:0 0 12px 0;">You opened this file with <code>file://</code> protocol. Chrome blocks <code>fetch()</code> for security, so the dashboard cannot load <code>live-data/*.json</code> and all values appear as 0.</p>' +
+        '<p style="margin:0 0 8px 0;font-weight:600;">Fix · run a local HTTP server from the repo root:</p>' +
+        '<pre style="background:#fde68a;padding:12px;border-radius:6px;margin:0 0 16px 0;font:13px ui-monospace,Menlo,monospace;">bash scripts/serve.sh</pre>' +
+        '<p style="margin:0 0 8px 0;">Then open this canvas via:</p>' +
+        '<pre style="background:#fde68a;padding:12px;border-radius:6px;margin:0;font:13px ui-monospace,Menlo,monospace;">http://localhost:8765/' + window.location.pathname.split('/').slice(-2).join('/') + '</pre>';
+      document.body.prepend(banner);
+      return;
+    }
+
+    // Deployment mode detection. A deployed canvas is either a frozen Snapshot
+    // or a refreshable Live copy (mutually exclusive). Prefer the inline marker
+    // (window.__DB_DEPLOY_META, baked into the HTML at deploy time) — it's
+    // synchronous and survives auth proxies / path quirks that can break a
+    // _live.json/_snapshot.json sub-resource fetch. Fall back to the fetch for
+    // older deployed copies that predate the inline marker.
+    const inlineMeta = (() => { try { return window.__DB_DEPLOY_META || null; } catch (_) { return null; } })();
+    if (inlineMeta && inlineMeta.mode === 'live') {
+      liveMeta = inlineMeta;
+    } else if (inlineMeta && inlineMeta.mode === 'snapshot') {
+      snapshotMeta = inlineMeta;
+    } else {
+      liveMeta = await detectLiveMode();
+      if (!liveMeta) snapshotMeta = await detectSnapshotMode();
+    }
+    if (liveMeta) applyLiveMode(liveMeta);
+    else if (snapshotMeta) applySnapshotMode(snapshotMeta);
+
+    // Identity chips · Account (who's the API_KEY?) + Scope (what is in view).
+    // Fire-and-forget; failure leaves chips hidden. Fetches in parallel.
+    renderIdentityChips(spec.refresh).catch(e => console.warn('identity chips:', e));
+
+    liveData = spec.live_data || {};
+    // Wire each section
+    for (const section of spec.sections) {
+      // raw_html sections are static; no widget lifecycle needed.
+      if (section.raw_html !== undefined) continue;
+      const factory = widgets.get(section.widget);
+      if (!factory) {
+        console.error('Unknown widget:', section.widget);
+        continue;
+      }
+      const el = document.querySelector(`[data-widget-id="${section.id || section.widget}"]`);
+      if (!el) {
+        console.error('Mount point missing for', section.widget, section.id);
+        continue;
+      }
+      const state = {};
+      const instance = factory({ el, config: section, bus: { dispatch, on }, state, ctx });
+      mounted.push({ name: section.widget, el, config: section, state, instance });
+    }
+
+    // ---------- Refresh status banner ----------
+    // Visible signal of what /refresh actually did. Three states:
+    //   pending  — "↻ refreshing · scope=org · 12s"   (live ticker)
+    //   success  — "✓ refreshed · 4 files · 28s"      (auto-fade 10s)
+    //   error    — "✗ refresh failed: <msg>"          (sticky · close button)
+    // Replaces the old console.error + missing-ctx.toast no-op.
+    const statusEl = document.getElementById('db-status');
+    let statusTicker = null;
+    // setStatus owns transitions BETWEEN states. The pending ticker writes the
+    // DOM directly (not via setStatus) so it doesn't keep clearing itself —
+    // earlier bug: ticker called setStatus('pending', …) every 1s, which ran
+    // clearInterval(statusTicker) and killed the ticker after the first tick.
+    function setStatus(kind, html, opts = {}) {
+      if (!statusEl) return;
+      if (statusTicker) { clearInterval(statusTicker); statusTicker = null; }
+      statusEl.hidden = false;
+      statusEl.className = `db-status db-status-${kind}`;
+      statusEl.innerHTML = html;
+      if (opts.autoHideMs) {
+        setTimeout(() => {
+          if (statusEl.classList.contains(`db-status-${kind}`)) statusEl.hidden = true;
+        }, opts.autoHideMs);
+      }
+    }
+    function clearStatus() {
+      if (statusTicker) { clearInterval(statusTicker); statusTicker = null; }
+      if (statusEl) statusEl.hidden = true;
+    }
+    function startStatusTicker(scopeLabel, t0) {
+      // Direct DOM mutation each second — bypasses setStatus to avoid
+      // self-clearing the interval.
+      const ts = (t().status) || {};
+      const renderPending = () => {
+        if (!statusEl) return;
+        const elapsed = Math.floor((Date.now() - t0) / 1000);
+        statusEl.hidden = false;
+        statusEl.className = 'db-status db-status-pending';
+        statusEl.innerHTML = `<span class="ic spin">↻</span> ${ts.refreshing || 'refreshing'} · ${scopeLabel} · ${elapsed}s`;
+      };
+      renderPending();
+      statusTicker = setInterval(renderPending, 1000);
+    }
+
+    // Refresh button (skipped in snapshot mode)
+    // If spec.refresh is defined, POST /refresh first (server runs the
+    // recipe to re-fetch fresh API data into the canvas's live-data folder),
+    // then tick() re-loads those JSON files.
+    // If spec.refresh is absent, fall back to the old behavior: just re-read
+    // existing JSON files (keeps backward compat for canvases that don't
+    // declare a refresh scope).
+    const refreshConfig = spec.refresh;
+    const btn = document.getElementById('db-refresh');
+
+    // The actual refresh routine — used by both manual click and auto-refresh
+    // timer. Returns true on success (so auto-refresh fail counter can track).
+    // Live mode refresh: POST {scope, ids} to the same-origin serverless
+    // function, then render the returned files inline. Returns true on success.
+    async function runLiveRefresh(t0) {
+      const ts = (t().status) || {};
+      const scope = liveMeta.refresh?.scope;
+      const scopeLabel = ts[`scope_${scope}`] || `scope=${scope}`;
+      startStatusTicker(scopeLabel, t0);
+      const r = await fetch('api/refresh', {  // relative → deployed function
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ scope, ids: liveMeta.refresh?.ids || {} }),
+      });
+      if (!r.ok) {
+        const err = await r.json().catch(() => ({}));
+        const msg = err.error || r.statusText;
+        console.error('Live refresh failed:', r.status, msg);
+        setStatus('error', `<span class="ic">✗</span> ${(ts.refresh_failed) || 'refresh failed'} · ${String(msg).replace(/</g,'&lt;')} <button class="db-status-close" type="button" aria-label="dismiss">✕</button>`);
+        statusEl?.querySelector('.db-status-close')?.addEventListener('click', clearStatus);
+        return false;
+      }
+      const payload = await r.json().catch(() => ({}));
+      const files = payload.files || {};
+      // Map returned filenames onto the spec's alias→path table, keeping any
+      // alias the function didn't return (e.g. a 402-skipped file).
+      const next = {};
+      for (const [alias, path] of Object.entries(liveData)) {
+        const base = String(path).split('/').pop();
+        next[alias] = Object.prototype.hasOwnProperty.call(files, base) ? files[base] : dataSnapshot[alias];
+      }
+      dataSnapshot = next;
+      for (const m of mounted) {
+        try { m.instance.render(dataSnapshot, ctx); }
+        catch (e) { console.error(`[widget ${m.name}] render error`, e); }
+      }
+      const seconds = Math.max(1, Math.round((Date.now() - t0) / 1000));
+      const fileCount = Object.keys(files).length;
+      const fileLabel = fileCount === 1 ? (ts.files_one || 'file') : (ts.files_many || 'files');
+      setStatus('success',
+        `<span class="ic">✓</span> ${ts.refreshed || 'refreshed'} · ${fileCount} ${fileLabel} · ${seconds}s`,
+        { autoHideMs: 10000 });
+      const stamp = document.getElementById('db-updated');
+      if (stamp) {
+        const now = new Date();
+        stamp.textContent = `updated ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+      }
+      return true;
+    }
+
+    async function runRefresh() {
+      let ok = true;
+      btn?.classList.add('spinning');
+      if (btn) btn.disabled = true;
+      const t0 = Date.now();
+      try {
+        if (liveMeta) {
+          // Deployed Live copy: call the serverless function and render the
+          // returned data inline (the static *.json can't be rewritten).
+          ok = await runLiveRefresh(t0);
+          return ok;
+        }
+        if (refreshConfig?.scope) {
+          const baseDir = deriveCanvasDir();
+          if (!baseDir) {
+            console.warn('Cannot derive canvas output_dir from URL; skipping POST', window.location.pathname);
+          } else {
+            const ts = (t().status) || {};
+            const scopeLabel = ts[`scope_${refreshConfig.scope}`] || `scope=${refreshConfig.scope}`;
+            startStatusTicker(scopeLabel, t0);
+            const body = {
+              scope: refreshConfig.scope,
+              ids: refreshConfig.ids || {},
+              output_dir: `${baseDir}/live-data`,
+            };
+            const r = await fetch('/refresh', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(body),
+            });
+            if (!r.ok) {
+              const err = await r.json().catch(() => ({}));
+              const msg = err.error || r.statusText;
+              console.error('Refresh recipe failed:', r.status, msg);
+              setStatus('error', `<span class="ic">✗</span> ${((t().status||{}).refresh_failed) || 'refresh failed'} · ${msg.replace(/</g,'&lt;')} <button class="db-status-close" type="button" aria-label="dismiss">✕</button>`);
+              statusEl?.querySelector('.db-status-close')?.addEventListener('click', clearStatus);
+              ok = false;
+              return ok;
+            }
+            const payload = await r.json().catch(() => ({}));
+            const seconds = Math.max(1, Math.round((payload.elapsed_ms || 0) / 1000));
+            const fileCount = (payload.files_written || []).length;
+            const ts2 = (t().status) || {};
+            const fileLabel = fileCount === 1 ? (ts2.files_one || 'file') : (ts2.files_many || 'files');
+            setStatus('success',
+              `<span class="ic">✓</span> ${ts2.refreshed || 'refreshed'} · ${fileCount} ${fileLabel} · ${seconds}s`,
+              { autoHideMs: 10000 });
+          }
+        }
+        await tick();
+      } catch (e) {
+        console.error('Refresh failed (network/other):', e);
+        setStatus('error', `<span class="ic">✗</span> ${((t().status||{}).refresh_error) || 'refresh error'} · ${String(e.message || e).replace(/</g,'&lt;')} <button class="db-status-close" type="button" aria-label="dismiss">✕</button>`);
+        statusEl?.querySelector('.db-status-close')?.addEventListener('click', clearStatus);
+        ok = false;
+      } finally {
+        if (btn) btn.disabled = false;
+        setTimeout(() => btn?.classList.remove('spinning'), 400);
+      }
+      return ok;
+    }
+
+    // Expose so auto-refresh state machine + Settings modal can call it.
+    runRefreshFn = runRefresh;
+
+    if (btn && !snapshotMeta) btn.addEventListener('click', async () => {
+      await runRefresh();
+      resetAutoRefreshTimer();  // manual click pushes next auto-fire from now
+    });
+
+    // Deploy button (hidden on any deployed copy — can't redeploy from cloud)
+    const deployBtn = document.getElementById('db-deploy');
+    if (deployBtn && !snapshotMeta && !liveMeta) {
+      deployBtn.addEventListener('click', openDeployModal);
+    }
+
+    // Settings button (hidden on any deployed copy — can't swap key in cloud)
+    const settingsBtn = document.getElementById('db-settings');
+    if (settingsBtn) {
+      if (snapshotMeta || liveMeta) {
+        settingsBtn.style.display = 'none';
+      } else {
+        settingsBtn.addEventListener('click', openSettingsModal);
+      }
+    }
+
+    // First tick + poll loop. No polling on a deployed copy: a snapshot is
+    // frozen, and a Live copy updates only on explicit Refresh (polling would
+    // just re-fetch the static deploy-time files).
+    await tick();
+    if (!snapshotMeta && !liveMeta) pollHandle = setInterval(tick, 5000);
+
+    // Auto-refresh: read saved preference (off by default), apply if set.
+    if (!snapshotMeta && !liveMeta) {
+      const savedAuto = loadAutoRefreshSetting();
+      if (savedAuto > 0) applyAutoRefresh(savedAuto);
+    }
+
+    // Pause / resume countdown + scheduler on tab visibility change.
+    document.addEventListener('visibilitychange', () => {
+      if (!autoRefreshSeconds || autoRefreshPaused) return;
+      if (document.visibilityState === 'visible') {
+        // Tab returned to foreground. If we missed the scheduled time, push it
+        // out by full interval (don't fire backlog of missed refreshes).
+        if (Date.now() >= nextRefreshAt) {
+          nextRefreshAt = Date.now() + autoRefreshSeconds * 1000;
+        }
+        showCountdownPill();  // resume display immediately
+      }
+    });
+  }
+
+  return { register, init, dispatch, on, ctx };
+})();
+
+</script>
+
+<script>
+/* === widget alert === */
+
+Dashboard.register('alert', ({ el, config, ctx }) => {
+  const tpl = document.getElementById('tpl-alert').content.cloneNode(true);
+  const root = tpl.querySelector('.w-alert');
+  root.classList.add(`severity-${config.severity || 'info'}`);
+  if (config.icon) root.querySelector('.w-alert-icon span').textContent = config.icon;
+  root.querySelector('[data-bind="title"]').textContent = config.title || '';
+  el.appendChild(tpl);
+  const bodyEl = el.querySelector('[data-bind="body"]');
+
+  return {
+    render(data) {
+      // body text can be:
+      //  - static `body`
+      //  - dynamic via `body_compute` (named compute function in compute_fns map)
+      if (config.body_compute && computeFns[config.body_compute]) {
+        bodyEl.textContent = computeFns[config.body_compute](data, config);
+      } else if (config.body) {
+        bodyEl.textContent = config.body;
+      }
+    }
+  };
+});
+
+// Pluggable compute functions. Caller can extend by inlining additional entries
+// in the generated HTML BEFORE the runtime init call.
+const computeFns = window.computeFns || (window.computeFns = {});
+computeFns.license_summary = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const lic = data.licenses?.license_candidates || [];
+  const exp = inv.filter(d => d.license_status === 'expired').length;
+  const need = Math.max(0, exp - lic.length);
+  return `${inv.length} 台設備中有 ${exp} 台 license 已過期；org 內 license pool 還有 ${lic.length} 張可分配。建議:採購 ${need} 張新 license。`;
+};
+
+/* === widget kpi_grid === */
+
+Dashboard.register('kpi_grid', ({ el, config, bus, ctx }) => {
+  const items = config.items || [];
+  el.classList.add('w-kpi-grid');
+  el.style.setProperty('--cols', items.length);
+
+  // build cards
+  const cards = items.map((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'w-kpi';
+    if (item.severity) card.classList.add(`severity-${item.severity}`);
+    if (item.clickable) card.classList.add('clickable');
+    card.innerHTML = `
+      <div class="lbl">${item.label}</div>
+      <div class="val num" data-bind="val">—</div>
+      <div class="sub" data-bind="sub">—</div>
+    `;
+    if (item.clickable) {
+      card.addEventListener('click', () => {
+        bus.dispatch('kpi-click', { item, target: item.clickable.target, action: item.clickable.action });
+        if (item.clickable.target) ctx.scrollToWidget(item.clickable.target);
+      });
+    }
+    el.appendChild(card);
+    return card;
+  });
+
+  return {
+    render(data) {
+      items.forEach((item, idx) => {
+        const card = cards[idx];
+        const valEl = card.querySelector('[data-bind="val"]');
+        const subEl = card.querySelector('[data-bind="sub"]');
+        let val = '—';
+        if (item.value_path) {
+          const v = ctx.getByPath(data, item.value_path);
+          val = v == null ? '—' : v;
+        } else if (item.value_compute && computeFns[item.value_compute]) {
+          val = computeFns[item.value_compute](data, item);
+        }
+        valEl.textContent = val;
+        let sub = '';
+        if (item.sub_compute && computeFns[item.sub_compute]) {
+          sub = computeFns[item.sub_compute](data, item);
+        } else if (item.sub) {
+          sub = item.sub;
+        }
+        subEl.textContent = sub;
+      });
+    }
+  };
+});
+
+// Compute functions for KPIs
+const computeFns2 = window.computeFns || (window.computeFns = {});
+computeFns2.expired_count = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  return inv.filter(d => d.license_status === 'expired').length;
+};
+computeFns2.active_networks_ratio = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const hv = data.hierarchy?.network_candidates || [];
+  const activeIds = new Set(inv.map(d => d.network_id));
+  return `${activeIds.size}/${hv.length}`;
+};
+computeFns2.device_type_breakdown = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const types = inv.reduce((m,d)=>{m[d.type]=(m[d.type]||0)+1;return m;},{});
+  return Object.entries(types).map(([t,c]) => `${c} ${t}`).join(' · ');
+};
+computeFns2.expired_subtext = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const exp = inv.filter(d => d.license_status === 'expired').length;
+  if (inv.length === exp && exp > 0) return '全部過期';
+  return `${exp}/${inv.length} 過期`;
+};
+computeFns2.empty_networks_subtext = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const hv = data.hierarchy?.network_candidates || [];
+  const activeIds = new Set(inv.map(d => d.network_id));
+  return `${hv.length - activeIds.size} 個空的 network`;
+};
+computeFns2.stale_members_subtext = (data) => {
+  const mem = data.memberships?.org_member_candidates || [];
+  const stale = mem.filter(m => Dashboard.ctx.daysSince(m.last_login_time) > 365).length;
+  return `${stale} 人 1+ 年未登入`;
+};
+
+/* === widget table === */
+
+Dashboard.register('table', ({ el, config, bus, ctx }) => {
+  const state = { filter: (config.filters?.[0]?.filter) || 'all', expanded: new Set(), searchQuery: '', page: 1 };
+  const pageSize = config.pagination?.page_size || 50;
+  const paginationEnabled = !!config.pagination?.enabled;
+  // i18n strings from ctx.i18n.table (set up by runtime). Falls back to English literals.
+  const ti = (ctx && ctx.i18n && ctx.i18n.table) || {};
+  // build skeleton
+  el.classList.add('card');
+  el.innerHTML = `
+    <div class="card-hdr">
+      <h2>${config.title || ''}</h2>
+      <span class="meta" data-bind="meta">—</span>
+    </div>
+    ${config.search?.enabled ? `<div class="w-table-search"><input type="search" placeholder="${(config.search.placeholder || ti.search_placeholder || 'Search...').replace(/"/g,'&quot;')}" data-role="search" autocomplete="off"></div>` : ''}
+    ${config.filters ? `<div class="chips" data-role="filters">${
+      config.filters.map((f,i) => `<span class="chip ${i===0?'active':''}" data-filter="${f.filter}">${f.label} <span class="count" data-count="${f.filter}">0</span></span>`).join('')
+    }</div>` : ''}
+    <table class="w-table">
+      <thead><tr>${(config.columns||[]).map(c => `<th class="${c.align==='right'?'num':''}">${c.label}</th>`).join('')}</tr></thead>
+      <tbody data-role="body"></tbody>
+    </table>
+    ${paginationEnabled ? `
+    <div class="w-table-page" data-role="pagination" style="display:none">
+      <button data-role="first" title="${ti.title_first || 'First page'}">${ti.page_first || '« First'}</button>
+      <button data-role="prev" title="${ti.title_prev || 'Previous page'}">${ti.page_prev || '← Prev'}</button>
+      <span class="indicator" data-role="page-indicator">—</span>
+      <button data-role="next" title="${ti.title_next || 'Next page'}">${ti.page_next || 'Next →'}</button>
+      <button data-role="last" title="${ti.title_last || 'Last page'}">${ti.page_last || 'Last »'}</button>
+    </div>` : ''}
+  `;
+
+  const meta = el.querySelector('[data-bind="meta"]');
+  const tbody = el.querySelector('[data-role="body"]');
+
+  // Filter chip events
+  el.querySelector('[data-role="filters"]')?.addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    state.filter = chip.dataset.filter;
+    state.page = 1;  // reset to first page when filter changes
+    el.querySelectorAll('[data-role="filters"] .chip').forEach(c =>
+      c.classList.toggle('active', c === chip));
+    rerender();
+  });
+
+  // Free-text search input
+  el.querySelector('[data-role="search"]')?.addEventListener('input', (e) => {
+    state.searchQuery = e.target.value.trim().toLowerCase();
+    state.page = 1;  // reset to first page when search changes
+    rerender();
+  });
+
+  // Pagination controls
+  el.querySelector('[data-role="first"]')?.addEventListener('click', () => { state.page = 1; rerender(); });
+  el.querySelector('[data-role="prev"]')?.addEventListener('click', () => { if (state.page > 1) { state.page--; rerender(); } });
+  el.querySelector('[data-role="next"]')?.addEventListener('click', () => { state.page++; rerender(); });
+  el.querySelector('[data-role="last"]')?.addEventListener('click', () => { state.page = Number(el.querySelector('[data-role="last"]').dataset.total) || 1; rerender(); });
+
+  // Cross-widget event: bar_list row click → apply filter + scroll/flash
+  bus.on('bar-list-click', (e) => {
+    if (e.detail.target !== config.id) return;
+    state.filter = e.detail.filter;
+    state.page = 1;  // reset on cross-widget filter
+    // Update chip active state if any chip matches
+    el.querySelectorAll('[data-role="filters"] .chip').forEach(c =>
+      c.classList.toggle('active', c.dataset.filter === state.filter));
+    rerender();
+    if (e.detail.scroll) {
+      setTimeout(() => {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        ctx.flash(el);
+      }, 50);
+    }
+  });
+
+  // Row expand
+  tbody.addEventListener('click', (e) => {
+    const row = e.target.closest('tr.expandable');
+    if (!row) return;
+    const id = row.dataset.rowId;
+    if (state.expanded.has(id)) state.expanded.delete(id);
+    else state.expanded.add(id);
+    rerender();
+  });
+
+  // Cross-widget event: expand a specific row + scroll/flash
+  bus.on('table-expand-row', (e) => {
+    if (e.detail.tableId !== config.id) return;
+    state.expanded.add(e.detail.rowId);
+    // reset filter to 'all' so the row is visible
+    state.filter = (config.filters?.[0]?.filter) || 'all';
+    el.querySelectorAll('[data-role="filters"] .chip').forEach(c =>
+      c.classList.toggle('active', c.dataset.filter === state.filter));
+    rerender();
+    setTimeout(() => {
+      const targetRow = tbody.querySelector(`tr.expandable[data-row-id="${e.detail.rowId}"]`);
+      if (targetRow) {
+        targetRow.scrollIntoView({behavior:'smooth', block:'center'});
+        ctx.flash(targetRow);
+      }
+    }, 50);
+  });
+
+  let lastData = null;
+
+  function passesFilter(row, filter) {
+    if (filter === 'all') return true;
+    if (filter.includes(':')) {
+      const [k, v] = filter.split(':');
+      return String(row[k] ?? '') === v;
+    }
+    if (filter === 'stale') return ctx.daysSince(row.last_login_time) > 365;
+    return false;
+  }
+
+  function passesSearch(row, query) {
+    if (!query) return true;
+    const fields = config.search?.fields || [];
+    return fields.some(f => {
+      const v = ctx.getByPath(row, f);
+      return v != null && String(v).toLowerCase().includes(query);
+    });
+  }
+
+  function rowId(row) {
+    return row[config.row_id_field || 'device_id'] || row.mac || row.user_id || row.email || JSON.stringify(row).slice(0,40);
+  }
+
+  function rerender() {
+    if (!lastData) return;
+    render(lastData);
+  }
+
+  function cellHtml(row, col) {
+    const v = ctx.getByPath(row, col.field);
+    if (col.render === 'license_pill') {
+      if (v === 'expired') return `<span class="pill pill-crit">expired</span>`;
+      if (v === 'active') return `<span class="pill pill-ok">${row.license_type||'active'}</span>`;
+      return `<span class="pill pill-muted">${v||'—'}</span>`;
+    }
+    if (col.render === 'type_chip') {
+      return `<span class="type-chip type-${v}"><span class="dot"></span>${v}</span>`;
+    }
+    if (col.render === 'role_pill') {
+      const role = v || (row.networks?.[0]?.role) || '—';
+      const cls = role === 'admin' ? 'pill-info' : role === 'viewer' ? 'pill-muted' : 'pill-warn';
+      return `<span class="pill ${cls}">${role}</span>`;
+    }
+    if (col.render === 'risk_pill') {
+      const d = ctx.daysSince(row.last_login_time);
+      let label, cls;
+      if (d === Infinity) { label = '從未登入'; cls = 'pill-crit'; }
+      else if (d > 730) { label = `${(d/365).toFixed(1)}y stale`; cls = 'pill-crit'; }
+      else if (d > 365) { label = `${(d/365).toFixed(1)}y stale`; cls = 'pill-warn'; }
+      else if (d > 90) { label = `${d}d quiet`; cls = 'pill-info'; }
+      else { label = 'active'; cls = 'pill-ok'; }
+      return `<span class="pill ${cls}">${label}</span>`;
+    }
+    if (col.render === 'date') return `<span class="mono" style="font-size:13px">${ctx.fmtDate(v)}</span>`;
+    if (col.render === 'name_with_sub') {
+      const sub = ctx.getByPath(row, col.sub_field);
+      return `<strong>${v||'—'}</strong><div style="font-size:12px;color:var(--text-3)" class="mono">${sub||''}</div>`;
+    }
+    if (col.render === 'network_or_unassigned') {
+      return v ? v : '<span class="pill pill-muted">unassigned</span>';
+    }
+    if (col.render === 'mono_ellipsis') {
+      return `<span class="ell mono" style="font-size:13px;color:var(--text-2)">${v||'—'}</span>`;
+    }
+    if (col.render === 'count') return `<span class="num">${(v||[]).length||v||0}</span>`;
+    if (col.cls === 'mono') return `<span class="mono">${v||'—'}</span>`;
+    return v == null ? '—' : String(v);
+  }
+
+  function detailHtml(row) {
+    if (!config.detail_fields) return '';
+    return `<div class="detail-grid">${config.detail_fields.map(f => {
+      const v = ctx.getByPath(row, f.field);
+      let display = v;
+      if (f.render === 'datetime') display = ctx.fmtDateTime(v);
+      if (f.render === 'date') display = ctx.fmtDate(v);
+      if (f.render === 'network_list') {
+        const nets = v || [];
+        if (nets.length === 0) display = '<span style="color:var(--text-3); font-size:13px;">無 network-level 權限</span>';
+        else display = nets.map(n => `<span class="pill pill-muted" style="margin-right:6px; margin-bottom:4px;">${n.name} · ${n.role}</span>`).join('');
+      }
+      return `<div class="detail-item" ${f.full_width?'style="grid-column: 1/-1"':''}>
+        <div class="k">${f.label}</div>
+        <div class="v ${f.large?'large':''}">${display==null?'—':display}</div>
+      </div>`;
+    }).join('')}</div>`;
+  }
+
+  function render(data) {
+    lastData = data;
+    // Support both `compute` (function name) and `data_source` (JSON path).
+    // Other widgets (bar_list / donut / pivot_table) accept `compute`, so
+    // table accepts it too for API consistency. AI shouldn't have to remember
+    // which widgets take which.
+    let rows;
+    if (config.compute && window.computeFns?.[config.compute]) {
+      rows = window.computeFns[config.compute](data, config) || [];
+    } else if (config.data_source) {
+      rows = ctx.getByPath(data, config.data_source) || [];
+    } else {
+      console.warn(`[table#${config.id}] No data source: provide either "compute" (compute fn name) or "data_source" (JSON path).`);
+      rows = [];
+    }
+    if (config.sort_by) {
+      const sb = config.sort_by;
+      const dir = (sb.dir === 'asc') ? 1 : -1;
+      rows = [...rows].sort((a,b) => {
+        const av = ctx.getByPath(a, sb.field) || 0;
+        const bv = ctx.getByPath(b, sb.field) || 0;
+        return (av < bv ? -1 : av > bv ? 1 : 0) * dir;
+      });
+    }
+    if (sb_asc(config)) rows = [...rows].reverse();
+
+    // chip counts
+    config.filters?.forEach(f => {
+      const cnt = f.filter === 'all'
+        ? rows.length
+        : rows.filter(r => passesFilter(r, f.filter)).length;
+      const ce = el.querySelector(`[data-count="${f.filter}"]`);
+      if (ce) ce.textContent = cnt;
+    });
+
+    // apply filter + search
+    const filtered = rows
+      .filter(r => passesFilter(r, state.filter))
+      .filter(r => passesSearch(r, state.searchQuery));
+
+    // Pagination: only kicks in if enabled AND filtered exceeds page size
+    const usePagination = paginationEnabled && filtered.length > pageSize;
+    const totalPages = usePagination ? Math.ceil(filtered.length / pageSize) : 1;
+    if (state.page > totalPages) state.page = 1;  // clamp after filter shrinks
+    const pageStart = usePagination ? (state.page - 1) * pageSize : 0;
+    const visible = usePagination ? filtered.slice(pageStart, pageStart + pageSize) : filtered;
+
+    // meta
+    const hasSearch = !!state.searchQuery;
+    const hasNonAllFilter = state.filter !== 'all' && config.filters;
+    if (!hasNonAllFilter && !hasSearch && !usePagination) {
+      meta.textContent = config.meta_template
+        ? config.meta_template.replace('${count}', rows.length)
+        : `${rows.length} items`;
+    } else {
+      const parts = [];
+      if (hasNonAllFilter) parts.push(`filter: ${state.filter}`);
+      if (hasSearch) parts.push(`search: "${state.searchQuery}"`);
+      if (usePagination) parts.push((ti.page_indicator || 'Page {n} of {total}').replace('{n}', state.page).replace('{total}', totalPages).toLowerCase());
+      if (usePagination) {
+        meta.textContent = `${visible.length} of ${filtered.length} (${parts.join(' · ')})`;
+      } else {
+        meta.textContent = `${filtered.length} of ${rows.length} (${parts.join(' · ')})`;
+      }
+    }
+
+    // Update pagination controls visibility + state
+    const pageBar = el.querySelector('[data-role="pagination"]');
+    if (pageBar) {
+      if (usePagination) {
+        pageBar.style.display = 'flex';
+        pageBar.querySelector('[data-role="page-indicator"]').textContent = (ti.page_indicator || 'Page {n} of {total}').replace('{n}', state.page).replace('{total}', totalPages);
+        pageBar.querySelector('[data-role="first"]').disabled = state.page <= 1;
+        pageBar.querySelector('[data-role="prev"]').disabled = state.page <= 1;
+        pageBar.querySelector('[data-role="next"]').disabled = state.page >= totalPages;
+        const lastBtn = pageBar.querySelector('[data-role="last"]');
+        lastBtn.disabled = state.page >= totalPages;
+        lastBtn.dataset.total = totalPages;
+      } else {
+        pageBar.style.display = 'none';
+      }
+    }
+
+    // body
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="${(config.columns||[]).length}"><div class="empty-state">${ti.empty_state || 'No rows match this filter'}</div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = visible.map(row => {
+      const id = rowId(row);
+      const isOpen = state.expanded.has(id);
+      const expandable = !!config.expandable_rows;
+      const cls = expandable ? `expandable ${isOpen?'open':''}` : '';
+      const mainTr = `<tr class="${cls}" data-row-id="${id}">${
+        (config.columns||[]).map(c => `<td class="${c.align==='right'?'num':''}">${cellHtml(row, c)}</td>`).join('')
+      }</tr>`;
+      const detailTr = expandable
+        ? `<tr class="detail ${isOpen?'open':''}" data-detail-row-id="${id}"><td colspan="${(config.columns||[]).length}">${detailHtml(row)}</td></tr>`
+        : '';
+      return mainTr + detailTr;
+    }).join('');
+  }
+
+  function sb_asc(c) { return c.sort_by?.dir === 'asc' && false; }  // noop kept for symmetry
+
+  return { render };
+});
+
+/* === widget bar_list === */
+
+Dashboard.register('bar_list', ({ el, config, bus, ctx }) => {
+  el.classList.add('card');
+  el.innerHTML = `
+    <div class="card-hdr"><h2>${config.title||''}</h2><span class="meta">${config.meta||''}</span></div>
+    <div class="w-barlist" data-role="body"></div>
+  `;
+  const body = el.querySelector('[data-role="body"]');
+
+  // Click handler — for groups configured with click_action
+  body.addEventListener('click', (e) => {
+    const row = e.target.closest('.bar-row.clickable');
+    if (!row) return;
+    const target = row.dataset.target;
+    const field = row.dataset.filterField;
+    const value = row.dataset.label;
+    if (!target || !field) return;
+    bus.dispatch('bar-list-click', {
+      target,
+      filter: `${field}:${value}`,
+      scroll: row.dataset.scrollToTarget !== 'false'
+    });
+  });
+
+  return {
+    render(data) {
+      const groups = config.groups || [];
+      body.innerHTML = groups.map((g, gi) => {
+        const items = (g.compute && computeFns[g.compute])
+          ? computeFns[g.compute](data, g)
+          : (g.items || []);
+        const total = g.total_compute && computeFns[g.total_compute]
+          ? computeFns[g.total_compute](data, g)
+          : items.reduce((s,i) => s + (i.value||0), 0);
+        const click = g.click_action;
+        const clickCls = click ? 'clickable' : '';
+        const clickAttrs = click
+          ? `data-target="${click.target}" data-filter-field="${click.filter_field}" data-scroll-to-target="${click.scroll_to_target !== false}"`
+          : '';
+        return `<div class="${gi>0?'group':''}">${items.map(i => {
+          const pctNum = total ? (i.value/total*100).toFixed(0) : 0;
+          const safeLabel = String(i.label).replace(/"/g,'&quot;');
+          const tip = `${safeLabel}: ${i.value}${total ? ` (${pctNum}%)` : ''}`;
+          return `<div class="bar-row ${clickCls}" ${clickAttrs} data-label="${safeLabel}" title="${tip}">
+            <div class="bar-label">${i.label}</div>
+            <div class="bar-track"><div class="bar-fill ${i.color||''}" style="width:${pctNum}%"></div></div>
+            <div class="bar-val">${i.value}</div>
+          </div>`;
+        }).join('')}</div>`;
+      }).join('');
+    }
+  };
+});
+
+const computeFns3 = window.computeFns || (window.computeFns = {});
+computeFns3.device_type_bars = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const types = inv.reduce((m,d)=>{m[d.type]=(m[d.type]||0)+1;return m;},{});
+  const colorMap = { ap: '', switch: 'warn', gateway: 'ok' };
+  return Object.entries(types).map(([t,c]) => ({ label: t.toUpperCase(), value: c, color: colorMap[t] }));
+};
+computeFns3.license_status_bars = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const exp = inv.filter(d => d.license_status === 'expired').length;
+  return [
+    { label: 'Expired', value: exp, color: 'crit' },
+    { label: 'Active', value: inv.length - exp, color: 'ok' },
+  ];
+};
+computeFns3.device_total = (data) => (data.inventory?.device_candidates || []).length;
+
+/* === widget chip_strip === */
+
+Dashboard.register('chip_strip', ({ el, config, ctx }) => {
+  el.classList.add('w-chipstrip-wrap');
+  el.innerHTML = `
+    <div class="w-chipstrip-label">${config.title || 'Tags'}</div>
+    <div class="w-chipstrip" data-role="body"></div>
+  `;
+  const body = el.querySelector('[data-role="body"]');
+
+  return {
+    render(data) {
+      const items = (config.compute && computeFns[config.compute])
+        ? computeFns[config.compute](data, config)
+        : (config.items || []);
+      if (items.length === 0) {
+        body.innerHTML = `<span class="w-chipstrip-empty">${config.empty_text || 'No items'}</span>`;
+      } else {
+        body.innerHTML = items.map(i => {
+          const tooltip = i.tooltip ? ` title="${i.tooltip}"` : '';
+          return `<span class="tag"${tooltip}>${i.label}</span>`;
+        }).join('');
+      }
+    }
+  };
+});
+
+const computeFns4 = window.computeFns || (window.computeFns = {});
+computeFns4.empty_networks = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const hv = data.hierarchy?.network_candidates || [];
+  const usedNames = new Set(inv.map(d => d.network_name));
+  return hv.filter(n => !usedNames.has(n.network_name))
+    .map(n => ({ label: n.network_name, tooltip: n.network_id }));
+};
+
+</script>
+
+<script>
+/* === inline compute_fns from spec === */
+/* Initialize window.computeFns if no widget has done so yet (some single-widget
+   dashboards don't include any widget that bootstraps it). */
+window.computeFns = window.computeFns || {};
+(() => { const cf = window.computeFns; const S = (d) => (d.ssids && d.ssids.ssid_candidates) || []; cf.wifi_alert = (d) => { const s = S(d); const en = s.filter(x => x.state === 'enabled'); const weak = en.filter(x => x.pw_flag === 'weak').length; const unseg = en.filter(x => x.vlan_flag === 'none').length; return `目前有 ${en.length} 個 Wi-Fi 在放送：其中 ${weak} 個使用弱密碼，且 ${unseg} 個未綁定 VLAN（連上即進主網路）。建議優先換掉弱密碼、並把一般／訪客用 SSID 綁到獨立 VLAN 隔離。`; }; cf.enabled_ratio = (d) => { const s = S(d); return s.filter(x => x.state === 'enabled').length + ' / ' + s.length; }; cf.weak_count = (d) => S(d).filter(x => x.state === 'enabled' && x.pw_flag === 'weak').length; cf.weak_sub = (d) => { const n = S(d).filter(x => x.pw_flag === 'weak').length; return '含停用共 ' + n + ' 個'; }; cf.unseg_count = (d) => S(d).filter(x => x.state === 'enabled' && x.vlan_flag === 'none').length; cf.unseg_sub = (d) => '啟用中全未綁 VLAN'; cf.wpa3_ratio = (d) => { const s = S(d); return s.filter(x => x.auth === 'WPA3-Personal').length + ' / ' + s.length; }; cf.wpa3_sub = (d) => '其餘為 WPA2 / 開放'; cf.ssid_total = (d) => S(d).length; cf.auth_bars = (d) => { const s = S(d); const order = [['WPA3-Personal','WPA3 個人級','ok'],['WPA2-Enterprise','WPA2 企業級',''],['WPA2-PSK','WPA2-PSK','warn'],['OWE','開放 (OWE)','crit']]; const cnt = {}; s.forEach(x => { cnt[x.auth] = (cnt[x.auth]||0)+1; }); return order.filter(o => cnt[o[0]]).map(o => ({ label: o[1], value: cnt[o[0]], color: o[2] })); }; })();
+</script>
+
+<script>
+Dashboard.init({"live_data": {"ssids": "live-data/ssids.json", "radios": "live-data/radios.json", "summary": "live-data/summary.json"}, "sections": [{"widget": "alert", "id": "wifi-summary", "severity": "critical", "title": "兩個優先處理項：弱密碼 + 未做網段隔離", "body_compute": "wifi_alert"}, {"widget": "kpi_grid", "id": "kpis", "items": [{"label": "啟用中 Wi-Fi", "value_compute": "enabled_ratio", "sub": "正在放送 / 已設定"}, {"label": "無線 AP", "value_path": "summary.ap_count", "sub": "皆在主網路 Network"}, {"label": "弱密碼 Wi-Fi", "severity": "critical", "value_compute": "weak_count", "sub_compute": "weak_sub", "clickable": {"target": "ssid-audit"}}, {"label": "未做 VLAN 隔離", "severity": "warning", "value_compute": "unseg_count", "sub_compute": "unseg_sub", "clickable": {"target": "ssid-audit"}}, {"label": "VLAN 網段", "value_path": "summary.vlan_count", "sub": "已切分網段"}, {"label": "WPA3 SSID", "value_compute": "wpa3_ratio", "sub_compute": "wpa3_sub"}]}, {"widget": "table", "id": "ssid-audit", "title": "SSID 安全體檢", "data_source": "ssids.ssid_candidates", "row_id_field": "name", "meta_template": "${count} 個 SSID", "filters": [{"label": "全部", "filter": "all"}, {"label": "啟用中", "filter": "state:enabled"}, {"label": "弱密碼", "filter": "pw_flag:weak"}, {"label": "未隔離", "filter": "vlan_flag:none"}], "columns": [{"label": "Wi-Fi 名稱", "field": "name", "render": "name_with_sub", "sub_field": "auth_disp"}, {"label": "狀態", "field": "state_disp"}, {"label": "密碼強度", "field": "pw_disp"}, {"label": "VLAN 隔離", "field": "vlan_disp"}, {"label": "頻段", "field": "bands_disp", "cls": "mono"}], "expandable_rows": true, "detail_fields": [{"label": "加密方式", "field": "auth_disp", "large": true}, {"label": "管理框架保護 (802.11w)", "field": "pmf_disp", "large": true}, {"label": "用戶端隔離", "field": "isolation_disp", "large": true}, {"label": "快速漫遊 (802.11r)", "field": "roaming_disp", "large": true}, {"label": "Captive Portal 歡迎頁", "field": "portal_disp", "large": true}, {"label": "綁定 LAN 實體埠", "field": "lan_disp", "large": true}, {"label": "隱藏 SSID", "field": "hidden_disp", "large": true}]}, {"widget": "bar_list", "id": "auth-dist", "title": "加密方式分布", "meta": "8 組 SSID", "groups": [{"compute": "auth_bars", "total_compute": "ssid_total"}]}, {"widget": "table", "id": "radio-config", "title": "無線電頻段設定", "data_source": "radios.radio_rows", "row_id_field": "band", "meta_template": "${count} 個頻段 · 室內", "columns": [{"label": "頻段", "field": "band"}, {"label": "狀態", "field": "state_disp"}, {"label": "頻道", "field": "channel"}, {"label": "頻寬", "field": "width", "cls": "mono"}, {"label": "Wi-Fi 6 (ax)", "field": "wifi6"}, {"label": "Wi-Fi 7 (be)", "field": "wifi7"}]}, {"widget": "chip_strip", "id": "vlans", "title": "已設定的 VLAN 網段", "items": [{"label": "VLAN 1 · default"}, {"label": "VLAN 7"}, {"label": "VLAN 16"}, {"label": "VLAN 99"}], "empty_text": "尚未設定 VLAN"}], "locale": "zh-TW", "i18n": {"deploy": {"title": "部署與分享 Dashboard", "close": "關閉", "target": "部署到", "target_vercel": "Vercel", "target_vercel_sub": "公開網址 · 3–30 秒 · 需 vercel login", "target_ghpages": "GitHub Pages", "target_ghpages_sub": "公開網址 · 1–2 分 · 需 gh login + 你的 repo", "eta": "所需時間", "eta_vercel": "3–30 秒", "eta_ghpages": "1–2 分鐘", "url_label": "網址", "url_suffix": ".vercel.app", "url_help": "改這裡 → 網址跟著變。只能小寫英數字跟 -、最多 100 字", "url_invalid": "名字只能用小寫英數字跟 - 號", "repo_label": "GitHub Repo", "repo_placeholder": "owner/repo", "repo_help": "選你的 repo（從 gh CLI 抓）、或自己打 owner/repo", "repo_invalid": "格式：owner/repo", "repo_loading": "撈 repo 列表中…", "repo_no_gh": "gh CLI 沒裝或沒登入。`brew install gh && gh auth login`", "path_label": "路徑", "path_placeholder": "canvas-my-dashboard", "path_help": "在那個 repo 的 gh-pages branch 底下的子資料夾", "path_invalid": "只能用英數字 / 點 / 底線 / dash", "scan_title": "分享前的檢查", "scan_pending": "檢查中…", "scan_clean": "✓ 沒有偵測到可辨識的個人/組織資料、可以放心分享", "scan_has": "這張 dashboard 包含以下可辨識的資料：", "purpose_title": "這次部署的用途", "purpose_keep_label": "我自己或團隊內部用", "purpose_keep_desc": "保留真實的 org_id / MAC / IP / Email。網址會公開、所以只分享給本來就能看到原始資料的人。", "purpose_share_label": "分享給別人 / 對外 demo", "purpose_share_desc": "自動把 org_id / MAC / IP / Email 換成 demo 假資料（org A → demo-org-1、同值整張一致替換、圖表不破）。", "cancel": "取消", "deploy": "部署", "deploying": "正在部署到 Vercel… 通常 3–30 秒。", "deploy_failed": "部署失敗", "deployed": "部署完成 ✓", "copy": "複製網址", "copied": "已複製！", "live_label": "🔄 Live 模式 — 部署後可更新資料", "live_desc": "會附帶一個小型 serverless function，讓部署出去的頁面按 Refresh 時能重新抓即時資料。僅 demo 用：公開網址沒有驗證，你的 API key 會存在這個部署裡。只支援 Vercel。", "live_needs_scope": "Live 模式需要這張 canvas 有 refresh scope。", "network_err": "連不到 server。請確認 `bash scripts/serve.sh` 還在跑。", "not_a_canvas": "只有放在 /dashboard-builder/canvases/<id>/ 底下的 dashboard 才能 deploy。", "fields": {"org": "組織 ID", "mac": "MAC 位址", "serial": "序號", "ip": "IP 位址", "email": "Email"}}, "settings": {"title": "設定", "close": "關閉", "current_using": "目前使用", "no_account": "尚未取得帳號", "key_label": "EnGenius API Key", "key_placeholder": "貼上 key 來覆寫預設…", "key_help": "預設來自 .env / 內建值。在這裡輸入只在本次 server process 有效、重啟後自動回到預設。", "reveal": "顯示", "hide": "隱藏", "reset": "恢復預設", "save": "儲存並套用", "saving": "驗證中…", "invalid": "格式不對（8–200 字元、英數字+/=_-）", "api_error": "API 拒絕這把 key", "saved": "✓ 已套用", "reset_done": "✓ 已恢復預設", "auto_refresh_label": "自動更新", "auto_off": "關閉", "auto_5min": "每 5 分鐘", "auto_10min": "每 10 分鐘", "auto_15min": "每 15 分鐘", "auto_help": "頁面在前景時自動跑 Refresh。Tab 切走會暫停、連續 3 次失敗也會自動暫停。"}, "status": {"refreshing": "更新中", "refreshed": "已更新", "refresh_failed": "更新失敗", "refresh_error": "更新錯誤", "files_one": "個檔案", "files_many": "個檔案", "scope_all": "範圍=全部", "scope_org": "範圍=組織", "scope_hv": "範圍=hv", "scope_network": "範圍=網路", "next_in": "下次: {time}", "auto_paused": "⚠ 自動更新已暫停（{n} 次錯誤）"}, "table": {"search_placeholder": "搜尋…", "empty_state": "沒有符合條件的資料", "page_first": "« 第一頁", "page_prev": "← 上一頁", "page_next": "下一頁 →", "page_last": "最後一頁 »", "page_indicator": "第 {n} 頁 / 共 {total} 頁", "title_first": "跳到第一頁", "title_prev": "上一頁", "title_next": "下一頁", "title_last": "跳到最後一頁", "items_count": "共 {n} 筆"}}});
+</script>
+
+</body>
+</html>

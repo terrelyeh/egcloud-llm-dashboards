@@ -1,0 +1,7 @@
+{
+  "radio_rows": [
+    { "band": "2.4 GHz", "state_disp": "🟢 開啟", "channel": "自動", "width": "20 MHz", "wifi6": "⚠️ 關閉", "wifi7": "關閉" },
+    { "band": "5 GHz",   "state_disp": "🟢 開啟", "channel": "自動", "width": "80 MHz", "wifi6": "✓ 開啟", "wifi7": "✓ 開啟" },
+    { "band": "6 GHz",   "state_disp": "🟢 開啟", "channel": "自動", "width": "20 MHz", "wifi6": "✓ 開啟", "wifi7": "✓ 開啟" }
+  ]
+}
