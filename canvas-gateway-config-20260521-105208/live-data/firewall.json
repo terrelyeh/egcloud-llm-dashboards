@@ -1,0 +1,31 @@
+{
+  "rules": [
+    {
+      "desc": "Default",
+      "action_disp": "✅ 放行",
+      "proto": "any",
+      "src_disp": "any : any",
+      "dst_disp": "any : any",
+      "state": "enabled",
+      "state_disp": "🟢 生效（預設）"
+    },
+    {
+      "desc": "broadcast test",
+      "action_disp": "放行",
+      "proto": "tcp",
+      "src_disp": "255.255.255.255 : any",
+      "dst_disp": "any : any",
+      "state": "disabled",
+      "state_disp": "⚪️ 停用"
+    },
+    {
+      "desc": "（無描述）",
+      "action_disp": "放行",
+      "proto": "tcp",
+      "src_disp": "any : any",
+      "dst_disp": "www.google.com : any",
+      "state": "disabled",
+      "state_disp": "⚪️ 停用"
+    }
+  ]
+}

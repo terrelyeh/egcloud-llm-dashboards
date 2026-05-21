@@ -1,0 +1,25 @@
+{
+  "rows": [
+    {
+      "type": "遠端用戶 VPN · IPsec",
+      "state": "disabled",
+      "state_disp": "⚪️ 停用",
+      "detail": "IKEv2 · 用戶網段 172.20.1.1/24",
+      "note": "⚠️ 預設金鑰偏弱，啟用前務必更換"
+    },
+    {
+      "type": "遠端用戶 VPN · OpenVPN",
+      "state": "disabled",
+      "state_disp": "⚪️ 停用",
+      "detail": "UDP · port 1194",
+      "note": "—"
+    },
+    {
+      "type": "站對站 VPN (Site-to-Site)",
+      "state": "disabled",
+      "state_disp": "⚪️ 停用",
+      "detail": "hub 模式 · 無對端、無 tunnel",
+      "note": "目前沒有跨據點加密通道"
+    }
+  ]
+}
