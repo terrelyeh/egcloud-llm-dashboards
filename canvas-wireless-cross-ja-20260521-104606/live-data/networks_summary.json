@@ -1,0 +1,28 @@
+{
+  "network_rows": [
+    {
+      "network": "Network",
+      "ap": 7,
+      "ssid_disp": "8（有効 3）",
+      "open_disp": "0",
+      "weak_disp": "5",
+      "vlan_disp": "0"
+    },
+    {
+      "network": "Network_1",
+      "ap": 1,
+      "ssid_disp": "7（有効 7）",
+      "open_disp": "🚨 1",
+      "weak_disp": "5",
+      "vlan_disp": "2"
+    },
+    {
+      "network": "SWACL",
+      "ap": 1,
+      "ssid_disp": "1（有効 1）",
+      "open_disp": "🚨 1",
+      "weak_disp": "0",
+      "vlan_disp": "0"
+    }
+  ]
+}
