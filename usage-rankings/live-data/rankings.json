@@ -1,14 +1,14 @@
 {
   "_meta": {
-    "org_name": "Ian_test1",
+    "org_name": "Demo Org",
     "hv_name": "demo site",
     "scope": "hierarchy_view",
     "scope_label": "HV「demo」· 整個 site（跨其下所有 network 彙總）",
     "period": "week",
     "window_label": "過去 7 天",
     "captured_at": "2026-05-22 11:11",
-    "source": "Ian_test1 / demo (staging) · point-in-time snapshot",
-    "note": "staging dev org，資料非靜態；此為擷取當下真實快照（mac 欄位已移除）"
+    "source": "Demo Org / demo (demo) · point-in-time snapshot",
+    "note": "demo dev org，資料非靜態；此為擷取當下真實快照（mac 欄位已移除）"
   },
   "clients": [
     {
@@ -167,7 +167,7 @@
       "upload": 0,
       "usage": 0,
       "network_name": "ian_network",
-      "ssid_name": "Ian-wifi"
+      "ssid_name": "Demo-wifi"
     },
     {
       "download": 0,
