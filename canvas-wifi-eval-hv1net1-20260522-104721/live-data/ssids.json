@@ -1,0 +1,60 @@
+{
+  "rows": [
+    {
+      "ssid_name": "Danny-Wifi-Captive-Portal",
+      "security": "Captive Portal（導頁認證 · 推測）",
+      "category": "General",
+      "is_enable": true,
+      "status_label": "啟用"
+    },
+    {
+      "ssid_name": "Danny-Wifi-Enterprise",
+      "security": "WPA-Enterprise / 802.1X（推測）",
+      "category": "General",
+      "is_enable": true,
+      "status_label": "啟用"
+    },
+    {
+      "ssid_name": "Danny-Wifi-WPA3",
+      "security": "WPA3（推測）",
+      "category": "General",
+      "is_enable": true,
+      "status_label": "啟用"
+    },
+    {
+      "ssid_name": "Danny-Wifi-WPA2-WPA3-mixed",
+      "security": "WPA2/WPA3 mixed（推測）",
+      "category": "General",
+      "is_enable": true,
+      "status_label": "啟用"
+    },
+    {
+      "ssid_name": "Danny-Wifi-MyPSK",
+      "security": "MyPSK 個人化金鑰（推測）",
+      "category": "General",
+      "is_enable": true,
+      "status_label": "啟用"
+    },
+    {
+      "ssid_name": "VIPWIFI",
+      "security": "—",
+      "category": "General",
+      "is_enable": false,
+      "status_label": "停用"
+    },
+    {
+      "ssid_name": "Danny-Wifi-Voucher",
+      "security": "Voucher 票券（推測）",
+      "category": "General",
+      "is_enable": true,
+      "status_label": "啟用"
+    },
+    {
+      "ssid_name": "Danny-Wifi-WPA2",
+      "security": "WPA2 only（推測 · 偏弱）",
+      "category": "General",
+      "is_enable": true,
+      "status_label": "啟用"
+    }
+  ]
+}

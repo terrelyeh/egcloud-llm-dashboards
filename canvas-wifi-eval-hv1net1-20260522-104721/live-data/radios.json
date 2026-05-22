@@ -1,0 +1,28 @@
+{
+  "rows": [
+    {
+      "band": "2.4 GHz",
+      "width": "20 MHz",
+      "channels": "自動 · ch 1–11",
+      "power": "Auto（≤ EIRP 36 dBm）",
+      "tw_ok": true,
+      "note": "20MHz 正確；TW 連 ch12–13 都准，設定更保守"
+    },
+    {
+      "band": "5 GHz",
+      "width": "80 MHz",
+      "channels": "自動 · ch 36–161（含 DFS 52–144）",
+      "power": "Auto（UNII-1/3 ≤36 · DFS ≤30 dBm）",
+      "tw_ok": true,
+      "note": "頻道全合法；80MHz ≤ TW 上限 160MHz；DFS 需雷達偵測（會偶發換台）"
+    },
+    {
+      "band": "6 GHz",
+      "width": "80 MHz",
+      "channels": "自動 · ch 1–93（LPI 室內）",
+      "power": "Auto（LPI ≤ EIRP 23 dBm）",
+      "tw_ok": true,
+      "note": "室內 LPI 合法、室外 6G 已正確留空；TW 資料未列 6G 頻寬上限，80MHz 無法嚴格驗證"
+    }
+  ]
+}

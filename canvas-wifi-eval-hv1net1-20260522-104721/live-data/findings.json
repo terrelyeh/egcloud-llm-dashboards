@@ -1,0 +1,84 @@
+{
+  "rows": [
+    {
+      "item": "SSID 開太多（7 個啟用）",
+      "area": "效能",
+      "severity": "待處理",
+      "needs_action": true,
+      "detail": "7 個啟用 SSID，每頻段每 ~0.1s 都要送 beacon，吃掉 2.4GHz 大量 airtime",
+      "reco": "正式網收斂到 3–4 個（WPA2/WPA3/mixed 三選一）；若為測試網則屬刻意、可忽略"
+    },
+    {
+      "item": "5G 80MHz + DCS 關閉",
+      "area": "效能",
+      "severity": "待處理",
+      "needs_action": true,
+      "detail": "13 台密集部署、5G 80MHz 可用乾淨頻道少 → 易同頻干擾；DCS 未開不會自動避讓",
+      "reco": "改 40MHz 換更多乾淨頻道 + 開啟 DCS 動態選台"
+    },
+    {
+      "item": "管理 VLAN 未啟用",
+      "area": "安全",
+      "severity": "待處理",
+      "needs_action": true,
+      "detail": "AP 管理流量與使用者流量同網段，缺乏隔離",
+      "reco": "切到獨立管理 VLAN，降低橫向移動風險"
+    },
+    {
+      "item": "有 WPA2-only SSID",
+      "area": "安全",
+      "severity": "可優化",
+      "needs_action": true,
+      "detail": "Danny-Wifi-WPA2 單獨用 WPA2，現在偏弱（依命名推測，待逐一確認）",
+      "reco": "升 WPA3 或 WPA2/WPA3 mixed"
+    },
+    {
+      "item": "Airtime Fairness 三頻全關",
+      "area": "效能",
+      "severity": "可優化",
+      "needs_action": true,
+      "detail": "慢速舊裝置會拖累整台 AP 的整體吞吐",
+      "reco": "混搭裝置多時建議開啟"
+    },
+    {
+      "item": "6G 室內未走 PSC 頻道",
+      "area": "效能",
+      "severity": "可優化",
+      "needs_action": true,
+      "detail": "6E/Wi-Fi7 用戶端主要掃 PSC 頻道找網路，未設可能較慢發現 6G",
+      "reco": "室內 6G 啟用 PSC 頻道（室外那組已開）"
+    },
+    {
+      "item": "2.4G 採 20MHz",
+      "area": "良好",
+      "severity": "良好",
+      "needs_action": false,
+      "detail": "避免在 2.4GHz 開 40MHz 造成干擾",
+      "reco": "維持"
+    },
+    {
+      "item": "min_bitrate 擋慢速 legacy",
+      "area": "良好",
+      "severity": "良好",
+      "needs_action": false,
+      "detail": "1/2/5.5Mbps 與 802.11b 舊機已被擋下",
+      "reco": "維持"
+    },
+    {
+      "item": "Client Balancing 三頻全開",
+      "area": "良好",
+      "severity": "良好",
+      "needs_action": false,
+      "detail": "AP 間負載平衡已啟用",
+      "reco": "維持"
+    },
+    {
+      "item": "台灣法規全合法",
+      "area": "合規",
+      "severity": "良好",
+      "needs_action": false,
+      "detail": "2.4/5/6GHz 頻道、頻寬、發射功率皆符合 TW 規範",
+      "reco": "維持（功率設 Auto 會自動壓在各頻段 EIRP 上限）"
+    }
+  ]
+}

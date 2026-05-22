@@ -1,0 +1,120 @@
+{
+  "summary": {
+    "total": 13,
+    "online": 0,
+    "offline": 13,
+    "expired": 0
+  },
+  "rows": [
+    {
+      "name": "ECW220S-E9:80",
+      "mac": "88:dc:96:9c:e9:80",
+      "model": "ECW220S",
+      "band": "2.4/5 GHz",
+      "license_type": "—",
+      "is_online": false,
+      "status_label": "離線",
+      "last_seen_display": "2026-05-21 18:55",
+      "config_synced": true
+    },
+    {
+      "name": "ECW220v3-54DF",
+      "mac": "88:dc:97:45:54:df",
+      "model": "ECW220v3",
+      "band": "2.4/5 GHz",
+      "license_type": "PRO",
+      "is_online": false,
+      "status_label": "離線",
+      "last_seen_display": "2025-09-24 17:17",
+      "config_synced": false
+    },
+    {
+      "name": "ECW220v3-599E",
+      "mac": "88:dc:97:45:59:9e",
+      "model": "ECW220v3",
+      "band": "2.4/5 GHz",
+      "license_type": "PRO",
+      "is_online": false,
+      "status_label": "離線",
+      "last_seen_display": "2026-05-22 09:44",
+      "config_synced": true
+    },
+    {
+      "name": "ECW520-C39D",
+      "mac": "c4:e3:ce:63:c3:9d",
+      "model": "ECW520",
+      "band": "2.4/5/6 GHz",
+      "license_type": "PRO",
+      "is_online": false,
+      "status_label": "離線",
+      "last_seen_display": "2026-05-22 09:58",
+      "config_synced": true
+    },
+    {
+      "name": "ECW510-2B52",
+      "mac": "c4:e3:ce:69:2b:52",
+      "model": "ECW510",
+      "band": "2.4/5 GHz",
+      "license_type": "PRO",
+      "is_online": false,
+      "status_label": "離線",
+      "last_seen_display": "2025-10-17 14:52",
+      "config_synced": false
+    },
+    {
+      "name": "ECW536S-34CB",
+      "mac": "c4:e3:ce:6e:34:cb",
+      "model": "ECW536S",
+      "band": "2.4/5/6 GHz",
+      "license_type": "PRO",
+      "is_online": false,
+      "status_label": "離線",
+      "last_seen_display": "2026-05-22 10:43",
+      "config_synced": true
+    },
+    {
+      "name": "ECW230-2216",
+      "mac": "dd:aa:00:11:22:16",
+      "model": "ECW230",
+      "band": "2.4/5 GHz",
+      "license_type": "PRO",
+      "is_online": false,
+      "status_label": "離線",
+      "last_seen_display": "—",
+      "config_synced": false
+    },
+    {
+      "name": "ECW510P-34AB",
+      "mac": "dd:aa:11:22:34:ab",
+      "model": "ECW510P",
+      "band": "2.4/5 GHz",
+      "license_type": "PRO-LITE",
+      "is_online": false,
+      "status_label": "離線",
+      "last_seen_display": "—",
+      "config_synced": false
+    },
+    {
+      "name": "ECW220S-E980",
+      "mac": "dd:aa:11:22:34:e9",
+      "model": "ECW220S",
+      "band": "2.4/5 GHz",
+      "license_type": "PRO",
+      "is_online": false,
+      "status_label": "離線",
+      "last_seen_display": "—",
+      "config_synced": false
+    },
+    {
+      "name": "ECW560-34F0",
+      "mac": "dd:aa:11:22:34:f0",
+      "model": "ECW560",
+      "band": "2.4/5 GHz",
+      "license_type": "PRO",
+      "is_online": false,
+      "status_label": "離線",
+      "last_seen_display": "—",
+      "config_synced": false
+    }
+  ]
+}
