@@ -158,7 +158,7 @@
       "network_id": "677ded4610e412c63b2d04a6",
       "upload": 0,
       "usage": 0,
-      "network_name": "ian_network",
+      "network_name": "demo-network",
       "ssid_name": "EnGenius WiFi"
     },
     {
@@ -166,15 +166,15 @@
       "network_id": "677ded4610e412c63b2d04a6",
       "upload": 0,
       "usage": 0,
-      "network_name": "ian_network",
-      "ssid_name": "Demo-wifi"
+      "network_name": "demo-network",
+      "ssid_name": "demo-wifi"
     },
     {
       "download": 0,
       "network_id": "677ded4610e412c63b2d04a6",
       "upload": 0,
       "usage": 0,
-      "network_name": "ian_network",
+      "network_name": "demo-network",
       "ssid_name": "smartcast"
     },
     {
@@ -182,7 +182,7 @@
       "network_id": "6800ce314080ec3129fa5fe0",
       "upload": 0,
       "usage": 0,
-      "network_name": "ian_network(no pdu license)",
+      "network_name": "demo-network(no pdu license)",
       "ssid_name": "EnGenius WiFi"
     },
     {
@@ -190,7 +190,7 @@
       "network_id": "6800cf0ec7c93197749ebe06",
       "upload": 0,
       "usage": 0,
-      "network_name": "ian_network3",
+      "network_name": "demo-network3",
       "ssid_name": "EnGenius WiFi"
     },
     {
