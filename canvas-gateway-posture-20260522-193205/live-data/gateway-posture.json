@@ -1,0 +1,455 @@
+{
+  "_meta": {
+    "org_name": "Demo Org",
+    "gateway": "ESG510 (demo)",
+    "scope_label": "單一 network gateway",
+    "captured_at": "2026-05-22",
+    "note": "真實 gateway 設定快照(IP 已於部署時遮罩)"
+  },
+  "ips": {
+    "is_enable": false,
+    "mode": "detection",
+    "is_enable_informational_severity": false,
+    "allow_list_count": 0,
+    "allowed_list": []
+  },
+  "content_filtering": {
+    "is_enable": false,
+    "white_list": [],
+    "block_list": [],
+    "external_database": ""
+  },
+  "security_services": {
+    "cloudbrink": {
+      "is_enable": false,
+      "credential": null
+    }
+  },
+  "ha": {
+    "is_enabled": false,
+    "backup_gateway_id": null,
+    "backup_gateway_name": null,
+    "backup_wan1": {
+      "ip_address": "192.168.22.25",
+      "virtual_ip_address": "192.168.22.26"
+    },
+    "backup_wan2": {
+      "ip_address": "172.20.106.25",
+      "virtual_ip_address": "172.20.106.26"
+    },
+    "backup_cellular": {
+      "name": "WWAN",
+      "is_enable": true,
+      "pincode": "1234",
+      "is_on_demand_enable": false,
+      "idle_timeout_second": 600
+    },
+    "sync_port": 2,
+    "lan_ha_port": 1,
+    "local_network_ha_info": [
+      {
+        "name": "LAN",
+        "lan_id": "66a36bb2c6a9697490131e44",
+        "ip_address": "192.168.66.1",
+        "master_ip_address": "192.168.66.2",
+        "backup_ip_address": "192.168.66.3"
+      },
+      {
+        "name": "VLAN67",
+        "lan_id": "66a36bb2c6a9697490131e45",
+        "ip_address": "192.168.67.1",
+        "master_ip_address": "192.168.67.2",
+        "backup_ip_address": "192.168.67.3"
+      },
+      {
+        "name": "VLAN68",
+        "lan_id": "66a36bb2c6a9697490131e46",
+        "ip_address": "192.168.68.1",
+        "master_ip_address": "192.168.68.2",
+        "backup_ip_address": "192.168.68.3"
+      },
+      {
+        "name": "VLAN69",
+        "lan_id": "69e748c3c584e61d1f17ceaa",
+        "ip_address": "192.168.69.1",
+        "master_ip_address": "192.168.69.2",
+        "backup_ip_address": "192.168.69.3"
+      }
+    ]
+  },
+  "wan": {
+    "operating_mode": "routed",
+    "wan1": {
+      "name": "WAN",
+      "description": null,
+      "connectivity_checking_ip": "8.8.8.8",
+      "connection_type": "static_ip",
+      "mape_config": {
+        "mtu": 1500
+      },
+      "static_ip_config": {
+        "ip_address": "192.168.22.24",
+        "mask": "255.255.248.0",
+        "gateway_ip_address": "192.168.16.1",
+        "mtu": 1500
+      },
+      "dhcp_config": {
+        "hostname": "",
+        "mtu": 1500
+      },
+      "pppoe_config": {
+        "username": null,
+        "password": null,
+        "mtu": 1492
+      },
+      "ds_lite_config": {
+        "aftr_address": "v6.test.com.tw",
+        "mtu": 1500
+      },
+      "ipip_config": {
+        "aftr_address": null,
+        "ipv4_address": null,
+        "mtu": 1500,
+        "vne_config": {
+          "service_type": "xpass",
+          "xpass_config": {
+            "ddns_server_url": null,
+            "basic_auth_id": null,
+            "basic_auth_password": null,
+            "fqdn": null,
+            "ddns_id": null,
+            "ddns_password": null
+          },
+          "v6plus_config": {
+            "interface_id": null,
+            "server_url": null,
+            "username": null,
+            "password": null
+          }
+        }
+      },
+      "dns_type": "google_dns",
+      "dns_server": {
+        "primary_dns": "1.1.1.1",
+        "secondary_dns": "8.8.8.8"
+      },
+      "vlan": {
+        "is_enable": false,
+        "id": 2
+      },
+      "isp_bandwidth": {
+        "upload_mbps": 1000,
+        "download_mbps": 1000
+      }
+    },
+    "wan2": {
+      "name": "WAN2",
+      "description": null,
+      "connectivity_checking_ip": "8.8.4.4",
+      "connection_type": "static_ip",
+      "mape_config": {
+        "mtu": 1500
+      },
+      "static_ip_config": {
+        "ip_address": "172.20.106.24",
+        "mask": "255.255.240.0",
+        "gateway_ip_address": "172.20.111.254",
+        "mtu": 1500
+      },
+      "dhcp_config": {
+        "hostname": null,
+        "mtu": 1500
+      },
+      "pppoe_config": {
+        "username": "danny",
+        "password": "danny",
+        "mtu": 1492
+      },
+      "ds_lite_config": {
+        "aftr_address": null,
+        "mtu": 1500
+      },
+      "ipip_config": {
+        "aftr_address": null,
+        "ipv4_address": null,
+        "mtu": 1500,
+        "vne_config": {
+          "service_type": "xpass",
+          "xpass_config": {
+            "ddns_server_url": null,
+            "basic_auth_id": null,
+            "basic_auth_password": null,
+            "fqdn": null,
+            "ddns_id": null,
+            "ddns_password": null
+          },
+          "v6plus_config": {
+            "interface_id": null,
+            "server_url": null,
+            "username": null,
+            "password": null
+          }
+        }
+      },
+      "dns_type": "google_dns",
+      "dns_server": {
+        "primary_dns": null,
+        "secondary_dns": null
+      },
+      "vlan": {
+        "is_enable": false,
+        "id": 2
+      },
+      "isp_bandwidth": {
+        "upload_mbps": 2500,
+        "download_mbps": 2500
+      },
+      "is_enable": true,
+      "policy": "failover",
+      "primary_wan_id": "wan"
+    },
+    "cellular": {
+      "name": "WWAN",
+      "is_enable": true,
+      "failover_preference": "secondary_wan_redundancy_mode",
+      "pincode": "",
+      "is_on_demand_enable": false,
+      "idle_timeout_second": 600,
+      "connectivity_checking_ip": "1.0.0.1"
+    },
+    "ddns": {
+      "is_enable": true,
+      "provider": "engenius",
+      "username": "danny.wang@senao.com",
+      "password": "senao520",
+      "hostname": "danny-ESG510",
+      "custom_id": "",
+      "custom_url": "test.danny.dns.com",
+      "custom_option": "",
+      "root_domain": "-8pffdn18olv1.staging.ec-domain.com"
+    },
+    "nat_exception": {
+      "per_wan1_disable": false,
+      "per_wan2_disable": false,
+      "per_lan_override": false,
+      "per_lan": [
+        {
+          "id": "66a36bb2c6a9697490131e44",
+          "name": "LAN",
+          "is_override": false,
+          "wan1_enabled": false,
+          "wan2_enabled": false
+        },
+        {
+          "id": "66a36bb2c6a9697490131e45",
+          "name": "VLAN67",
+          "is_override": true,
+          "wan1_enabled": true,
+          "wan2_enabled": true
+        },
+        {
+          "id": "66a36bb2c6a9697490131e46",
+          "name": "VLAN68",
+          "is_override": false,
+          "wan1_enabled": false,
+          "wan2_enabled": false
+        },
+        {
+          "id": "69e748c3c584e61d1f17ceaa",
+          "name": "VLAN69",
+          "is_override": false,
+          "wan1_enabled": false,
+          "wan2_enabled": false
+        }
+      ]
+    }
+  },
+  "allowed_service": {
+    "icmp": [
+      "any"
+    ],
+    "web": [
+      "none"
+    ]
+  },
+  "client_vpn": {
+    "ipsec": {
+      "is_enable": true,
+      "client_vpn_server": "ipsec",
+      "client_hostname": "danny-ESG510-8pffdn18olv1.staging.ec-domain.com",
+      "vpn_client_subnet": "192.168.199.0/24",
+      "dns_server_type": "google",
+      "dns_server": {
+        "primary_dns": null,
+        "secondary_dns": null
+      },
+      "is_vpn_enable": false,
+      "wins_server_type": "none",
+      "wins_server": {
+        "primary_dns": null,
+        "secondary_dns": null
+      },
+      "pre_shared_key": "senao520",
+      "authentication_type": "esg",
+      "ike_type": "ikev1",
+      "radius_server": {
+        "retries": 4,
+        "server_1_ip": null,
+        "server_1_port": 1812,
+        "server_1_secret": null,
+        "server_2_ip": null,
+        "server_2_port": null,
+        "server_2_secret": null
+      },
+      "radius_setting": {
+        "is_nas_id": false,
+        "nas_id": null,
+        "is_nas_ip": false,
+        "nas_ip": null,
+        "is_nas_port": false,
+        "nas_port": null
+      }
+    },
+    "open_vpn": {
+      "is_enable": true,
+      "is_vpn_enable": false,
+      "server_protocol": "UDP",
+      "server_port": 1194,
+      "vpn_client_subnet": "192.168.200.0/24",
+      "dns_server_type": "google",
+      "dns_server": {
+        "primary_dns": null,
+        "secondary_dns": null
+      },
+      "client_routing": "send_to_esg",
+      "authentication_type": "esg",
+      "radius_server": {
+        "retries": 4,
+        "server_1_ip": null,
+        "server_1_port": 1812,
+        "server_1_secret": null,
+        "server_2_ip": null,
+        "server_2_port": null,
+        "server_2_secret": null
+      },
+      "radius_setting": {
+        "is_nas_id": false,
+        "nas_id": null,
+        "is_nas_ip": false,
+        "nas_ip": null,
+        "is_nas_port": false,
+        "nas_port": null
+      },
+      "client_hostname": "danny-ESG510-8pffdn18olv1.staging.ec-domain.com"
+    }
+  },
+  "s2s_vpn": {
+    "is_enable": false,
+    "vpn_type": "hub",
+    "hubs": [
+      {
+        "id": "6943db3bc3523f11ad31b789",
+        "name": "ESG620-8200",
+        "is_enable": false,
+        "is_editable": true,
+        "nat_traversal": "automatic",
+        "nat_type": "port-restricted cone",
+        "primary_wan_ip": "203.69.29.155"
+      },
+      {
+        "id": "695db552fb9c1469d53fea83",
+        "name": "ESG510-A594",
+        "is_enable": false,
+        "is_editable": true,
+        "nat_traversal": "automatic",
+        "nat_type": "restricted cone",
+        "primary_wan_ip": "114.45.86.185"
+      }
+    ],
+    "lans": [
+      {
+        "id": "66a36bb2c6a9697490131e44",
+        "name": "LAN",
+        "subnet": "192.168.66.0/24",
+        "is_vpn_enable": true
+      }
+    ],
+    "static_routes": [],
+    "third_party_gateways": [],
+    "outbound_rules": [
+      {
+        "policy": "allow",
+        "protocol": "any",
+        "src_ip": "any",
+        "src_port": "any",
+        "dst_ip": "any",
+        "dst_port": "any",
+        "is_default": true,
+        "description": "Default"
+      }
+    ],
+    "nat_type": "port-restricted cone",
+    "nat_traversal": "automatic",
+    "public_ip_address": "118.169.99.18",
+    "public_port": null,
+    "primary_wan_ip": "1.34.137.147",
+    "default_route_gateway_id": "disabled",
+    "ipsec_client_vpn": {
+      "is_vpn_enable": false,
+      "subnet": "192.168.199.0/24"
+    },
+    "open_vpn_client_vpn": {
+      "is_vpn_enable": false,
+      "subnet": "192.168.200.0/24"
+    }
+  },
+  "firewall_rules": [
+    {
+      "is_enable": true,
+      "protocol": "icmp",
+      "policy": "deny",
+      "src_ip": "192.168.66.126",
+      "src_port": "any",
+      "dst_ip": "168.95.1.1",
+      "dst_port": "any",
+      "description": "",
+      "is_syslog_enable": true
+    },
+    {
+      "is_enable": true,
+      "protocol": "any",
+      "policy": "allow",
+      "src_ip": "any",
+      "src_port": "any",
+      "dst_ip": "any",
+      "dst_port": "any",
+      "description": "Default",
+      "is_syslog_enable": false,
+      "is_default": true
+    }
+  ],
+  "port_forwarding": [
+    {
+      "is_enable": true,
+      "wan_interface": "wan1",
+      "protocol": "udp",
+      "remote_ip": "any",
+      "lan_ip": "192.168.66.36",
+      "description": "",
+      "is_syslog_enable": true,
+      "public_port": "161",
+      "local_port": "161"
+    },
+    {
+      "is_enable": true,
+      "wan_interface": "wan1",
+      "protocol": "tcp",
+      "remote_ip": "any",
+      "lan_ip": "192.168.66.126",
+      "description": "",
+      "is_syslog_enable": true,
+      "public_port": "2222",
+      "local_port": "22"
+    }
+  ]
+}
