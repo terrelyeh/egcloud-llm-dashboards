@@ -1,0 +1,205 @@
+{
+  "_meta": {
+    "org_name": "Ian_test1",
+    "hv_name": "demo site",
+    "scope": "hierarchy_view",
+    "scope_label": "HV「demo」· 整個 site（跨其下所有 network 彙總）",
+    "period": "week",
+    "window_label": "過去 7 天",
+    "captured_at": "2026-05-22 11:11",
+    "source": "Ian_test1 / demo (staging) · point-in-time snapshot",
+    "note": "staging dev org，資料非靜態；此為擷取當下真實快照（mac 欄位已移除）"
+  },
+  "clients": [
+    {
+      "device_name": "iPhone",
+      "download": 8143282977,
+      "upload": 1376591100,
+      "usage": 9519874077
+    },
+    {
+      "device_name": "Apple_device",
+      "download": 833294176,
+      "upload": 20458194,
+      "usage": 853752370
+    },
+    {
+      "device_name": "iPhone",
+      "download": 250596303,
+      "upload": 35527703,
+      "usage": 286124006
+    },
+    {
+      "device_name": "S105649NB",
+      "download": 169210142,
+      "upload": 55266521,
+      "usage": 224476663
+    },
+    {
+      "device_name": "LAPTOP-HSOKV68P",
+      "download": 27741734,
+      "upload": 1316463,
+      "usage": 29058197
+    },
+    {
+      "device_name": "S105612NB",
+      "download": 10034838,
+      "upload": 8684537,
+      "usage": 18719375
+    },
+    {
+      "device_name": "Apple_device",
+      "download": 556032,
+      "upload": 645120,
+      "usage": 1201152
+    },
+    {
+      "device_name": "Apple_device",
+      "download": 125674,
+      "upload": 59324,
+      "usage": 184998
+    }
+  ],
+  "applications": [
+    {
+      "app_id": 91,
+      "usage": 12815288,
+      "upload": 3574070,
+      "download": 9241218,
+      "app_name": "TLS"
+    },
+    {
+      "app_id": 212,
+      "usage": 5947204,
+      "upload": 2254391,
+      "download": 3692813,
+      "app_name": "Microsoft"
+    },
+    {
+      "app_id": 224,
+      "usage": 5363995,
+      "upload": 311656,
+      "download": 5052339,
+      "app_name": "AppleStore"
+    },
+    {
+      "app_id": 140,
+      "usage": 5199364,
+      "upload": 1213139,
+      "download": 3986225,
+      "app_name": "Apple"
+    },
+    {
+      "app_id": 126,
+      "usage": 4684168,
+      "upload": 2059605,
+      "download": 2624563,
+      "app_name": "Google"
+    },
+    {
+      "app_id": 219,
+      "usage": 3264807,
+      "upload": 1118421,
+      "download": 2146386,
+      "app_name": "Microsoft365"
+    },
+    {
+      "app_id": 188,
+      "usage": 3077713,
+      "upload": 1220452,
+      "download": 1857261,
+      "app_name": "QUIC"
+    },
+    {
+      "app_id": 119,
+      "usage": 2846588,
+      "upload": 949381,
+      "download": 1897207,
+      "app_name": "Facebook"
+    }
+  ],
+  "aps": [
+    {
+      "clients": 8,
+      "download": 4366963873,
+      "name": "demo-test-2",
+      "network_id": "6a0d4ac145cbb41a099f638d",
+      "upload": 1391336180,
+      "usage": 5758300053
+    },
+    {
+      "clients": 6,
+      "download": 5067896474,
+      "name": "demo-test-1",
+      "network_id": "6a0d4ac145cbb41a099f638d",
+      "upload": 107218988,
+      "usage": 5175115462
+    }
+  ],
+  "ssids": [
+    {
+      "download": 8393852244,
+      "network_id": "6a0d4ac145cbb41a099f638d",
+      "upload": 1412093180,
+      "usage": 9805945424,
+      "network_name": "demo",
+      "ssid_name": "demo"
+    },
+    {
+      "download": 1036478401,
+      "network_id": "6a0d4ac145cbb41a099f638d",
+      "upload": 79666998,
+      "usage": 1116145399,
+      "network_name": "demo",
+      "ssid_name": "EnGenius WiFi"
+    },
+    {
+      "download": 0,
+      "network_id": "677ded4610e412c63b2d04a6",
+      "upload": 0,
+      "usage": 0,
+      "network_name": "ian_network",
+      "ssid_name": "EnGenius WiFi"
+    },
+    {
+      "download": 0,
+      "network_id": "677ded4610e412c63b2d04a6",
+      "upload": 0,
+      "usage": 0,
+      "network_name": "ian_network",
+      "ssid_name": "Ian-wifi"
+    },
+    {
+      "download": 0,
+      "network_id": "677ded4610e412c63b2d04a6",
+      "upload": 0,
+      "usage": 0,
+      "network_name": "ian_network",
+      "ssid_name": "smartcast"
+    },
+    {
+      "download": 0,
+      "network_id": "6800ce314080ec3129fa5fe0",
+      "upload": 0,
+      "usage": 0,
+      "network_name": "ian_network(no pdu license)",
+      "ssid_name": "EnGenius WiFi"
+    },
+    {
+      "download": 0,
+      "network_id": "6800cf0ec7c93197749ebe06",
+      "upload": 0,
+      "usage": 0,
+      "network_name": "ian_network3",
+      "ssid_name": "EnGenius WiFi"
+    },
+    {
+      "download": 0,
+      "network_id": "68b00b6e3dba88e4dccd710e",
+      "upload": 0,
+      "usage": 0,
+      "network_name": "initial_bypass",
+      "ssid_name": "EnGenius WiFi"
+    }
+  ]
+}
