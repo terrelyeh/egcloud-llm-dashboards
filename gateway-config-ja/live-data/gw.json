@@ -1,0 +1,78 @@
+{
+  "net_name": "Network",
+  "lan_mode": "hybrid",
+  "is_ha": false,
+  "fw_auto": true,
+  "fw_version": "release",
+  "static_routes_count": 0,
+  "lans": [
+    {
+      "name": "test1",
+      "subnet": "192.168.7.0/24",
+      "ip_address": "10.0.0.1",
+      "vlan_enable": true,
+      "is_enable": false
+    },
+    {
+      "name": "test2",
+      "subnet": "192.168.22.0/24",
+      "ip_address": "10.0.0.2",
+      "vlan_enable": true,
+      "is_enable": false
+    },
+    {
+      "name": "LAN",
+      "subnet": "192.168.65.0/24",
+      "ip_address": "10.0.0.3",
+      "vlan_enable": false,
+      "is_enable": true
+    }
+  ],
+  "policy_routes": [
+    {
+      "name": "Test",
+      "protocol": "tcp",
+      "src": "192.168.65.0/24:80",
+      "dst": "any:80",
+      "prefer_uplink": "WAN2",
+      "is_enable": false
+    }
+  ],
+  "firmware_periods": [
+    {
+      "week_day": "sunday",
+      "window": "02:00–03:00",
+      "is_enable": true
+    },
+    {
+      "week_day": "monday",
+      "window": "02:00–03:00",
+      "is_enable": false
+    },
+    {
+      "week_day": "tuesday",
+      "window": "02:00–03:00",
+      "is_enable": false
+    },
+    {
+      "week_day": "wednesday",
+      "window": "02:00–03:00",
+      "is_enable": false
+    },
+    {
+      "week_day": "thursday",
+      "window": "02:00–03:00",
+      "is_enable": false
+    },
+    {
+      "week_day": "friday",
+      "window": "02:00–03:00",
+      "is_enable": false
+    },
+    {
+      "week_day": "saturday",
+      "window": "02:00–03:00",
+      "is_enable": false
+    }
+  ]
+}
