@@ -1,0 +1,18 @@
+{
+  "rows": [
+    {
+      "name": "Linux",
+      "device_count": 1,
+      "download_mb": 1.2,
+      "upload_mb": 0.23,
+      "usage_mb": 1.43
+    },
+    {
+      "name": "Apple iOS",
+      "device_count": 1,
+      "download_mb": 0.55,
+      "upload_mb": 0.34,
+      "usage_mb": 0.89
+    }
+  ]
+}
