@@ -1,0 +1,577 @@
+[
+  {
+    "parent": {
+      "id": "internet",
+      "mac": null
+    },
+    "id": "6785d063ff07e0586b18d12c",
+    "mac": "00:12:34:22:02:56",
+    "is_third_party": false,
+    "is_root": true,
+    "neighbors": [
+      {
+        "id": "internet",
+        "mac": null,
+        "source_port": null,
+        "source_port_status": null,
+        "source_port_speed": null,
+        "source_port_usage_all": 0.0,
+        "source_port_usage_upload": 0.0,
+        "source_port_usage_download": 0.0,
+        "target_port": null,
+        "target_port_status": null,
+        "target_port_speed": null,
+        "target_port_usage_all": 0.0,
+        "target_port_usage_upload": 0.0,
+        "target_port_usage_download": 0.0
+      }
+    ],
+    "name": "ECW516L-0256",
+    "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+    "network_id": "64195adcfafeb4e9fd37c3bf",
+    "type": "ap",
+    "model": "ECW516L",
+    "information": {
+      "status": "offline",
+      "wan_ip": null,
+      "last_seen": null
+    },
+    "expired_date": 1747558575000,
+    "mesh": null,
+    "warnings": {
+      "is_config_unsynced": false,
+      "is_config_reverted": false,
+      "is_firmware_out_of_date": false,
+      "is_license_expired": true,
+      "is_license_nearly_expired": false,
+      "reverted_config_timestamp": null
+    }
+  },
+  {
+    "parent": {
+      "id": "internet",
+      "mac": null
+    },
+    "id": "680215f946c77c5ee156d6cb",
+    "mac": "88:dc:96:22:16:c7",
+    "is_third_party": false,
+    "is_root": true,
+    "neighbors": [
+      {
+        "id": "internet",
+        "mac": null,
+        "source_port": null,
+        "source_port_status": null,
+        "source_port_speed": null,
+        "source_port_usage_all": 0.0,
+        "source_port_usage_upload": 0.0,
+        "source_port_usage_download": 0.0,
+        "target_port": null,
+        "target_port_status": null,
+        "target_port_speed": null,
+        "target_port_usage_all": 0.0,
+        "target_port_usage_upload": 0.0,
+        "target_port_usage_download": 0.0
+      }
+    ],
+    "name": "ECW212L-16C7",
+    "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+    "network_id": "64195adcfafeb4e9fd37c3bf",
+    "type": "ap",
+    "model": "ECW212L",
+    "information": {
+      "status": "offline",
+      "wan_ip": null,
+      "last_seen": null
+    },
+    "expired_date": 1784279161000,
+    "mesh": null,
+    "warnings": {
+      "is_config_unsynced": false,
+      "is_config_reverted": false,
+      "is_firmware_out_of_date": false,
+      "is_license_expired": false,
+      "is_license_nearly_expired": false,
+      "reverted_config_timestamp": null
+    }
+  },
+  {
+    "parent": {
+      "id": "internet",
+      "mac": null
+    },
+    "id": "691d85301a4427fbd30efa07",
+    "mac": "c4:e3:ce:6e:21:6d",
+    "is_third_party": false,
+    "is_root": true,
+    "neighbors": [
+      {
+        "id": "internet",
+        "mac": null,
+        "source_port": null,
+        "source_port_status": null,
+        "source_port_speed": null,
+        "source_port_usage_all": 0.0,
+        "source_port_usage_upload": 0.0,
+        "source_port_usage_download": 0.0,
+        "target_port": null,
+        "target_port_status": null,
+        "target_port_speed": null,
+        "target_port_usage_all": 0.0,
+        "target_port_usage_upload": 0.0,
+        "target_port_usage_download": 0.0
+      }
+    ],
+    "name": "ECC500-216D",
+    "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+    "network_id": "64195adcfafeb4e9fd37c3bf",
+    "type": "camera",
+    "model": "ECC500",
+    "information": {
+      "status": "online",
+      "wan_ip": "203.69.29.155",
+      "last_seen": 1779978559000,
+      "firmware_version": "1.2.45",
+      "build_version": "2",
+      "lan": {
+        "mode": "dhcp",
+        "ip": "172.20.109.19",
+        "mask": "255.255.240.0",
+        "gateway": "172.20.111.254",
+        "primary_dns": "1.1.1.1",
+        "secondary_dns": "8.8.8.8"
+      }
+    },
+    "expired_date": 1763542320000,
+    "warnings": {
+      "is_config_unsynced": false,
+      "is_config_reverted": false,
+      "is_firmware_out_of_date": false,
+      "is_license_expired": true,
+      "is_license_nearly_expired": false,
+      "reverted_config_timestamp": 0
+    }
+  },
+  {
+    "parent": {
+      "id": "internet",
+      "mac": null
+    },
+    "id": "608779c64d5a2352d5faf79b",
+    "mac": "88:dc:96:83:2e:b3",
+    "is_third_party": false,
+    "is_root": true,
+    "neighbors": [
+      {
+        "id": "internet",
+        "mac": null,
+        "source_port": null,
+        "source_port_status": null,
+        "source_port_speed": null,
+        "source_port_usage_all": 0.0,
+        "source_port_usage_upload": 0.0,
+        "source_port_usage_download": 0.0,
+        "target_port": null,
+        "target_port_status": null,
+        "target_port_speed": null,
+        "target_port_usage_all": 0.0,
+        "target_port_usage_upload": 0.0,
+        "target_port_usage_download": 0.0
+      }
+    ],
+    "name": "ECW115-2EB3",
+    "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+    "network_id": "64195adcfafeb4e9fd37c3bf",
+    "type": "ap",
+    "model": "ECW115",
+    "information": {
+      "status": "offline",
+      "wan_ip": "1.34.137.147",
+      "last_seen": 1758000789000,
+      "firmware_version": "1.3.74",
+      "build_version": "1",
+      "client_count": 0,
+      "lan": {
+        "ip": "192.168.21.192",
+        "mask": "255.255.248.0",
+        "mode": "dhcp",
+        "gateway": "192.168.16.1",
+        "primary_dns": "192.168.16.1",
+        "secondary_dns": "N/A",
+        "ipv6": {
+          "is_link_local": true,
+          "ip": "N/A",
+          "subnet_prefix": 0,
+          "gateway": "",
+          "primary_dns": "N/A",
+          "secondary_dns": "N/A"
+        }
+      },
+      "mesh": {
+        "mesh_role": "",
+        "mesh_radio": "",
+        "mesh_channel": 0,
+        "mesh_robust": {
+          "enable": false,
+          "threshold": 0
+        },
+        "mesh_topology": {
+          "gw_mac": "",
+          "next_hop_mac": "",
+          "next_hop_rssi": 0,
+          "next_hop_speed": "",
+          "connection_status": ""
+        }
+      }
+    },
+    "expired_date": 1792054095000,
+    "mesh": null,
+    "warnings": {
+      "is_config_unsynced": false,
+      "is_config_reverted": false,
+      "is_firmware_out_of_date": false,
+      "is_license_expired": false,
+      "is_license_nearly_expired": false,
+      "reverted_config_timestamp": 0
+    }
+  },
+  {
+    "parent": {
+      "id": "internet",
+      "mac": null
+    },
+    "id": "67eb4c56a0fb733374143c0c",
+    "mac": "88:dc:96:22:06:12",
+    "is_third_party": false,
+    "is_root": true,
+    "neighbors": [
+      {
+        "id": "internet",
+        "mac": null,
+        "source_port": null,
+        "source_port_status": null,
+        "source_port_speed": null,
+        "source_port_usage_all": 0.0,
+        "source_port_usage_upload": 0.0,
+        "source_port_usage_download": 0.0,
+        "target_port": null,
+        "target_port_status": null,
+        "target_port_speed": null,
+        "target_port_usage_all": 0.0,
+        "target_port_usage_upload": 0.0,
+        "target_port_usage_download": 0.0
+      }
+    ],
+    "name": "ECW510-0612",
+    "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+    "network_id": "64195adcfafeb4e9fd37c3bf",
+    "type": "ap",
+    "model": "ECW510",
+    "information": {
+      "status": "offline",
+      "wan_ip": null,
+      "last_seen": null
+    },
+    "expired_date": 1790561750000,
+    "mesh": null,
+    "warnings": {
+      "is_config_unsynced": false,
+      "is_config_reverted": false,
+      "is_firmware_out_of_date": false,
+      "is_license_expired": false,
+      "is_license_nearly_expired": false,
+      "reverted_config_timestamp": null
+    }
+  },
+  {
+    "parent": {
+      "id": "internet",
+      "mac": null
+    },
+    "id": "67eb4c56a0fb733374143c0d",
+    "mac": "88:dc:96:22:06:14",
+    "is_third_party": false,
+    "is_root": true,
+    "neighbors": [
+      {
+        "id": "internet",
+        "mac": null,
+        "source_port": null,
+        "source_port_status": null,
+        "source_port_speed": null,
+        "source_port_usage_all": 0.0,
+        "source_port_usage_upload": 0.0,
+        "source_port_usage_download": 0.0,
+        "target_port": null,
+        "target_port_status": null,
+        "target_port_speed": null,
+        "target_port_usage_all": 0.0,
+        "target_port_usage_upload": 0.0,
+        "target_port_usage_download": 0.0
+      }
+    ],
+    "name": "ECW520-0614",
+    "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+    "network_id": "64195adcfafeb4e9fd37c3bf",
+    "type": "ap",
+    "model": "ECW520",
+    "information": {
+      "status": "offline",
+      "wan_ip": null,
+      "last_seen": null
+    },
+    "expired_date": 1789552120000,
+    "mesh": null,
+    "warnings": {
+      "is_config_unsynced": false,
+      "is_config_reverted": false,
+      "is_firmware_out_of_date": false,
+      "is_license_expired": false,
+      "is_license_nearly_expired": false,
+      "reverted_config_timestamp": null
+    }
+  },
+  {
+    "parent": {
+      "id": "internet",
+      "mac": null
+    },
+    "id": "672486a40ccfb9cd4b1484a0",
+    "mac": "88:dc:97:30:aa:59",
+    "is_third_party": false,
+    "is_root": true,
+    "neighbors": [
+      {
+        "id": "internet",
+        "mac": null,
+        "source_port": "WAN1",
+        "source_port_status": null,
+        "source_port_speed": null,
+        "source_port_usage_all": 0.0,
+        "source_port_usage_upload": 0.0,
+        "source_port_usage_download": 0.0,
+        "target_port": null,
+        "target_port_status": null,
+        "target_port_speed": null,
+        "target_port_usage_all": 0.0,
+        "target_port_usage_upload": 0.0,
+        "target_port_usage_download": 0.0
+      }
+    ],
+    "name": "ESG320-AA59",
+    "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+    "network_id": "64195adcfafeb4e9fd37c3bf",
+    "type": "gateway",
+    "model": "ESG320",
+    "information": {
+      "status": "online",
+      "wan_ip": "1.34.137.147",
+      "last_seen": 1779440102000,
+      "ethport_info": [
+        {
+          "id": "WAN1",
+          "ifname": "re4",
+          "link_status": 1,
+          "link_speed": "1Gbps",
+          "link_duplex": 1,
+          "is_opt_port": 0,
+          "is_sfp_port": 0,
+          "poe_status": -1,
+          "ethport_id": "WAN1"
+        },
+        {
+          "id": "WAN2",
+          "ifname": "re2",
+          "link_status": 0,
+          "link_speed": "Down",
+          "link_duplex": 0,
+          "is_opt_port": 1,
+          "is_sfp_port": 0,
+          "ethport_id": "WAN2",
+          "poe_status": -1
+        },
+        {
+          "id": "LAN1",
+          "ifname": "re0",
+          "link_status": 0,
+          "link_speed": "Down",
+          "link_duplex": 0,
+          "is_opt_port": 0,
+          "is_sfp_port": 0,
+          "poe_status": -1,
+          "ethport_id": "LAN1"
+        },
+        {
+          "id": "LAN2",
+          "ifname": "re1",
+          "link_status": 0,
+          "link_speed": "Down",
+          "link_duplex": 0,
+          "is_opt_port": 0,
+          "is_sfp_port": 0,
+          "poe_status": -1,
+          "ethport_id": "LAN2"
+        }
+      ],
+      "wan_info": {
+        "primary_wan_id": "WAN1",
+        "wan1_ip": "1.34.137.147",
+        "wan1_ipv6": "- -",
+        "wan2_ip": "- -",
+        "interfaces": [
+          {
+            "id": "WAN1",
+            "desc": "WAN",
+            "connection_type": 0,
+            "ifname": "re4",
+            "status": 1,
+            "nat_type": 3,
+            "ip": "192.168.21.199",
+            "ipv6": "- -",
+            "mask": "255.255.248.0",
+            "gateway": "192.168.16.1",
+            "gateway_ipv6": "- -",
+            "dns_server": {
+              "primary": "192.168.16.1",
+              "secondary": "- -"
+            },
+            "sent": 167108,
+            "rcvd_total": 11356793480,
+            "rcvd": 1314604,
+            "sent_total": 2632019634
+          },
+          {
+            "id": "WAN2",
+            "desc": "WAN2",
+            "connection_type": 0,
+            "ifname": "re2",
+            "status": 0,
+            "nat_type": 0,
+            "ip": "- -",
+            "ipv6": "- -",
+            "mask": "- -",
+            "gateway": "- -",
+            "gateway_ipv6": "- -",
+            "dns_server": {
+              "primary": "- -",
+              "secondary": "- -"
+            },
+            "sent": 0,
+            "rcvd": 0,
+            "rcvd_total": 0,
+            "sent_total": 0
+          }
+        ],
+        "cellular": [],
+        "wwan_ip": "- -"
+      },
+      "secondary_wan_id": "WAN2"
+    },
+    "expired_date": 1779440292000,
+    "gateway_ha_mode": "disabled",
+    "warnings": {
+      "is_config_unsynced": false,
+      "is_config_reverted": false,
+      "is_firmware_out_of_date": false,
+      "is_license_expired": true,
+      "is_license_nearly_expired": false,
+      "reverted_config_timestamp": 0
+    }
+  },
+  {
+    "parent": {
+      "id": "internet",
+      "mac": null
+    },
+    "id": "680215f946c77c5ee156d6ca",
+    "mac": "88:dc:96:22:16:c5",
+    "is_third_party": false,
+    "is_root": true,
+    "neighbors": [
+      {
+        "id": "internet",
+        "mac": null,
+        "source_port": null,
+        "source_port_status": null,
+        "source_port_speed": null,
+        "source_port_usage_all": 0.0,
+        "source_port_usage_upload": 0.0,
+        "source_port_usage_download": 0.0,
+        "target_port": null,
+        "target_port_status": null,
+        "target_port_speed": null,
+        "target_port_usage_all": 0.0,
+        "target_port_usage_upload": 0.0,
+        "target_port_usage_download": 0.0
+      }
+    ],
+    "name": "ECW210L-16C5",
+    "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+    "network_id": "64195adcfafeb4e9fd37c3bf",
+    "type": "ap",
+    "model": "ECW210L",
+    "information": {
+      "status": "offline",
+      "wan_ip": null,
+      "last_seen": null
+    },
+    "expired_date": 1760519161000,
+    "mesh": null,
+    "warnings": {
+      "is_config_unsynced": false,
+      "is_config_reverted": false,
+      "is_firmware_out_of_date": false,
+      "is_license_expired": true,
+      "is_license_nearly_expired": false,
+      "reverted_config_timestamp": null
+    }
+  },
+  {
+    "parent": {
+      "id": "internet",
+      "mac": null
+    },
+    "id": "63c8b72b7c8927ce4f0c507e",
+    "mac": "88:dc:97:14:b9:92",
+    "is_third_party": false,
+    "is_root": true,
+    "neighbors": [
+      {
+        "id": "internet",
+        "mac": null,
+        "source_port": null,
+        "source_port_status": null,
+        "source_port_speed": null,
+        "source_port_usage_all": 0.0,
+        "source_port_usage_upload": 0.0,
+        "source_port_usage_download": 0.0,
+        "target_port": null,
+        "target_port_status": null,
+        "target_port_speed": null,
+        "target_port_usage_all": 0.0,
+        "target_port_usage_upload": 0.0,
+        "target_port_usage_download": 0.0
+      }
+    ],
+    "name": "ECW130-B992",
+    "hierarchy_view_id": "64195adc69fc39c7385a60f2",
+    "network_id": "64195adcfafeb4e9fd37c3bf",
+    "type": "ap",
+    "model": "ECW130",
+    "information": {
+      "status": "offline",
+      "wan_ip": null,
+      "last_seen": null
+    },
+    "expired_date": 1771323184000,
+    "mesh": null,
+    "warnings": {
+      "is_config_unsynced": false,
+      "is_config_reverted": false,
+      "is_firmware_out_of_date": false,
+      "is_license_expired": true,
+      "is_license_nearly_expired": false,
+      "reverted_config_timestamp": null
+    }
+  }
+]
