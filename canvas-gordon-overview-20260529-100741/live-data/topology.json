@@ -1,0 +1,72 @@
+[
+  {
+    "id": "622eae722665eb241a3588b0",
+    "mac": "88:dc:96:13:44:44",
+    "name": "shielding_room_gateway",
+    "type": "gateway",
+    "model": "ESG510",
+    "is_root": true,
+    "parent": { "id": "internet", "mac": null },
+    "neighbors": [
+      {
+        "id": "6729b684e3a93cca8fad7bf2",
+        "mac": "88:dc:97:47:e0:f9",
+        "source_port": "P1",
+        "target_port": 1,
+        "source_port_status": "forwarding",
+        "source_port_speed": "1Gbps_fdx",
+        "source_port_usage_all": 3275218.09375
+      },
+      {
+        "id": "internet",
+        "mac": null,
+        "source_port": "WAN1",
+        "source_port_status": "forwarding",
+        "source_port_speed": "1Gbps",
+        "source_port_usage_all": 0
+      }
+    ],
+    "warnings": {}
+  },
+  {
+    "id": "6729b684e3a93cca8fad7bf2",
+    "mac": "88:dc:97:47:e0:f9",
+    "name": "shielding_room_switch",
+    "type": "switch",
+    "model": "ECS1528FP",
+    "is_root": false,
+    "parent": { "id": "622eae722665eb241a3588b0", "mac": "88:dc:96:13:44:44" },
+    "neighbors": [
+      {
+        "id": "622eae722665eb241a3588b0",
+        "mac": "88:dc:96:13:44:44",
+        "source_port": 1,
+        "target_port": "P1",
+        "source_port_status": "forwarding",
+        "source_port_speed": "1Gbps_fdx",
+        "source_port_usage_all": 3275218.09375
+      }
+    ],
+    "warnings": {}
+  },
+  {
+    "id": "668e55085b8f3185a7e655e6",
+    "mac": "88:dc:97:42:e1:a6",
+    "name": "ECW526-E1A6嗨",
+    "type": "ap",
+    "model": "ECW526",
+    "is_root": true,
+    "parent": { "id": "internet", "mac": null },
+    "neighbors": [
+      {
+        "id": "internet",
+        "mac": null,
+        "source_port": null,
+        "source_port_status": "forwarding",
+        "source_port_speed": null,
+        "source_port_usage_all": 0
+      }
+    ],
+    "warnings": {}
+  }
+]

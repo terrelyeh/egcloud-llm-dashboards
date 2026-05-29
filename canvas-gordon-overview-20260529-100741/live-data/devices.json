@@ -1,0 +1,56 @@
+{
+  "device_candidates": [
+    {
+      "device_id": "668e55085b8f3185a7e655e6",
+      "name": "ECW526-E1A6嗨",
+      "mac": "88:dc:97:42:e1:a6",
+      "model": "ECW526",
+      "type": "ap",
+      "series": "Cloud",
+      "band": "2_4G|5G|6G",
+      "network_id": "672c2fe8582ad89824fc86cf",
+      "network_name": "7F_shieldingRoom",
+      "license_type": "pro",
+      "status": "online",
+      "last_seen": 1780019832000,
+      "wan_ip": "1.34.137.147",
+      "is_firmware_out_of_date": false,
+      "is_config_up_to_date": true,
+      "expired_date": 1810172163000
+    },
+    {
+      "device_id": "6729b684e3a93cca8fad7bf2",
+      "name": "shielding_room_switch",
+      "mac": "88:dc:97:47:e0:f9",
+      "model": "ECS1528FP",
+      "type": "switch",
+      "series": "Cloud",
+      "network_id": "672c2fe8582ad89824fc86cf",
+      "network_name": "7F_shieldingRoom",
+      "license_type": "pro",
+      "status": "online",
+      "last_seen": 1780019873000,
+      "wan_ip": "36.231.153.71",
+      "is_firmware_out_of_date": false,
+      "is_config_up_to_date": true,
+      "expired_date": 1833170948000
+    },
+    {
+      "device_id": "622eae722665eb241a3588b0",
+      "name": "shielding_room_gateway",
+      "mac": "88:dc:96:13:44:44",
+      "model": "ESG510",
+      "type": "gateway",
+      "series": "Cloud",
+      "network_id": "672c2fe8582ad89824fc86cf",
+      "network_name": "7F_shieldingRoom",
+      "license_type": "pro",
+      "status": "online",
+      "last_seen": 1780020002000,
+      "wan_ip": "36.231.153.71",
+      "is_firmware_out_of_date": false,
+      "is_config_up_to_date": true,
+      "expired_date": 1837601593000
+    }
+  ]
+}
