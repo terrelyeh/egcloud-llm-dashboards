@@ -1,0 +1,26 @@
+{
+  "title": "Danny org · 建議行動清單",
+  "locale": "zh-TW",
+  "subtitle": "EnGenius Cloud · 無線網路健檢結論 · 1 件較急、其餘為整理性質",
+  "refresh": null,
+  "live_data": { "plan": "live-data/data.json" },
+  "sections": [
+    {
+      "widget": "alert",
+      "id": "verdict",
+      "severity": "success",
+      "title": "整體健康，沒有故障；要做的事不多",
+      "body": "好消息先講：全 org 31 台 AP 韌體都是最新、沒有任何授權已過期、在線設備運作正常。真正值得處理的只有 1 件較急（一台在線 AP 的授權 57 天後到期），其餘是同步、盤點與清理這類整理性質的工作。下面照優先級排好了。"
+    },
+    {
+      "widget": "checklist",
+      "id": "fix",
+      "title": "建議清單",
+      "data_source": "plan.items",
+      "intro": "勾選會自動存在這台瀏覽器；做完跟我說，我可以重撈確認狀態都更新了。授權續約那項要在 Cloud 後台操作、我這邊改不了，但可以幫你開頁面。",
+      "evidence": {
+        "ops": ["get_user_orgs", "get_hierarchy_views", "get_network_devices_aps"]
+      }
+    }
+  ]
+}

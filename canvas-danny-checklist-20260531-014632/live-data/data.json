@@ -1,0 +1,50 @@
+{
+  "items": [
+    {
+      "id": "renew-ecw220s",
+      "title": "續約 ECW220S-E9:80 的授權（57 天後到期）",
+      "priority": "p1",
+      "risk_tier": "T0",
+      "status_label": "到期日：2026-07-26",
+      "path": "EnGenius Cloud → 右上帳號 → Billing / License",
+      "changes": [
+        { "item": "ECW220S-E9:80（HV-1-1_Network-1，在線使用中）", "current": "授權剩 57 天", "recommended": "續約 1 年 / 確認自動續約已開啟" }
+      ],
+      "note": "這是全 org 唯一一台『在線、使用中』且授權即將到期的 AP。過期後雲端管理（設定下發、統計、遠端重開）會受限，設備本身仍會運作。續約只能在 Cloud 後台 Billing 頁操作，我這邊改不了；要我幫你開連結嗎？",
+      "note_severity": "warning"
+    },
+    {
+      "id": "sync-l-series-ap",
+      "title": "讓 L Series 的 ECW201L-AC-D456 把設定同步上去",
+      "priority": "p2",
+      "risk_tier": "T1",
+      "status_label": "在線，但設定未套用",
+      "path": "Manage → Access Points → ECW201L-AC-D456 → Reboot / 重新連線",
+      "changes": [
+        { "item": "ECW201L-AC-D456（L Series，唯一在線那台）", "current": "設定未同步到最新", "recommended": "重連雲端或重開一次，把 pending 設定推上去" }
+      ],
+      "note": "目前 0 個連線用戶，重開幾乎沒影響。若重開後仍顯示未同步，多半是這台連雲端的通道有問題，下一步往『為什麼連不上雲端』查。",
+      "note_severity": "info"
+    },
+    {
+      "id": "audit-offline",
+      "title": "盤點 26 台離線 AP — 哪些是『該在線卻失聯』",
+      "priority": "p3",
+      "risk_tier": "T0",
+      "status_label": "31 台中 26 台離線",
+      "path": "（先確認用途，不需動設定）",
+      "note": "這個 org 看起來是實驗 / 測試環境，大量關機屬正常。但建議快速確認這批裡有沒有『本來應該營運』的設備失聯——若有，通常是斷電或網路線鬆脫。其餘離線設備的『設定未同步』會在它們重新上線時自動補上，不用個別處理。",
+      "note_severity": "info"
+    },
+    {
+      "id": "cleanup-empty-nets",
+      "title": "清理空的 / 測試網路，減少管理混亂",
+      "priority": "optional",
+      "risk_tier": "T1",
+      "status_label": "約 8 個空 / 純測試網路",
+      "path": "Organization → Networks → 選取空網路 → Delete",
+      "note": "For Mavis、test net 1/2、HV-2 系列、PoE-2、For_Ryan、test 等網路沒有 AP 或完全沒設備。確定不再使用再刪；刪除前先確認網路內沒有還想保留的設備或設定。屬整理性質、不急。",
+      "note_severity": "warning"
+    }
+  ]
+}
