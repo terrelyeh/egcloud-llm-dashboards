@@ -1,0 +1,345 @@
+{
+ "title": "應用層可視化 · Application Visibility",
+ "locale": "zh-TW",
+ "subtitle": "EnGenius_Taipei（prod 實測）· DPI 識別 106 個應用 · 含視訊會議 / VoIP 分流",
+ "refresh": null,
+ "live_data": {
+  "summary": "live-data/summary.json",
+  "apps": "live-data/apps.json",
+  "clients": "live-data/clients.json"
+ },
+ "sections": [
+  {
+   "widget": "alert",
+   "id": "headline",
+   "severity": "info",
+   "title": "EnGenius Cloud 的 DPI 認得出 106 個應用 —— Zoom / Teams / Webex / Facebook VoIP 全可分流",
+   "body": "這張全部來自 prod 真實資料（api-key 第三方呼叫）。應用識別引擎在此網路辨識出 106 個應用、約 82 GB 流量，並能逐一拆出視訊會議與 VoIP（偵測到 Teams、Skype Teams Call、Zoom、Webex、GoTo、Google Hangout/Duo、LineCall、WhatsApp、以及字面命名的 FacebookVoip，加上 RTP/STUN/DTLS 即時通訊協定）。可逐網路、逐 client 拆解。⚠ 注意：這是「**用量 / 流量**」維度；每通會話的 MOS / 通話品質指標平台目前未提供（屬資料層缺口）。"
+  },
+  {
+   "widget": "kpi_grid",
+   "id": "kpis",
+   "items": [
+    {
+     "label": "識別應用數",
+     "value_path": "summary.apps_id_label",
+     "sub": "DPI application identification"
+    },
+    {
+     "label": "總應用流量",
+     "value_path": "summary.total_gb_label",
+     "sub": "本網路 · 取樣區間"
+    },
+    {
+     "label": "視訊 / VoIP 應用",
+     "severity": "warning",
+     "value_path": "summary.voip_count_label",
+     "sub": "含 Zoom/Teams/Webex/FB VoIP",
+     "clickable": {
+      "target": "voip"
+     }
+    },
+    {
+     "label": "流量最高應用",
+     "value_path": "summary.top_app_label",
+     "sub": "見下方 Top 應用"
+    }
+   ]
+  },
+  {
+   "widget": "bar_list",
+   "id": "cat",
+   "title": "流量分類（依應用類別）",
+   "meta": "GB",
+   "groups": [
+    {
+     "total_compute": "_unused",
+     "items": [
+      {
+       "label": "加密 / 一般 Web",
+       "value": 27.42,
+       "color": "ok"
+      },
+      {
+       "label": "檔案 / P2P",
+       "value": 20.62,
+       "color": "ok"
+      },
+      {
+       "label": "雲端 / 生產力",
+       "value": 16.72,
+       "color": "ok"
+      },
+      {
+       "label": "系統 / 更新",
+       "value": 6.94,
+       "color": "ok"
+      },
+      {
+       "label": "串流影音",
+       "value": 4.77,
+       "color": "ok"
+      },
+      {
+       "label": "視訊會議 / VoIP",
+       "value": 2.6,
+       "color": "crit"
+      },
+      {
+       "label": "社群 / 訊息",
+       "value": 1.8,
+       "color": "ok"
+      },
+      {
+       "label": "其他 / 基礎協定",
+       "value": 1.55,
+       "color": "ok"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "widget": "bar_list",
+   "id": "voip",
+   "title": "視訊會議 / VoIP 應用明細（回應客戶 Zoom/Teams/FB VoIP 需求）",
+   "meta": "MB · 可逐應用拆分",
+   "groups": [
+    {
+     "total_compute": "_unused",
+     "items": [
+      {
+       "label": "Teams",
+       "value": 994.2,
+       "color": "warn",
+       "mono": "TE",
+       "mono_color": "#6264A7"
+      },
+      {
+       "label": "Skype_TeamsCall",
+       "value": 770.6,
+       "color": "warn",
+       "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzAwQUZGMCI+PHBhdGggZD0iTTEyLjA2OSAxOC44NzRjLTQuMDIzIDAtNS44Mi0xLjk3OS01LjgyLTMuNDY0IDAtLjc2NS41NjEtMS4yOTYgMS4zMzMtMS4yOTYgMS43MjMgMCAxLjI3MyAyLjQ3NyA0LjQ4NyAyLjQ3NyAxLjY0MSAwIDIuNTUtLjg5NSAyLjU1LTEuODExIDAtLjU1MS0uMjY5LTEuMTYtMS4zNTQtMS40MjlsLTMuNTc2LS44OTVjLTIuODgtLjcyNC0zLjQwMy0yLjI4Ni0zLjQwMy0zLjc1MSAwLTMuMDQ3IDIuODYxLTQuMTkxIDUuNTQ5LTQuMTkxIDIuNDcxIDAgNS4zOTMgMS4zNzMgNS4zOTMgMy4xOTkgMCAuNzg0LS42ODggMS4yNC0xLjQ1MyAxLjI0LTEuNDY5IDAtMS4xOTgtMi4wMzctNC4xNjQtMi4wMzctMS40NjkgMC0yLjI5Mi42NjQtMi4yOTIgMS42MTdzMS4xNTMgMS4yNTggMi4xNTcgMS40ODdsMi42MzcuNTg3YzIuODkxLjY0OSAzLjYyNCAyLjM0NiAzLjYyNCAzLjk0NCAwIDIuNDc2LTEuOTAyIDQuMzI0LTUuNzIyIDQuMzI0bTExLjA4NC00Ljg4MmwtLjAyOS4xMzUtLjA0NC0uMjRjLjAxNS4wNDUuMDQ0LjA3NC4wNTkuMTIuMTItLjY3NS4xODEtMS4zNjMuMTgxLTIuMDUyIDAtMS41MjktLjMwMS0zLjAxMi0uODk4LTQuNDItLjU2OS0xLjM0OC0xLjM5NS0yLjU2Mi0yLjQyNy0zLjU5Ni0xLjA0OS0xLjAzMy0yLjI0Ny0xLjg1Ni0zLjU5NS0yLjQyNi0xLjMxOC0uNjMxLTIuODAxLS45My00LjMyOC0uOTMtLjcyIDAtMS40NDQuMDctMi4xNDMuMjA0bC4xMTkuMDYtLjIzOS0uMDMzLjExOS0uMDI1QzguOTEuMjc0IDcuODI5IDAgNi43MzEgMGMtMS43ODkgMC0zLjQ3LjY5OC00LjczNiAxLjk2N0MuNzI5IDMuMjM1LjAzMiA0LjkyMy4wMzIgNi43MTZjMCAxLjE0My4yOTIgMi4yNjUuODQ0IDMuMjU4bC4wMi0uMTI0LjA0MS4yMzktLjA2LS4xMTVjLS4xMTQuNjQ1LS4xNzIgMS4yOTktLjE3MiAxLjk1NSAwIDEuNTMuMyAzLjAxNy44ODQgNC40MTYuNTY4IDEuMzYyIDEuMzc4IDIuNTc2IDIuNDI3IDMuNjA5IDEuMDM0IDEuMDUgMi4yNDcgMS44NTcgMy41OTUgMi40NDIgMS4zOTQuNiAyLjg3Ny44OTggNC40MDQuODk4LjY1OSAwIDEuMzM0LS4wNiAxLjk3Ny0uMTc5bC0uMTE5LS4wNjIuMjQuMDQ2LS4xMzUuMDNjMS4wMDIuNTY5IDIuMTI2Ljg3MSAzLjI5NC44NzEgMS43ODMgMCAzLjQ1OS0uNjkgNC43MzMtMS45NjMgMS4yNTktMS4yNTkgMS45NjItMi45NTEgMS45NjItNC43NDkgMC0xLjEzOC0uMjk5LTIuMjYyLS44NTMtMy4yNjYiLz48L3N2Zz4="
+      },
+      {
+       "label": "Skype_Teams",
+       "value": 342.9,
+       "color": "warn",
+       "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzAwQUZGMCI+PHBhdGggZD0iTTEyLjA2OSAxOC44NzRjLTQuMDIzIDAtNS44Mi0xLjk3OS01LjgyLTMuNDY0IDAtLjc2NS41NjEtMS4yOTYgMS4zMzMtMS4yOTYgMS43MjMgMCAxLjI3MyAyLjQ3NyA0LjQ4NyAyLjQ3NyAxLjY0MSAwIDIuNTUtLjg5NSAyLjU1LTEuODExIDAtLjU1MS0uMjY5LTEuMTYtMS4zNTQtMS40MjlsLTMuNTc2LS44OTVjLTIuODgtLjcyNC0zLjQwMy0yLjI4Ni0zLjQwMy0zLjc1MSAwLTMuMDQ3IDIuODYxLTQuMTkxIDUuNTQ5LTQuMTkxIDIuNDcxIDAgNS4zOTMgMS4zNzMgNS4zOTMgMy4xOTkgMCAuNzg0LS42ODggMS4yNC0xLjQ1MyAxLjI0LTEuNDY5IDAtMS4xOTgtMi4wMzctNC4xNjQtMi4wMzctMS40NjkgMC0yLjI5Mi42NjQtMi4yOTIgMS42MTdzMS4xNTMgMS4yNTggMi4xNTcgMS40ODdsMi42MzcuNTg3YzIuODkxLjY0OSAzLjYyNCAyLjM0NiAzLjYyNCAzLjk0NCAwIDIuNDc2LTEuOTAyIDQuMzI0LTUuNzIyIDQuMzI0bTExLjA4NC00Ljg4MmwtLjAyOS4xMzUtLjA0NC0uMjRjLjAxNS4wNDUuMDQ0LjA3NC4wNTkuMTIuMTItLjY3NS4xODEtMS4zNjMuMTgxLTIuMDUyIDAtMS41MjktLjMwMS0zLjAxMi0uODk4LTQuNDItLjU2OS0xLjM0OC0xLjM5NS0yLjU2Mi0yLjQyNy0zLjU5Ni0xLjA0OS0xLjAzMy0yLjI0Ny0xLjg1Ni0zLjU5NS0yLjQyNi0xLjMxOC0uNjMxLTIuODAxLS45My00LjMyOC0uOTMtLjcyIDAtMS40NDQuMDctMi4xNDMuMjA0bC4xMTkuMDYtLjIzOS0uMDMzLjExOS0uMDI1QzguOTEuMjc0IDcuODI5IDAgNi43MzEgMGMtMS43ODkgMC0zLjQ3LjY5OC00LjczNiAxLjk2N0MuNzI5IDMuMjM1LjAzMiA0LjkyMy4wMzIgNi43MTZjMCAxLjE0My4yOTIgMi4yNjUuODQ0IDMuMjU4bC4wMi0uMTI0LjA0MS4yMzktLjA2LS4xMTVjLS4xMTQuNjQ1LS4xNzIgMS4yOTktLjE3MiAxLjk1NSAwIDEuNTMuMyAzLjAxNy44ODQgNC40MTYuNTY4IDEuMzYyIDEuMzc4IDIuNTc2IDIuNDI3IDMuNjA5IDEuMDM0IDEuMDUgMi4yNDcgMS44NTcgMy41OTUgMi40NDIgMS4zOTQuNiAyLjg3Ny44OTggNC40MDQuODk4LjY1OSAwIDEuMzM0LS4wNiAxLjk3Ny0uMTc5bC0uMTE5LS4wNjIuMjQuMDQ2LS4xMzUuMDNjMS4wMDIuNTY5IDIuMTI2Ljg3MSAzLjI5NC44NzEgMS43ODMgMCAzLjQ1OS0uNjkgNC43MzMtMS45NjMgMS4yNTktMS4yNTkgMS45NjItMi45NTEgMS45NjItNC43NDkgMC0xLjEzOC0uMjk5LTIuMjYyLS44NTMtMy4yNjYiLz48L3N2Zz4="
+      },
+      {
+       "label": "RTP",
+       "value": 254.4,
+       "color": "warn",
+       "mono": "RTP",
+       "mono_color": "#64748B"
+      },
+      {
+       "label": "STUN",
+       "value": 93.3,
+       "color": "warn",
+       "mono": "ST",
+       "mono_color": "#64748B"
+      },
+      {
+       "label": "DTLS",
+       "value": 52.4,
+       "color": "warn",
+       "mono": "DT",
+       "mono_color": "#64748B"
+      },
+      {
+       "label": "LineCall",
+       "value": 45.6,
+       "color": "warn",
+       "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzAwQzMwMCI+PHBhdGggZD0iTTE5LjM2NSA5Ljg2M2MuMzQ5IDAgLjYzLjI4NS42My42MzEgMCAuMzQ1LS4yODEuNjMtLjYzLjYzSDE3LjYxdjEuMTI1aDEuNzU1Yy4zNDkgMCAuNjMuMjgzLjYzLjYzIDAgLjM0NC0uMjgxLjYyOS0uNjMuNjI5aC0yLjM4NmMtLjM0NSAwLS42MjctLjI4NS0uNjI3LS42MjlWOC4xMDhjMC0uMzQ1LjI4Mi0uNjMuNjMtLjYzaDIuMzg2Yy4zNDYgMCAuNjI3LjI4NS42MjcuNjMgMCAuMzQ5LS4yODEuNjMtLjYzLjYzSDE3LjYxdjEuMTI1aDEuNzU1em0tMy44NTUgMy4wMTZjMCAuMjctLjE3NC41MS0uNDMyLjU5Ni0uMDY0LjAyMS0uMTMzLjAzMS0uMTk5LjAzMS0uMjExIDAtLjM5MS0uMDktLjUxLS4yNWwtMi40NDMtMy4zMTd2Mi45NGMwIC4zNDQtLjI3OS42MjktLjYzMS42MjktLjM0NiAwLS42MjYtLjI4NS0uNjI2LS42MjlWOC4xMDhjMC0uMjcuMTczLS41MS40My0uNTk1LjA2LS4wMjMuMTM2LS4wMzMuMTk0LS4wMzMuMTk1IDAgLjM3NS4xMDQuNDk1LjI1NGwyLjQ2MiAzLjMzVjguMTA4YzAtLjM0NS4yODItLjYzLjYzLS42My4zNDUgMCAuNjMuMjg1LjYzLjYzdjQuNzcxem0tNS43NDEgMGMwIC4zNDQtLjI4Mi42MjktLjYzMS42MjktLjM0NSAwLS42MjctLjI4NS0uNjI3LS42MjlWOC4xMDhjMC0uMzQ1LjI4Mi0uNjMuNjMtLjYzLjM0NiAwIC42MjguMjg1LjYyOC42M3Y0Ljc3MXptLTIuNDY2LjYyOUg0LjkxN2MtLjM0NSAwLS42My0uMjg1LS42My0uNjI5VjguMTA4YzAtLjM0NS4yODUtLjYzLjYzLS42My4zNDggMCAuNjMuMjg1LjYzLjYzdjQuMTQxaDEuNzU2Yy4zNDggMCAuNjI5LjI4My42MjkuNjMgMCAuMzQ0LS4yODIuNjI5LS42MjkuNjI5TTI0IDEwLjMxNEMyNCA0Ljk0MyAxOC42MTUuNTcyIDEyIC41NzJTMCA0Ljk0MyAwIDEwLjMxNGMwIDQuODExIDQuMjcgOC44NDIgMTAuMDM1IDkuNjA4LjM5MS4wODIuOTIzLjI1OCAxLjA1OC41OS4xMi4zMDEuMDc5Ljc2Ni4wMzggMS4wOGwtLjE2NCAxLjAyYy0uMDQ1LjMwMS0uMjQgMS4xODYgMS4wNDkuNjQ1IDEuMjkxLS41MzkgNi45MTYtNC4wNzggOS40MzYtNi45NzVDMjMuMTc2IDE0LjM5MyAyNCAxMi40NTggMjQgMTAuMzE0Ii8+PC9zdmc+"
+      },
+      {
+       "label": "FacebookVoip",
+       "value": 22.9,
+       "color": "warn",
+       "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzA4NjZGRiI+PHBhdGggZD0iTTkuMTAxIDIzLjY5MXYtNy45OEg2LjYyN3YtMy42NjdoMi40NzR2LTEuNThjMC00LjA4NSAxLjg0OC01Ljk3OCA1Ljg1OC01Ljk3OC40MDEgMCAuOTU1LjA0MiAxLjQ2OC4xMDNhOC42OCA4LjY4IDAgMCAxIDEuMTQxLjE5NXYzLjMyNWE4LjYyMyA4LjYyMyAwIDAgMC0uNjUzLS4wMzYgMjYuODA1IDI2LjgwNSAwIDAgMC0uNzMzLS4wMDljLS43MDcgMC0xLjI1OS4wOTYtMS42NzUuMzA5YTEuNjg2IDEuNjg2IDAgMCAwLS42NzkuNjIyYy0uMjU4LjQyLS4zNzQuOTk1LS4zNzQgMS43NTJ2MS4yOTdoMy45MTlsLS4zODYgMi4xMDMtLjI4NyAxLjU2NGgtMy4yNDZ2OC4yNDVDMTkuMzk2IDIzLjIzOCAyNCAxOC4xNzkgMjQgMTIuMDQ0YzAtNi42MjctNS4zNzMtMTItMTItMTJzLTEyIDUuMzczLTEyIDEyYzAgNS42MjggMy44NzQgMTAuMzUgOS4xMDEgMTEuNjQ3WiIvPjwvc3ZnPg=="
+      },
+      {
+       "label": "WhatsApp",
+       "value": 10.3,
+       "color": "warn",
+       "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzI1RDM2NiI+PHBhdGggZD0iTTE3LjQ3MiAxNC4zODJjLS4yOTctLjE0OS0xLjc1OC0uODY3LTIuMDMtLjk2Ny0uMjczLS4wOTktLjQ3MS0uMTQ4LS42Ny4xNS0uMTk3LjI5Ny0uNzY3Ljk2Ni0uOTQgMS4xNjQtLjE3My4xOTktLjM0Ny4yMjMtLjY0NC4wNzUtLjI5Ny0uMTUtMS4yNTUtLjQ2My0yLjM5LTEuNDc1LS44ODMtLjc4OC0xLjQ4LTEuNzYxLTEuNjUzLTIuMDU5LS4xNzMtLjI5Ny0uMDE4LS40NTguMTMtLjYwNi4xMzQtLjEzMy4yOTgtLjM0Ny40NDYtLjUyLjE0OS0uMTc0LjE5OC0uMjk4LjI5OC0uNDk3LjA5OS0uMTk4LjA1LS4zNzEtLjAyNS0uNTItLjA3NS0uMTQ5LS42NjktMS42MTItLjkxNi0yLjIwNy0uMjQyLS41NzktLjQ4Ny0uNS0uNjY5LS41MS0uMTczLS4wMDgtLjM3MS0uMDEtLjU3LS4wMS0uMTk4IDAtLjUyLjA3NC0uNzkyLjM3Mi0uMjcyLjI5Ny0xLjA0IDEuMDE2LTEuMDQgMi40NzkgMCAxLjQ2MiAxLjA2NSAyLjg3NSAxLjIxMyAzLjA3NC4xNDkuMTk4IDIuMDk2IDMuMiA1LjA3NyA0LjQ4Ny43MDkuMzA2IDEuMjYyLjQ4OSAxLjY5NC42MjUuNzEyLjIyNyAxLjM2LjE5NSAxLjg3MS4xMTguNTcxLS4wODUgMS43NTgtLjcxOSAyLjAwNi0xLjQxMy4yNDgtLjY5NC4yNDgtMS4yODkuMTczLTEuNDEzLS4wNzQtLjEyNC0uMjcyLS4xOTgtLjU3LS4zNDdtLTUuNDIxIDcuNDAzaC0uMDA0YTkuODcgOS44NyAwIDAxLTUuMDMxLTEuMzc4bC0uMzYxLS4yMTQtMy43NDEuOTgyLjk5OC0zLjY0OC0uMjM1LS4zNzRhOS44NiA5Ljg2IDAgMDEtMS41MS01LjI2Yy4wMDEtNS40NSA0LjQzNi05Ljg4NCA5Ljg4OC05Ljg4NCAyLjY0IDAgNS4xMjIgMS4wMyA2Ljk4OCAyLjg5OGE5LjgyNSA5LjgyNSAwIDAxMi44OTMgNi45OTRjLS4wMDMgNS40NS00LjQzNyA5Ljg4NC05Ljg4NSA5Ljg4NG04LjQxMy0xOC4yOTdBMTEuODE1IDExLjgxNSAwIDAwMTIuMDUgMEM1LjQ5NSAwIC4xNiA1LjMzNS4xNTcgMTEuODkyYzAgMi4wOTYuNTQ3IDQuMTQyIDEuNTg4IDUuOTQ1TC4wNTcgMjRsNi4zMDUtMS42NTRhMTEuODgyIDExLjg4MiAwIDAwNS42ODMgMS40NDhoLjAwNWM2LjU1NCAwIDExLjg5LTUuMzM1IDExLjg5My0xMS44OTNhMTEuODIxIDExLjgyMSAwIDAwLTMuNDgtOC40MTNaIi8+PC9zdmc+"
+      },
+      {
+       "label": "GoTo",
+       "value": 8.0,
+       "color": "warn",
+       "mono": "GO",
+       "mono_color": "#F68D2E"
+      },
+      {
+       "label": "Webex",
+       "value": 2.6,
+       "color": "warn",
+       "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzAwNTA3MyI+PHBhdGggZD0iTTIxLjc4IDcuMzc2Yy41MTIgMS4xODEuMDMyIDIuNjQ0LTEuMTEgMy4xMDYtMi4xNTcuODg4LTMtMS4yOTUtMy0xLjI5NS0uMjM2LS41NS0uNzI3LTEuNDk2LTEuMzM1LTEuNDk2LS4yMDQgMC0uNTAzIDAtLjk0Ljg0NC0uMjI5LjQ0My0uNDM0IDEuMTg1LS42MTYgMS44NGwtLjA5LjMyYy0uMzczLTEuNTg3LS44MjEtMy40NTQtMS41MzYtNC44MTYtLjE5NS0uMzgtLjQyLS43NC0uNjczLTEuMDhhNS4xMzUgNS4xMzUgMCAwIDEgMS43NDMtMS4zMzcgNC44OTEgNC44OTEgMCAwIDEgMi4xMTItLjQ2M2MxLjA0NSAwIDIuNzY1LjMzOCA0LjIyNyAyLjIyNy4xNjcuMjA2LjMxNy40MjQuNDQ4LjY1NC4yNzguNDQxLjUyLjkwNC43MjYgMS4zODNsLjA0My4xMTN6TS4wMiA4LjRDLS4xNSA3LjEwNS44IDUuODQ1IDEuOTUzIDUuNzU1YzEuNzk0LS4xNTcgMi4zNiAxLjM4NSAyLjQ1NSAxLjg5bC4wMjIuMTM3Yy4wNy40NC4yOSAxLjgzOC40OCAyLjc0NC4wNzguNC4yNDQgMS4wMTMuMzUzIDEuNDE2bC4wMDYuMDIyLjAyNi4wOTJjLjExLjQuMjMyLjc5OS4zNjIgMS4xOTMuMTg1LjU0OC4zOTkgMS4wODUuNjQxIDEuNjEuNDcuOTU1LjkzIDEuNDUgMS4zNjcgMS40NS4yMDMgMCAuNTEyIDAgLjk2LS44NzguMjgzLS41OS41MTItMS4yMDguNjg0LTEuODQ1LjM3MyAxLjU5OC44MTEgMy4xMjggMS40OTUgNC40NTYuMjA1LjQwNi40NDQuNzk0LjcxNSAxLjE2YTUuMTI0IDUuMTI0IDAgMCAxLTEuNzQyIDEuMzM4IDQuODggNC44OCAwIDAgMS0yLjExMi40NjFjLTEuNTQ4IDAtMy43MjctLjY5OC01LjMzOS00LjAwNWEyMi40MDcgMjIuNDA3IDAgMCAxLTEuMDc4LTIuODI0IDI2Ljg0OCAyNi44NDggMCAwIDEtLjY5My0yLjY1NiA0OC41NiA0OC41NiAwIDAgMS0uMjE1LTEuMTE0Qy4xOTEgOS42MDMuMDc0IDguODcyLjAyIDguNHptMjIuMDQ3LTIuNjQ1LS4yMDItLjAyMmgtLjA1MmMuMjIyLjM5Mi40MjEuNzk3LjU5NyAxLjIxNWwuMDUzLjExM2MuMzIyLjc2LjM0NiAxLjYxNC4wNjggMi4zOTFhMy4wNzkgMy4wNzkgMCAwIDEtMS41NTIgMS43NDkgMi45MyAyLjkzIDAgMCAxLTEuMjI4LjI4IDMuMTE1IDMuMTE1IDAgMCAxLS44NTQtLjEzNWMtLjI5OSAxLjE4Mi0uNzY4IDIuNjM0LTEuMTk1IDMuNTExLS40MjcuODc3LS45MyAxLjQ1MS0xLjM3OCAxLjQ1MS0uMTkyIDAtLjUwMSAwLS45NS0uODc3YTEwLjc0NiAxMC43NDYgMCAwIDEtLjY4My0xLjg0NSAzOC43MjIgMzguNzIyIDAgMCAxLS4zOTYtMS41NzUgMTIuNjcgMTIuNjcgMCAwIDEtLjEzNi0uNTk4bC0uMDAyLS4wMWMtLjQwNi0xLjc3OC0uODY1LTMuNjQ1LTEuNjU1LTUuMTQyQTguMjYzIDguMjYzIDAgMCAwIDExLjUyIDQuOGE1LjEzNiA1LjEzNiAwIDAgMC0xLjc0OC0xLjM0QTQuODkyIDQuODkyIDAgMCAwIDcuNjU0IDNjLTEuMDM2IDAtMi43NTQuMzM4LTQuMjE3IDIuMjI4LjQ2Ni4yMjMuODY3LjU2MiAxLjE2NC45ODQuMzA1LjQzMy40OTkuOTMzLjU2NSAxLjQ1OC4wNzYuNTYzLjI1NiAxLjY1NC40NyAyLjY4OGwuMDAxLjAwN2MuMDIxLjExLjA0Mi4yMjEuMDczLjM0Mi4xMjYtLjM0LjI1LS42NDIuMzgtLjk1NWwuMTEyLS4yNzEuMTI4LS4yOTNjLjIzNS0uNTUuNzI2LTEuNDk2IDEuMzI0LTEuNDk2LjIxMyAwIC41MTMgMCAuOTUuODQ0LjI5Ni42MDYuNTMyIDEuMjM5LjcwNiAxLjg5LjEzOC41MDcuMjc2IDEuMDQ3LjM5NCAxLjU4Ny4wNC4xNDguMDcuMjk2LjEwMS40NDRsLjAwNi4wMjhjLjQyNyAxLjg3OS44NzUgMy42OSAxLjY0NCA1LjE4Ny4xNTkuMzE3LjM0LjYyMi41NDUuOTExLjE1LjIxNS4zMS40MjIuNDguNjIgMS4yNyAxLjQ1IDIuNzMzIDEuOCAzLjg0MyAxLjggMS41NDggMCAzLjczOC0uNjk4IDUuMzUtNC4wMDYuODIyLTEuNyAxLjUxNS00LjIwOCAxLjc3Mi01LjQ4LjI1Ni0xLjI3LjQ0OS0yLjQxOS41MzQtMy4xMTUuMDQtLjMwNy4wMjMtLjYxOC0uMDUxLS45MTgtLjA3NS0uMjk5LS4yMDUtLjU3OS0uMzgyLS44MjVhMi4yNDcgMi4yNDcgMCAwIDAtLjY1My0uNjA3IDIuMTQzIDIuMTQzIDAgMCAwLS44MjYtLjI5NnoiLz48L3N2Zz4="
+      },
+      {
+       "label": "Zoom",
+       "value": 0.1,
+       "color": "warn",
+       "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzJEOENGRiI+PHBhdGggZD0iTTUuMDMzIDE0LjY0OUguNzQzYS43NC43NCAwIDAgMS0uNjg2LS40NTguNzQuNzQgMCAwIDEgLjE2LS44MDhMMy4xOSAxMC40MUgxLjA2QTEuMDYgMS4wNiAwIDAgMSAwIDkuMzVoMy45NTdjLjMwMSAwIC41Ny4xOC42ODYuNDU4YS43NC43NCAwIDAgMS0uMTYxLjgwOEwxLjUxIDEzLjU5aDIuNDY0Yy41ODUgMCAxLjA2LjQ3NSAxLjA2IDEuMDZ6TTI0IDExLjMzOGMwLTEuMTQtLjkyNy0yLjA2Ni0yLjA2Ni0yLjA2Ni0uNjEgMC0xLjE1OC4yNjUtMS41MzcuNjg2YTIuMDYxIDIuMDYxIDAgMCAwLTEuNTM2LS42ODZjLTEuMTQgMC0yLjA2Ni45MjYtMi4wNjYgMi4wNjZ2My4zMTFhMS4wNiAxLjA2IDAgMCAwIDEuMDYtMS4wNnYtMi4yNTFhMS4wMDQgMS4wMDQgMCAwIDEgMi4wMTMgMHYyLjI1MWMwIC41ODYuNDc0IDEuMDYgMS4wNiAxLjA2di0zLjMxMWExLjAwNCAxLjAwNCAwIDAgMSAyLjAxMiAwdjIuMjUxYzAgLjU4Ni40NzUgMS4wNiAxLjA2IDEuMDZ6TTE2LjI2NSAxMmEyLjcyOCAyLjcyOCAwIDEgMS01LjQ1NyAwIDIuNzI4IDIuNzI4IDAgMCAxIDUuNDU3IDB6bS0xLjA2IDBhMS42NjkgMS42NjkgMCAxIDAtMy4zMzggMCAxLjY2OSAxLjY2OSAwIDAgMCAzLjMzOCAwem0tNC44MiAwYTIuNzI4IDIuNzI4IDAgMSAxLTUuNDU4IDAgMi43MjggMi43MjggMCAwIDEgNS40NTcgMHptLTEuMDYgMGExLjY2OSAxLjY2OSAwIDEgMC0zLjMzOCAwIDEuNjY5IDEuNjY5IDAgMCAwIDMuMzM4IDB6Ii8+PC9zdmc+"
+      },
+      {
+       "label": "AppleSiri",
+       "value": 0.0,
+       "color": "warn",
+       "mono": "AP",
+       "mono_color": "#5F5FF6"
+      },
+      {
+       "label": "GoogleHangoutDuo",
+       "value": 0.0,
+       "color": "warn",
+       "mono": "GO",
+       "mono_color": "#00897B"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "widget": "bar_list",
+   "id": "apps",
+   "title": "Top 12 應用（依用量）",
+   "meta": "GB · 紅=視訊/VoIP",
+   "groups": [
+    {
+     "total_compute": "_unused",
+     "items": [
+      {
+       "label": "TLS",
+       "value": 22.35,
+       "color": "ok",
+       "mono": "TLS",
+       "mono_color": "#64748B"
+      },
+      {
+       "label": "SMBv23",
+       "value": 19.24,
+       "color": "ok",
+       "mono": "SM",
+       "mono_color": "#64748B"
+      },
+      {
+       "label": "Microsoft365",
+       "value": 5.44,
+       "color": "ok",
+       "mono": "MI",
+       "mono_color": "#D83B01"
+      },
+      {
+       "label": "Microsoft",
+       "value": 5.27,
+       "color": "ok",
+       "mono": "MI",
+       "mono_color": "#0078D4"
+      },
+      {
+       "label": "WindowsUpdate",
+       "value": 4.56,
+       "color": "ok",
+       "mono": "WI",
+       "mono_color": "#0078D4"
+      },
+      {
+       "label": "Google",
+       "value": 4.05,
+       "color": "ok",
+       "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzQyODVGNCI+PHBhdGggZD0iTTEyLjQ4IDEwLjkydjMuMjhoNy44NGMtLjI0IDEuODQtLjg1MyAzLjE4Ny0xLjc4NyA0LjEzMy0xLjE0NyAxLjE0Ny0yLjkzMyAyLjQtNi4wNTMgMi40LTQuODI3IDAtOC42LTMuODkzLTguNi04LjcyczMuNzczLTguNzIgOC42LTguNzJjMi42IDAgNC41MDcgMS4wMjcgNS45MDcgMi4zNDdsMi4zMDctMi4zMDdDMTguNzQ3IDEuNDQgMTYuMTMzIDAgMTIuNDggMCA1Ljg2NyAwIC4zMDcgNS4zODcuMzA3IDEyczUuNTYgMTIgMTIuMTczIDEyYzMuNTczIDAgNi4yNjctMS4xNzMgOC4zNzMtMy4zNiAyLjE2LTIuMTYgMi44NC01LjIxMyAyLjg0LTcuNjY3IDAtLjc2LS4wNTMtMS40NjctLjE3My0yLjA1M0gxMi40OHoiLz48L3N2Zz4="
+      },
+      {
+       "label": "YouTube",
+       "value": 3.66,
+       "color": "ok",
+       "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI0ZGMDAwMCI+PHBhdGggZD0iTTIzLjQ5OCA2LjE4NmEzLjAxNiAzLjAxNiAwIDAgMC0yLjEyMi0yLjEzNkMxOS41MDUgMy41NDUgMTIgMy41NDUgMTIgMy41NDVzLTcuNTA1IDAtOS4zNzcuNTA1QTMuMDE3IDMuMDE3IDAgMCAwIC41MDIgNi4xODZDMCA4LjA3IDAgMTIgMCAxMnMwIDMuOTMuNTAyIDUuODE0YTMuMDE2IDMuMDE2IDAgMCAwIDIuMTIyIDIuMTM2YzEuODcxLjUwNSA5LjM3Ni41MDUgOS4zNzYuNTA1czcuNTA1IDAgOS4zNzctLjUwNWEzLjAxNSAzLjAxNSAwIDAgMCAyLjEyMi0yLjEzNkMyNCAxNS45MyAyNCAxMiAyNCAxMnMwLTMuOTMtLjUwMi01LjgxNHpNOS41NDUgMTUuNTY4VjguNDMyTDE1LjgxOCAxMmwtNi4yNzMgMy41Njh6Ii8+PC9zdmc+"
+      },
+      {
+       "label": "HTTP",
+       "value": 3.02,
+       "color": "ok",
+       "mono": "HT",
+       "mono_color": "#64748B"
+      },
+      {
+       "label": "Apple",
+       "value": 2.36,
+       "color": "ok",
+       "mono": "AP",
+       "mono_color": "#555555"
+      },
+      {
+       "label": "QUIC",
+       "value": 1.98,
+       "color": "ok",
+       "mono": "QU",
+       "mono_color": "#64748B"
+      },
+      {
+       "label": "BitTorrent",
+       "value": 1.36,
+       "color": "ok",
+       "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI0NCMDAwMCI+PHBhdGggZD0iTTEyLjAwMDIuMDAxNEM1LjM3MzUuMDAwNC4wMDEgNS4zNzE4IDAgMTEuOTk4NGExMS45OTg2IDExLjk5ODYgMCAwIDAgMS43MDA2IDYuMTU5My4xMzIuMTMyIDAgMCAwIC4xMTI4LjAzODRjLjAyODggMCAuMDQ4LS4wNjk2LjA0OC0uMTEwNGEuNzM5LjczOSAwIDAgMC0uMDMzNi0uMTI5NiAyMi4xNCAyMi4xNCAwIDAgMS0uNDIyNC0yLjI5NDEgOS44Mzg5IDkuODM4OSAwIDAgMSAuNDI3Mi0zLjg2NmMxLjEwMTQtMy4zOTU2IDMuMzMzMi01LjY5OTMgNi42NjQtNi45Mzc2YTEwLjMwMiAxMC4zMDIgMCAwIDEgMy4zOTgtLjU5NTEuNzgyMy43ODIzIDAgMCAxIC44NTY3Ljc2M2MwIC40NDg4LS4zNDMxLjczNjgtLjg0OTUuNzY1NmExMi44NTMgMTIuODUzIDAgMCAwLTEuNjA3OC4xNjU2IDguNjkxOCA4LjY5MTggMCAwIDAtNC44NjQyIDIuNjM5N0MzLjM0NjggMTAuODE2OSAyLjU1IDEzLjQ1NjYgMy4wMyAxNi40NTM5YTguNjg0NiA4LjY4NDYgMCAwIDAgMi40NDU0IDQuNzg1IDguOTQxNCA4Ljk0MTQgMCAwIDAgNi4zNjg4IDIuNzU5N2guMTU2YTExLjk1MDcgMTEuOTUwNyAwIDAgMCA1LjYxMy0xLjM5MThoLTUuNTkzOGE4LjM5ODggOC4zOTg4IDAgMCAxLTEuNDA4Ni0uMTI5NmMtNC4xMzg3LS43NDY3LTYuOTE1LTQuNjczLTYuMjM5My04LjgyMzguNTYyNy0zLjUyNzEgMy40NzIyLTYuMjA3MyA3LjAzMzYtNi40NzkzYTcuNjQwNyA3LjY0MDcgMCAwIDEgMi4xNTk3LjEzNjguNzQ4Ny43NDg3IDAgMCAxIC42MTY4Ljg3Ni43ODQ3Ljc4NDcgMCAwIDEtLjk2LjYwMjMgNi4wODM2IDYuMDgzNiAwIDAgMC0uODAxNC0uMTE1MiA2LjMyOCA2LjMyOCAwIDAgMC0yLjg5OS41MDRjLTIuNTA1MiAxLjA4MDMtNC4wMDk1IDMuNjcxOS0zLjcwNSA2LjM4MzIuMzU2NiAzLjEzNjYgMy4wMDU2IDUuNTA5MSA2LjE2MjQgNS41MTk0aDYuOTkwNGMuNjc5MSAwIC44NC4wMTQ0IDEuMTM3NS0uMjQuMzgyLS4zNTI1Ljc0Mi0uNzI4NCAxLjA3NzUtMS4xMjU1aC05LjMzMDJhNC4zNDgzIDQuMzQ4MyAwIDAgMS0yLjA3MzMtLjUxNmMtMi40MDM3LTEuMTc4Ny0zLjM5NjgtNC4wODI4LTIuMjE4LTYuNDg2NXM0LjA4MjgtMy4zOTY4IDYuNDg2Ni0yLjIxOGMuMTE5NS4wNTg2LjIzNjUuMTIyLjM1MDguMTkwM2EuNzUxMS43NTExIDAgMCAxIC4zMTY4IDEuMDQ0Ljc2NTUuNzY1NSAwIDAgMS0xLjA2NTUuMjcxMWMtMS41OTg4LS45MTI1LTMuNjM0Ni0uMzU2LTQuNTQ3IDEuMjQyOGEzLjMzMzIgMy4zMzMyIDAgMCAwLS4zOTY0IDIuMTc5MmMuMjQzMyAxLjYxODYgMS42Mzg4IDIuODEyNyAzLjI3NTYgMi44MDI5IDMuMzU5Ni4wMzM2IDYuNzE5MyAwIDEwLjA3ODkgMGEuNDIyNC40MjI0IDAgMCAwIC4yODA3LS4xNDRjMy4zNTg0LTUuNzEyNiAxLjQ1LTEzLjA2NjEtNC4yNjI2LTE2LjQyNDVhMTEuOTk4NiAxMS45OTg2IDAgMCAwLTYuMDgwMi0xLjY1NXoiLz48L3N2Zz4="
+      },
+      {
+       "label": "Spotify",
+       "value": 1.08,
+       "color": "ok",
+       "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzFEQjk1NCI+PHBhdGggZD0iTTEyIDBDNS40IDAgMCA1LjQgMCAxMnM1LjQgMTIgMTIgMTIgMTItNS40IDEyLTEyUzE4LjY2IDAgMTIgMHptNS41MjEgMTcuMzRjLS4yNC4zNTktLjY2LjQ4LTEuMDIxLjI0LTIuODItMS43NC02LjM2LTIuMTAxLTEwLjU2MS0xLjE0MS0uNDE4LjEyMi0uNzc5LS4xNzktLjg5OS0uNTM5LS4xMi0uNDIxLjE4LS43OC41NC0uOSA0LjU2LTEuMDIxIDguNTItLjYgMTEuNjQgMS4zMi40Mi4xOC40NzkuNjU5LjMwMSAxLjAyem0xLjQ0LTMuM2MtLjMwMS40Mi0uODQxLjYtMS4yNjIuMy0zLjIzOS0xLjk4LTguMTU5LTIuNTgtMTEuOTM5LTEuMzgtLjQ3OS4xMi0xLjAyLS4xMi0xLjE0LS42LS4xMi0uNDguMTItMS4wMjEuNi0xLjE0MUM5LjYgOS45IDE1IDEwLjU2MSAxOC43MiAxMi44NGMuMzYxLjE4MS41NC43OC4yNDEgMS4yem0uMTItMy4zNkMxNS4yNCA4LjQgOC44MiA4LjE2IDUuMTYgOS4zMDFjLS42LjE3OS0xLjItLjE4MS0xLjM4LS43MjEtLjE4LS42MDEuMTgtMS4yLjcyLTEuMzgxIDQuMjYtMS4yNiAxMS4yOC0xLjAyIDE1LjcyMSAxLjYyMS41MzkuMy43MTkgMS4wMi40MTkgMS41Ni0uMjk5LjQyMS0xLjAyLjU5OS0xLjU1OS4zeiIvPjwvc3ZnPg=="
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "widget": "table",
+   "id": "client-table",
+   "title": "逐 client 應用分析（點列展開該 client 的應用）",
+   "data_source": "clients",
+   "row_id_field": "mac",
+   "meta_template": "Top ${count} clients",
+   "even_columns": true,
+   "columns": [
+    {
+     "label": "Client",
+     "field": "client",
+     "render": "name_with_sub",
+     "sub_field": "mac"
+    },
+    {
+     "label": "總用量(GB)",
+     "field": "usage_gb",
+     "align": "right"
+    },
+    {
+     "label": "主要應用",
+     "field": "top_app"
+    },
+    {
+     "label": "應用數",
+     "field": "app_count",
+     "align": "right"
+    }
+   ],
+   "detail_fields": [
+    {
+     "label": "前 5 大應用",
+     "field": "apps_summary",
+     "full_width": true
+    }
+   ]
+  }
+ ],
+ "footer": {
+  "ops_used": [
+   "get_hierarchy_view_applications_topn",
+   "get_hierarchy_view_clients_topn",
+   "get_network_client_applications_analysis"
+  ]
+ }
+}
