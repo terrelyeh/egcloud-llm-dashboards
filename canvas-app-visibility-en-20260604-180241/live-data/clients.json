@@ -1,42 +1,42 @@
 [
- {
-  "client": "e800589nb",
-  "mac": "30:89:4a:60:9b:04",
-  "usage_gb": 5.55,
-  "top_app": "—",
-  "app_count": 0,
-  "apps_summary": "(no app detail in window)"
- },
- {
-  "client": "S105872NB",
-  "mac": "c0:a8:10:6e:f7:58",
-  "usage_gb": 5.13,
-  "top_app": "TLS",
-  "app_count": 45,
-  "apps_summary": "TLS, BitTorrent, YouTube, SMBv23, Microsoft365"
- },
- {
-  "client": "E800538NB",
-  "mac": "c4:03:a8:82:74:e5",
-  "usage_gb": 4.64,
-  "top_app": "—",
-  "app_count": 0,
-  "apps_summary": "(no app detail in window)"
- },
- {
-  "client": "e800515nb",
-  "mac": "d4:54:8b:cc:ac:68",
-  "usage_gb": 4.57,
-  "top_app": "—",
-  "app_count": 0,
-  "apps_summary": "(no app detail in window)"
- },
- {
-  "client": "E800450NB",
-  "mac": "5c:87:9c:8a:d9:14",
-  "usage_gb": 3.66,
-  "top_app": "—",
-  "app_count": 0,
-  "apps_summary": "(no app detail in window)"
- }
+  {
+    "client": "Client-01",
+    "mac": "00:00:00:00:00:01",
+    "usage_gb": 5.55,
+    "top_app": "—",
+    "app_count": 0,
+    "apps_summary": "(no app detail in window)"
+  },
+  {
+    "client": "Client-02",
+    "mac": "00:00:00:00:00:02",
+    "usage_gb": 5.13,
+    "top_app": "TLS",
+    "app_count": 45,
+    "apps_summary": "TLS, BitTorrent, YouTube, SMBv23, Microsoft365"
+  },
+  {
+    "client": "Client-03",
+    "mac": "00:00:00:00:00:03",
+    "usage_gb": 4.64,
+    "top_app": "—",
+    "app_count": 0,
+    "apps_summary": "(no app detail in window)"
+  },
+  {
+    "client": "Client-04",
+    "mac": "00:00:00:00:00:04",
+    "usage_gb": 4.57,
+    "top_app": "—",
+    "app_count": 0,
+    "apps_summary": "(no app detail in window)"
+  },
+  {
+    "client": "Client-05",
+    "mac": "00:00:00:00:00:05",
+    "usage_gb": 3.66,
+    "top_app": "—",
+    "app_count": 0,
+    "apps_summary": "(no app detail in window)"
+  }
 ]

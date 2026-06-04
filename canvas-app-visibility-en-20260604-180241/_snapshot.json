@@ -1,8 +1,8 @@
 {
-  "deployed_at": "2026-06-04T14:52:14+00:00",
+  "deployed_at": "2026-06-04T15:15:27+00:00",
   "source_canvas": "canvas-app-visibility-en-20260604-180241",
-  "redacted": false,
+  "redacted": true,
   "account": {
-    "email": "terrel.yeh@senao.com"
+    "email": "demo-user@example.com"
   }
 }
