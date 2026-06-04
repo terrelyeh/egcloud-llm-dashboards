@@ -1,146 +1,146 @@
 [
- {
-  "app": "TLS",
-  "category": "加密 / 一般 Web",
-  "usage_gb": 22.35,
-  "down_gb": 19.5,
-  "up_gb": 2.85,
-  "share": 27.1
- },
- {
-  "app": "SMBv23",
-  "category": "檔案 / P2P",
-  "usage_gb": 19.24,
-  "down_gb": 18.72,
-  "up_gb": 0.52,
-  "share": 23.3
- },
- {
-  "app": "Microsoft365",
-  "category": "雲端 / 生產力",
-  "usage_gb": 5.44,
-  "down_gb": 4.01,
-  "up_gb": 1.42,
-  "share": 6.6
- },
- {
-  "app": "Microsoft",
-  "category": "雲端 / 生產力",
-  "usage_gb": 5.27,
-  "down_gb": 4.05,
-  "up_gb": 1.22,
-  "share": 6.4
- },
- {
-  "app": "WindowsUpdate",
-  "category": "系統 / 更新",
-  "usage_gb": 4.56,
-  "down_gb": 4.44,
-  "up_gb": 0.12,
-  "share": 5.5
- },
- {
-  "app": "Google",
-  "category": "雲端 / 生產力",
-  "usage_gb": 4.05,
-  "down_gb": 3.44,
-  "up_gb": 0.61,
-  "share": 4.9
- },
- {
-  "app": "YouTube",
-  "category": "串流影音",
-  "usage_gb": 3.66,
-  "down_gb": 3.56,
-  "up_gb": 0.1,
-  "share": 4.4
- },
- {
-  "app": "HTTP",
-  "category": "加密 / 一般 Web",
-  "usage_gb": 3.02,
-  "down_gb": 2.88,
-  "up_gb": 0.14,
-  "share": 3.7
- },
- {
-  "app": "Apple",
-  "category": "系統 / 更新",
-  "usage_gb": 2.36,
-  "down_gb": 2.31,
-  "up_gb": 0.04,
-  "share": 2.9
- },
- {
-  "app": "QUIC",
-  "category": "加密 / 一般 Web",
-  "usage_gb": 1.98,
-  "down_gb": 1.85,
-  "up_gb": 0.13,
-  "share": 2.4
- },
- {
-  "app": "BitTorrent",
-  "category": "檔案 / P2P",
-  "usage_gb": 1.36,
-  "down_gb": 1.3,
-  "up_gb": 0.06,
-  "share": 1.7
- },
- {
-  "app": "Spotify",
-  "category": "串流影音",
-  "usage_gb": 1.08,
-  "down_gb": 1.06,
-  "up_gb": 0.02,
-  "share": 1.3
- },
- {
-  "app": "Teams",
-  "category": "視訊會議 / VoIP",
-  "usage_gb": 0.99,
-  "down_gb": 0.86,
-  "up_gb": 0.13,
-  "share": 1.2
- },
- {
-  "app": "GoogleServices",
-  "category": "雲端 / 生產力",
-  "usage_gb": 0.93,
-  "down_gb": 0.77,
-  "up_gb": 0.15,
-  "share": 1.1
- },
- {
-  "app": "Line",
-  "category": "社群 / 訊息",
-  "usage_gb": 0.92,
-  "down_gb": 0.76,
-  "up_gb": 0.16,
-  "share": 1.1
- },
- {
-  "app": "Facebook",
-  "category": "社群 / 訊息",
-  "usage_gb": 0.79,
-  "down_gb": 0.74,
-  "up_gb": 0.05,
-  "share": 1.0
- },
- {
-  "app": "Skype_TeamsCall",
-  "category": "視訊會議 / VoIP",
-  "usage_gb": 0.77,
-  "down_gb": 0.33,
-  "up_gb": 0.44,
-  "share": 0.9
- },
- {
-  "app": "AmazonAWS",
-  "category": "雲端 / 生產力",
-  "usage_gb": 0.53,
-  "down_gb": 0.52,
-  "up_gb": 0.01,
-  "share": 0.6
- }
+  {
+    "app": "TLS",
+    "category": "加密 / 一般 Web",
+    "usage_gb": 22.35,
+    "down_gb": 19.5,
+    "up_gb": 2.85,
+    "share": 27.1
+  },
+  {
+    "app": "SMBv23",
+    "category": "檔案 / P2P",
+    "usage_gb": 19.24,
+    "down_gb": 18.72,
+    "up_gb": 0.52,
+    "share": 23.3
+  },
+  {
+    "app": "Microsoft365",
+    "category": "雲端 / 生產力",
+    "usage_gb": 5.44,
+    "down_gb": 4.01,
+    "up_gb": 1.42,
+    "share": 6.6
+  },
+  {
+    "app": "Microsoft",
+    "category": "雲端 / 生產力",
+    "usage_gb": 5.27,
+    "down_gb": 4.05,
+    "up_gb": 1.22,
+    "share": 6.4
+  },
+  {
+    "app": "WindowsUpdate",
+    "category": "系統 / 更新",
+    "usage_gb": 4.56,
+    "down_gb": 4.44,
+    "up_gb": 0.12,
+    "share": 5.5
+  },
+  {
+    "app": "Google",
+    "category": "雲端 / 生產力",
+    "usage_gb": 4.05,
+    "down_gb": 3.44,
+    "up_gb": 0.61,
+    "share": 4.9
+  },
+  {
+    "app": "YouTube",
+    "category": "串流影音",
+    "usage_gb": 3.66,
+    "down_gb": 3.56,
+    "up_gb": 0.1,
+    "share": 4.4
+  },
+  {
+    "app": "HTTP",
+    "category": "加密 / 一般 Web",
+    "usage_gb": 3.02,
+    "down_gb": 2.88,
+    "up_gb": 0.14,
+    "share": 3.7
+  },
+  {
+    "app": "Apple",
+    "category": "系統 / 更新",
+    "usage_gb": 2.36,
+    "down_gb": 2.31,
+    "up_gb": 0.04,
+    "share": 2.9
+  },
+  {
+    "app": "QUIC",
+    "category": "加密 / 一般 Web",
+    "usage_gb": 1.98,
+    "down_gb": 1.85,
+    "up_gb": 0.13,
+    "share": 2.4
+  },
+  {
+    "app": "BitTorrent",
+    "category": "檔案 / P2P",
+    "usage_gb": 1.36,
+    "down_gb": 1.3,
+    "up_gb": 0.06,
+    "share": 1.7
+  },
+  {
+    "app": "Spotify",
+    "category": "串流影音",
+    "usage_gb": 1.08,
+    "down_gb": 1.06,
+    "up_gb": 0.02,
+    "share": 1.3
+  },
+  {
+    "app": "Teams",
+    "category": "視訊會議 / VoIP",
+    "usage_gb": 0.99,
+    "down_gb": 0.86,
+    "up_gb": 0.13,
+    "share": 1.2
+  },
+  {
+    "app": "GoogleServices",
+    "category": "雲端 / 生產力",
+    "usage_gb": 0.93,
+    "down_gb": 0.77,
+    "up_gb": 0.15,
+    "share": 1.1
+  },
+  {
+    "app": "Line",
+    "category": "社群 / 訊息",
+    "usage_gb": 0.92,
+    "down_gb": 0.76,
+    "up_gb": 0.16,
+    "share": 1.1
+  },
+  {
+    "app": "Facebook",
+    "category": "社群 / 訊息",
+    "usage_gb": 0.79,
+    "down_gb": 0.74,
+    "up_gb": 0.05,
+    "share": 1.0
+  },
+  {
+    "app": "Skype_TeamsCall",
+    "category": "視訊會議 / VoIP",
+    "usage_gb": 0.77,
+    "down_gb": 0.33,
+    "up_gb": 0.44,
+    "share": 0.9
+  },
+  {
+    "app": "AmazonAWS",
+    "category": "雲端 / 生產力",
+    "usage_gb": 0.53,
+    "down_gb": 0.52,
+    "up_gb": 0.01,
+    "share": 0.6
+  }
 ]
